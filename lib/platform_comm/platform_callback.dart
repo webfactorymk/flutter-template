@@ -6,6 +6,3 @@ typedef dynamic PlatformCallbackNoParams();
 
 /// Internal. A platform call with raw unconverted params.
 typedef dynamic PlatformCallbackRaw(dynamic param);
-
-/// Unsubscribe when you no longer want to receive platform callback calls.
-typedef void Unsubscribe();

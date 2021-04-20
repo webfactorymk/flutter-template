@@ -17,6 +17,9 @@ class PlatformComm {
   factory PlatformComm.globalAppChannel() => PlatformComm(MethodChannel(
       'com.my-app.package-name.global')); //todo change channel name
 
+  factory PlatformComm.onChannel(String channelName) =>
+      PlatformComm(MethodChannel(channelName));
+
   PlatformComm(this._methodChannel) {
     _methodChannel.setMethodCallHandler((call) {
       Logger.d('Platform callback: ${call.method} w/ args ${call.arguments}');
@@ -57,7 +60,7 @@ class PlatformComm {
   ///
   /// The result from the [callback] is returned to the invoking
   /// component on the platform side.
-  Unsubscribe listenMethod<P>({
+  Subscription listenMethod<P>({
     required String method,
     required PlatformCallback<P> callback,
     Deserialize<P>? deserializeParams,
@@ -65,16 +68,25 @@ class PlatformComm {
     _platformCallbackMap[method] = (paramsRaw) =>
         callback(deserializeParams?.call(paramsRaw) ?? paramsRaw as P);
 
-    return () => _platformCallbackMap.remove(method);
+    return Subscription(cancel: () => _platformCallbackMap.remove(method));
   }
 
   /// Like [listenMethod] but without params.
-  Unsubscribe listenMethodNoParams<P>({
+  Subscription listenMethodNoParams<P>({
     required String method,
     required PlatformCallbackNoParams callback,
   }) {
     _platformCallbackMap[method] = (_) => callback();
 
-    return () => _platformCallbackMap.remove(method);
+    return Subscription(cancel: () => _platformCallbackMap.remove(method));
   }
+}
+
+/// Subscription for the method listener. Call [cancel] to stop listening.
+class Subscription {
+  final void Function() _cancel;
+
+  Subscription({required void Function() cancel}) : _cancel = cancel;
+
+  void cancel() => _cancel();
 }

@@ -87,7 +87,8 @@ Future<void> setupDependencies() async {
   );
 
   // Platform comm
-  final PlatformComm platformComm = PlatformComm.globalAppChannel();
+  final PlatformComm platformComm = PlatformComm.globalAppChannel()
+    ..listenToNativeLogs();
 
   serviceLocator
     // ..registerSingleton<LanguageRequestInterceptor>(languageRequestInterceptor)
