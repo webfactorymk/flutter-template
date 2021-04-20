@@ -1,0 +1,7 @@
+{
+  "task_list_title": "Tasks",
+  "task_list_create_new": "Create new task",
+  "task_list_no_tasks_message": "You have no tasks. Yay! Do nothing!",
+  "task_list_error_loading_tasks": "Error loading tasks.",
+  "task_list_error_general": "Ops! An error has occurred."
+}
