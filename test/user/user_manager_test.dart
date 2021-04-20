@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/model/user/user.dart';

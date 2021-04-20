@@ -76,7 +76,7 @@ dev_dependencies:
   flutter_email_sender: ^5.0.0
   bloc_test: ^8.0.0
   json_serializable: ^4.1.0
-  mockito: ^5.0.3
+  mockito: ^5.0.5
 
 #dependency_overrides:
 #  logging: ^1.0.1
