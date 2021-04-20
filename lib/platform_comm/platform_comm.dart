@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/platform_comm/item_converter.dart';
 import 'package:flutter_template/platform_comm/platform_callback.dart';
+import 'package:flutter_template/util/subscription.dart';
 
 export 'app_platform_methods.dart';
 
@@ -80,13 +81,4 @@ class PlatformComm {
 
     return Subscription(cancel: () => _platformCallbackMap.remove(method));
   }
-}
-
-/// Subscription for the method listener. Call [cancel] to stop listening.
-class Subscription {
-  final void Function() _cancel;
-
-  Subscription({required void Function() cancel}) : _cancel = cancel;
-
-  void cancel() => _cancel();
 }
