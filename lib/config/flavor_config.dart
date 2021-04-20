@@ -13,7 +13,7 @@ class FlavorValues {
   });
 }
 
-/// Flavor configuration. Use it to access flavor specific settings.
+/// Flavor static configuration. Use it to access flavor specific settings.
 abstract class FlavorConfig {
   static Flavor? _flavor;
   static String? _flavorName;

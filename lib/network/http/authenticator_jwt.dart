@@ -6,7 +6,7 @@ import 'package:flutter_template/network/auth_api_service.dart';
 import 'package:flutter_template/network/errors/unauthorized_user_exception.dart';
 import 'package:flutter_template/network/http/http_client.dart';
 import 'package:flutter_template/network/http/http_exception_code.dart';
-import 'package:flutter_template/network/http_util.dart';
+import 'package:flutter_template/network/network_util.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:http/http.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';

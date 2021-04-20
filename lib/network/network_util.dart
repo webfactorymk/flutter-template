@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_template/log/logger.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 
-const String authHeaderKey = 'Authorization';
+const String authHeaderKey = HttpHeaders.authorizationHeader;
 String authHeaderValue(String token) => 'Bearer $token';
 
 const String cookieHeaderKey = 'Cookie';
@@ -63,4 +64,14 @@ String? parseErrorResponse(Response response) {
     Logger.e('Error parsing error response - error: $exp; decoded body: $responseBody');
     return null;
   }
+}
+
+Map<String, String> splitUriFragment(Uri url) {
+  Map<String, String> queryPairs = Map<String, String>();
+  String query = url.fragment;
+  List<String> pairs = query.split("&");
+  pairs.forEach((pair) {
+    queryPairs.putIfAbsent((pair.split('='))[0], () => (pair.split('='))[1]);
+  });
+  return queryPairs;
 }

@@ -4,12 +4,13 @@ import 'package:flutter_template/feature/auth/global_handler/global_auth_block_p
 
 import 'app.dart';
 import 'config/flavor_config.dart';
+import 'config/network_constants.dart';
 
 void main() async {
   FlavorConfig.set(
     Flavor.PRODUCTION,
     FlavorValues(
-      baseApiUrl: 'example.com/api/',
+      baseApiUrl: baseUrlProd + apiPrefix,
     ),
   );
 

@@ -1,6 +1,6 @@
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/http/interceptors/request/request_interceptor.dart';
-import 'package:flutter_template/network/http_util.dart';
+import 'package:flutter_template/network/network_util.dart';
 import 'package:http/http.dart';
 import 'package:single_item_storage/storage.dart';
 
