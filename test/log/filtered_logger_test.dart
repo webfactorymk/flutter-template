@@ -14,12 +14,12 @@ void main() {
 
   setUp(() {
     logger = MockLogger();
-    filteredLogger = FilteredLogger(logger, (_) => true);
   });
 
   test('log debug, warn and error', () {
     //setup
     final Exception error = Exception('Test exp');
+    filteredLogger = FilteredLogger(logger, (_) => true);
 
     //execute
     filteredLogger.d(logMessage);
