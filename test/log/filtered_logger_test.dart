@@ -27,8 +27,8 @@ void main() {
     filteredLogger.e(error);
 
     //expect and verify
-    verify(logger.d('$logMessage')).called(1);
-    verify(logger.w('$logMessage')).called(1);
+    verify(logger.d(logMessage)).called(1);
+    verify(logger.w(logMessage)).called(1);
     verify(logger.e(error)).called(1);
     verifyNoMoreInteractions(logger);
   });

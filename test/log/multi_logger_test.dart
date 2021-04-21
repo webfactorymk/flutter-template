@@ -29,8 +29,8 @@ void main() {
     logger.e(error);
 
     //expect and verify
-    verify(mockLogger.d('$logMessage')).called(1);
-    verify(mockLogger.w('$logMessage')).called(1);
+    verify(mockLogger.d(logMessage)).called(1);
+    verify(mockLogger.w(logMessage)).called(1);
     verify(mockLogger.e(error)).called(1);
     verifyNoMoreInteractions(mockLogger);
   });

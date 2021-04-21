@@ -31,8 +31,8 @@ void main() {
     consoleLogger.e(error);
 
     //expect and verify
-    verify(logger.d('$logMessage')).called(1);
-    verify(logger.w('$logMessage')).called(1);
+    verify(logger.d(logMessage)).called(1);
+    verify(logger.w(logMessage)).called(1);
     verify(logger.e('Exception: Test exp', error)).called(1);
     verifyNoMoreInteractions(logger);
   });
