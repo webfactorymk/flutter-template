@@ -9,13 +9,15 @@ class MockLogger extends Mock implements AbstractLogger {}
 
 /// Tests for [MultiLogger].
 void main() {
-  late MockLogger mockLogger;
+  late MockLogger mockLogger1;
+  late MockLogger mockLogger2;
   late MultiLogger logger;
 
   setUp(() {
-    mockLogger = MockLogger();
+    mockLogger1 = MockLogger();
+    mockLogger2 = MockLogger();
 
-    var loggers = [mockLogger];
+    var loggers = [mockLogger1, mockLogger2];
     logger = MultiLogger(loggers);
   });
 
@@ -29,9 +31,14 @@ void main() {
     logger.e(error);
 
     //expect and verify
-    verify(mockLogger.d(logMessage)).called(1);
-    verify(mockLogger.w(logMessage)).called(1);
-    verify(mockLogger.e(error)).called(1);
-    verifyNoMoreInteractions(mockLogger);
+    verify(mockLogger1.d(logMessage)).called(1);
+    verify(mockLogger1.w(logMessage)).called(1);
+    verify(mockLogger1.e(error)).called(1);
+    verifyNoMoreInteractions(mockLogger1);
+
+    verify(mockLogger2.d(logMessage)).called(1);
+    verify(mockLogger2.w(logMessage)).called(1);
+    verify(mockLogger2.e(error)).called(1);
+    verifyNoMoreInteractions(mockLogger2);
   });
 }
