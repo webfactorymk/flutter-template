@@ -36,9 +36,4 @@ void main() {
     verify(logger.e('Exception: Test exp', error)).called(1);
     verifyNoMoreInteractions(logger);
   });
-
-  test('log null', () {
-    // ignore: null_check_always_fails
-    expect(() => consoleLogger.e(null!), throwsA(isInstanceOf<Error>()));
-  });
 }

@@ -34,9 +34,4 @@ void main() {
     verify(mockLogger.e(error)).called(1);
     verifyNoMoreInteractions(mockLogger);
   });
-
-  test('log null', () {
-    // ignore: null_check_always_fails
-    expect(() => mockLogger.e(null!), throwsA(isInstanceOf<Error>()));
-  });
 }

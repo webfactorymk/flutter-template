@@ -32,9 +32,4 @@ void main() {
     verify(logger.e(error)).called(1);
     verifyNoMoreInteractions(logger);
   });
-
-  test('log null', () {
-    // ignore: null_check_always_fails
-    expect(() => filteredLogger.e(null!), throwsA(isInstanceOf<Error>()));
-  });
 }
