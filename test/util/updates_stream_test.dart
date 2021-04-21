@@ -16,7 +16,7 @@ void main() {
   });
 
   test('updatesSticky no value set', () {
-    expect(numberComponent.updates, emitsInOrder([1, 2, 3]));
+    expect(numberComponent.updatesSticky, emitsInOrder([1, 2, 3]));
 
     numberComponent..increment()..increment()..increment();
   });
@@ -35,7 +35,7 @@ void main() {
   test('updatesSticky after value set', () {
     numberComponent.decrement();
 
-    expect(numberComponent.updates, emitsInOrder([-1, 0, 1, 0]));
+    expect(numberComponent.updatesSticky, emitsInOrder([-1, 0, 1, 0]));
 
     numberComponent
       ..increment()

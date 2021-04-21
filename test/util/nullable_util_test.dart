@@ -19,7 +19,7 @@ void main() {
 
       Future<int> nonNullableFuture = nullableFuture.asNonNullable();
 
-      expect(nonNullableFuture, throwsA(isInstanceOf<NullThrownError>()));
+      expect(nonNullableFuture, throwsA(isInstanceOf<Error>()));
     });
 
     test('cast redundant', () {
