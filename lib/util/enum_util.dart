@@ -1,3 +1,5 @@
+import 'collections_util.dart';
+
 /// Checks if item is enum
 bool isEnum(item) {
   final split = item.toString().split('.');
@@ -19,7 +21,8 @@ E? enumFromString<E>(List<E?> enumValues, String? value) {
     return null;
   }
 
-  return enumValues.firstWhereOrElseNullable((enumItem) => enumToString(enumItem) == value);
+  return enumValues
+      .firstWhereOrElseNullable((enumItem) => enumToString(enumItem) == value);
 }
 
 /// Returns enum from a string value using a provided lookup map.
@@ -30,14 +33,7 @@ E? enumFromStringLookupMap<E>(Map<E, String> enumStringMap, String? value) {
   }
 
   Iterable<MapEntry<E, String>?> enumEntries = enumStringMap.entries;
-  return enumEntries.firstWhereOrElseNullable((e) => e?.value == value, orElse: () => null)?.key;
-}
-
-extension FirstWhereOrElseExtension<E> on Iterable<E> {
-  E? firstWhereOrElseNullable(bool Function(E) test, {E? orElse()?}) {
-    for (E element in this) {
-      if (test(element)) return element;
-    }
-    return orElse != null ? orElse() : null;
-  }
+  return enumEntries
+      .firstWhereOrElseNullable((e) => e?.value == value, orElse: () => null)
+      ?.key;
 }
