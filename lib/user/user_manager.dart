@@ -117,8 +117,11 @@ class UserManager with UpdatesStream<UserCredentials> {
 
     if (!(await isLoggedIn())) {
       Logger.e('UserManager - Updating credentials error: User logged out!');
-      await _userStore.delete();
-      throw UnauthorizedUserException('Updating credentials on logged out usr');
+      final UserCredentials? oldUser = await _userStore.get();
+
+      if (oldUser?.credentials == null) {
+        throw UnauthorizedUserException('Updating credentials on logged out usr');
+      }
     }
 
     final UserCredentials oldUser = await _userStore.get().asNonNullable();
