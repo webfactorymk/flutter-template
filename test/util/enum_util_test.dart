@@ -10,13 +10,13 @@ void main() {
     test('enum value', () {
       bool isEnum = EnumUtil.isEnum(MockEnum.first);
 
-      expect(isEnum, true);
+      expect(isEnum, isTrue);
     });
 
     test('non-enum value', () {
       bool isEnum = EnumUtil.isEnum(null);
 
-      expect(isEnum, false);
+      expect(isEnum, isFalse);
     });
   });
 
@@ -24,7 +24,7 @@ void main() {
     test('enum value', () {
       String value = EnumUtil.enumToString(MockEnum.first);
 
-      expect(value, 'first');
+      expect(value, equals('first'));
     });
 
     test('non-enum value', () {
@@ -40,19 +40,19 @@ void main() {
     test('enum value', () {
       var enumValue = EnumUtil.enumFromString(MockEnum.values, 'first');
 
-      expect(enumValue, MockEnum.values.first);
+      expect(enumValue, equals(MockEnum.first));
     });
 
     test('non-enum value', () {
       var result = EnumUtil.enumFromString(MockEnum.values, '');
 
-      expect(result, null);
+      expect(result, isNull);
     });
 
     test('null value', () {
       var result = EnumUtil.enumFromString(MockEnum.values, null);
 
-      expect(result, null);
+      expect(result, isNull);
     });
   });
 
@@ -65,19 +65,19 @@ void main() {
     test('enum value', () {
       var enumValue = EnumUtil.enumFromStringLookupMap(map, 'first');
 
-      expect(enumValue, MockEnum.values.first);
+      expect(enumValue, equals(MockEnum.first));
     });
 
     test('non-enum value', () {
       var result = EnumUtil.enumFromStringLookupMap(map, '');
 
-      expect(result, null);
+      expect(result, isNull);
     });
 
     test('null value', () {
       var result = EnumUtil.enumFromString(MockEnum.values, null);
 
-      expect(result, null);
+      expect(result, isNull);
     });
   });
 }
