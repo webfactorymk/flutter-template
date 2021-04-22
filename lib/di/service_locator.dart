@@ -1,12 +1,9 @@
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/network/http/http_api_service_stub.dart';
-
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/api_service.dart';
-import 'package:flutter_template/network/http/http_api_service.dart';
 import 'package:flutter_template/notifications/firebase_token_storage.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:get_it/get_it.dart';
@@ -104,8 +101,6 @@ Future<void> setupDependencies() async {
 //todo find a way to know when the app ends and call this
 void teardown() async {
   try {
-    (serviceLocator.get<ApiService>() as HttpApiService).close();
     await serviceLocator.get<UserManager>().teardown();
-    await serviceLocator.get<NotificationsManager>().teardown();
   } catch (exp) {}
 }

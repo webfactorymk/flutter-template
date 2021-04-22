@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/user/user_hooks.dart';
 
 /// Listens for user updates events and configures firebase accordingly.

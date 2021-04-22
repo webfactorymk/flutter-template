@@ -1,10 +1,10 @@
 
+import 'package:flutter_template/config/network_constants.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/network/auth_api_service.dart';
 import 'package:flutter_template/network/errors/unauthorized_user_exception.dart';
-import 'package:flutter_template/network/http/http_client.dart';
 import 'package:flutter_template/network/http/http_exception_code.dart';
 import 'package:flutter_template/network/network_util.dart';
 import 'package:flutter_template/user/user_manager.dart';
