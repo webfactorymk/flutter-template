@@ -8,3 +8,12 @@ extension MapOperation<K, V> on Map<K, V> {
     return orElse != null ? orElse() : null;
   }
 }
+
+extension FirstWhereOrElseExtension<E> on Iterable<E> {
+  E? firstWhereOrElseNullable(bool Function(E) test, {E? orElse()?}) {
+    for (E element in this) {
+      if (test(element)) return element;
+    }
+    return orElse != null ? orElse() : null;
+  }
+}
