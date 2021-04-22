@@ -32,4 +32,21 @@ void main() {
     verify(logger.e(error)).called(1);
     verifyNoMoreInteractions(logger);
   });
+
+  test('log filter all logs', () {
+    //setup
+    final Exception error = Exception('Test exp');
+    filteredLogger = FilteredLogger(logger, (_) => false);
+
+    //execute
+    filteredLogger.d(logMessage);
+    filteredLogger.w(logMessage);
+    filteredLogger.e(error);
+
+    //expect and verify
+    verifyNever(logger.d(logMessage));
+    verifyNever(logger.w(logMessage));
+    verifyNever(logger.e(error));
+    verifyNoMoreInteractions(logger);
+  });
 }
