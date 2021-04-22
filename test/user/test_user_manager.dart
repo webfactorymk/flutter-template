@@ -1,8 +1,6 @@
 import 'package:flutter_template/model/user/user_credentials.dart';
-
-
 import 'package:flutter_template/user/user_hooks.dart';
-import '../../lib/user/user_manager.dart';
+import 'package:flutter_template/user/user_manager.dart';
 
 class TestUserManager extends UserManager {
   TestUserManager(
@@ -15,10 +13,10 @@ class TestUserManager extends UserManager {
           apiService,
           userStore,
           loginHooks: loginHooks,
-          logoutHooks: logoutHooks
+          logoutHooks: logoutHooks,
         );
 
   @override
-  Future<bool> isLoggedIn() =>
-      getLoggedInUser().then((userCredentials) => userCredentials?.credentials != null);
+  Future<bool> isLoggedIn() => getLoggedInUser()
+      .then((userCredentials) => userCredentials?.credentials != null);
 }

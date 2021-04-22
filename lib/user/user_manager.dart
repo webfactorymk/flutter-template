@@ -115,13 +115,9 @@ class UserManager with UpdatesStream<UserCredentials> {
   Future<UserCredentials> updateCredentials(Credentials? credentials) async {
     Logger.d('UserManager - Updating credentials w/ new $credentials');
 
-    if (!(await isLoggedIn())) {
+    if ((await _userStore.get())?.user == null) {
       Logger.e('UserManager - Updating credentials error: User logged out!');
-      final UserCredentials? oldUser = await _userStore.get();
-
-      if (oldUser?.credentials == null) {
-        throw UnauthorizedUserException('Updating credentials on logged out usr');
-      }
+      throw UnauthorizedUserException('Updating credentials on logged out usr');
     }
 
     final UserCredentials oldUser = await _userStore.get().asNonNullable();

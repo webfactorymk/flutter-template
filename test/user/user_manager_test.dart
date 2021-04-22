@@ -1,4 +1,3 @@
-import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/model/user/user.dart';
@@ -6,13 +5,12 @@ import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/api_service.dart';
 import 'package:flutter_template/network/errors/unauthorized_user_exception.dart';
 import 'package:flutter_template/user/user_hooks.dart';
-import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/cached_storage.dart';
 import 'package:single_item_storage/storage.dart';
-import 'package:http/http.dart' as http;
 
 import 'test_user_manager.dart';
 import 'user_manager_test.mocks.dart';
@@ -24,7 +22,13 @@ final UserCredentials validUserCredentials =
     UserCredentials(User(id: 'username', email: 'email'), validCredentials);
 
 final UserCredentials validUserCredentialsSecond =
-UserCredentials(User(id: 'username2', email: 'email2'), validCredentials);
+    UserCredentials(User(id: 'username2', email: 'email2'), validCredentials);
+
+bool Function(UserCredentials?) userCredentialsToBool() {
+  return (userCredentials) {
+    return userCredentials?.credentials != null ? true : false;
+  };
+}
 
 @GenerateMocks([ApiService, LoginHook, LogoutHook, Storage])
 void main() {
@@ -48,15 +52,16 @@ void main() {
       logoutHooks: [logoutHook],
     );
 
-    when(innerStorage.save(validUserCredentials))
-        .thenAnswer((realInvocation) async => Future.value(validUserCredentials));
-    when(storage.get()).thenAnswer((realInvocation) async => Future.value(validUserCredentials));
+    when(innerStorage.save(validUserCredentials)).thenAnswer(
+        (realInvocation) async => Future.value(validUserCredentials));
+    when(storage.get()).thenAnswer(
+        (realInvocation) async => Future.value(validUserCredentials));
     when(apiService.getUserProfile(token: validToken))
         .thenAnswer((_) async => Future.value(validUserCredentials.user));
   });
 
-  tearDown(() {
-    userManager.teardown();
+  tearDown(() async {
+    await userManager.teardown();
   });
 
   test('IsLoggedIn', () async {
@@ -71,7 +76,8 @@ void main() {
 
     expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
 
-    UserCredentials actualLoggedInUser = await userManager.login("username", "password");
+    UserCredentials actualLoggedInUser =
+        await userManager.login("username", "password");
 
     expect(actualLoggedInUser, equals(validUserCredentials));
     expect(await storage.get(), equals(validUserCredentials));
@@ -82,12 +88,14 @@ void main() {
   });
 
   test('Double login', () async {
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
 
     await userManager.login("username", "pass");
-    UserCredentials actualLoggedInUser = await userManager.login("username", "pass");
+    UserCredentials actualLoggedInUser =
+        await userManager.login("username", "pass");
 
     expect(actualLoggedInUser, equals(validUserCredentials));
     expect(await userManager.isLoggedIn(), isTrue);
@@ -98,48 +106,33 @@ void main() {
     verify(loginHook.postLogin(validUserCredentials)).called(1);
   });
 
-  test('Double user refresh', () async {
-    when(apiService.getUserProfile())
-        .thenAnswer((realInvocation) => Future.value(validUserCredentials.user));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
-    await userManager.login("username", "pass");
-
-    // expect(userManager.updates, emitsInOrder([validUserCredentials, validUserCredentials]));
-
-    await userManager.refreshUser();
-    await userManager.refreshUser();
-
-    verify(apiService.getUserProfile(token: validToken)).called(1);
-    verify(apiService.getUserProfile()).called(2);
-  });
-
   test('Login Failure', () async {
-    when(apiService.login("username", "pass")).thenThrow(Exception("Can't log-in, sorry."));
+    when(apiService.login("username", "pass"))
+        .thenThrow(Exception("Can't log-in, sorry."));
 
-    expect(userManager.login("username", "pass"), throwsA(isInstanceOf<Exception>()));
+    expect(userManager.login("username", "pass"),
+        throwsA(isInstanceOf<Exception>()));
     expect(userManager.updates, emits(isNull));
-    // I commented this because we expect something on mocked instance
-    // expect(storage.get(), emits(isEmpty));
     expect(userManager.isLoggedIn(), completion(isFalse));
     expect(userManager.getLoggedInUser(), completion(isNull));
-
-    // userManager.teardown();
   });
 
   test('Logout Success', () async {
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    expect(userManager.updates, emitsInOrder([null, validUserCredentials, null]));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+
+    expect(
+      userManager.updates,
+      emitsInOrder([null, validUserCredentials, null]),
+    );
 
     await userManager.login("username", "pass");
     await userManager.logout();
 
-    // expect(storage.get(), emits(isNull));
     expect(userManager.isLoggedIn(), completion(isFalse));
     expect(userManager.getLoggedInUser(), completion(isNull));
-
-    userManager.teardown();
   });
 
   test('Logout Error', () async {
@@ -156,18 +149,38 @@ void main() {
     // expect(userManager.getLoggedInUser(), completion(isNull));
   });
 
+  test('Double logout', () async {
+    // arrange
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
+
+    // assert later
+    expect(
+        userManager.updates, emitsInOrder([null, validUserCredentials, null]));
+
+    // act
+    await userManager.login("username", "pass");
+    await userManager.logout();
+    await userManager.logout();
+
+    // assert
+    verify(apiService.logout()).called(1);
+    expect(storage.get(), completion(isNull));
+  });
+
   test('Logout not logged in', () async {
     expect(userManager.logout(), completes);
   });
 
   test('User updates stream', () async {
-    when(apiService.login("jojo", "123")).thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("jojo", "123"))
+        .thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
-    Stream<bool> userUpdates = userManager.updates.map((userCredentials) {
-      return userCredentials?.credentials != null ? true : false;
-    });
+    Stream<bool> userUpdates = userManager.updates.map(userCredentialsToBool());
 
     expect(userUpdates, emitsInOrder([false, true, false]));
 
@@ -177,16 +190,11 @@ void main() {
         .then((_) => userManager.logout());
   });
 
-  bool Function(UserCredentials?) userCredentialsToBool() {
-    return (userCredentials) {
-      return userCredentials?.credentials != null ? true : false;
-    };
-  }
-
   test('User updates multiple stream subscription', () async {
-    when(apiService.login("jojo", "123")).thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("jojo", "123"))
+        .thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
     Stream<bool> usrUpdates1 = userManager.updates.map(userCredentialsToBool());
     Stream<bool> usrUpdates2 = userManager.updates.map(userCredentialsToBool());
@@ -203,34 +211,17 @@ void main() {
     expect(usrUpdates3, emits(isFalse));
   });
 
-  test('Double logout', () async {
+  test('Update credentials success', () async {
     // arrange
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
-
-    // assert later
-    expect(userManager.updates, emitsInOrder([null, validUserCredentials, null]));
-
-    // act
-    await userManager.login("username", "pass");
-    await userManager.logout();
-    await userManager.logout();
-
-    // assert
-    verify(apiService.logout()).called(1);
-    expect(storage.get(), completion(isNull));
-  });
-
-  test('should update credentials successfully when user is logged in', () async {
-    // arrange
-    when(apiService.getUserProfile(token: validToken))
-        .thenAnswer((realInvocation) => Future.value(validUserCredentials.user));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.getUserProfile(token: validToken)).thenAnswer(
+        (realInvocation) => Future.value(validUserCredentials.user));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
-    final actualUserCredentials = await userManager.updateCredentials(validCredentials);
+    final actualUserCredentials =
+        await userManager.updateCredentials(validCredentials);
 
     // assert
     expect(actualUserCredentials.credentials, validCredentials);
@@ -238,14 +229,14 @@ void main() {
     verify(innerStorage.save(actualUserCredentials)).called(2);
   });
 
-  test(
-      'should throw UnauthorizedUserException when updatedCredentials is called but user is not logged in',
-      () async {
+  test('Update credentials when user logged out', () async {
     // arrange
-    when(innerStorage.get()).thenAnswer((realInvocation) => Future.value(validUserCredentials));
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(innerStorage.get())
+        .thenAnswer((realInvocation) => Future.value(validUserCredentials));
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
@@ -256,11 +247,35 @@ void main() {
         throwsA(isInstanceOf<UnauthorizedUserException>()));
   });
 
-  test('should throw UnauthorizedUserException when updateUser user is not logged in', () async {
+  test('Update user success', () async {
     // arrange
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.getUserProfile()).thenAnswer(
+        (realInvocation) => Future.value(validUserCredentialsSecond.user));
+    when(apiService.updateUserProfile(validUserCredentialsSecond.user))
+        .thenAnswer(
+            (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(innerStorage.save(validUserCredentialsSecond)).thenAnswer(
+        (realInvocation) async => Future.value(validUserCredentialsSecond));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
+
+    // act
+    await userManager.login('username', 'pass');
+    final User actualUser =
+        await userManager.updateUser(validUserCredentialsSecond.user);
+
+    // assert
+    verify(apiService.updateUserProfile(validUserCredentialsSecond.user))
+        .called(1);
+    expect(actualUser, validUserCredentialsSecond.user);
+  });
+
+  test('Update user when logged out', () async {
+    // arrange
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
@@ -272,47 +287,46 @@ void main() {
         throwsA(isInstanceOf<UnauthorizedUserException>()));
   });
 
-  test('should update user profile when user is logged in', () async {
+  test('Refresh user success', () async {
     // arrange
-    when(apiService.getUserProfile())
-        .thenAnswer((realInvocation) => Future.value(validUserCredentialsSecond.user));
-    when(apiService.updateUserProfile(validUserCredentialsSecond.user))
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(innerStorage.save(validUserCredentialsSecond))
-        .thenAnswer((realInvocation) async => Future.value(validUserCredentialsSecond));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.getUserProfile()).thenAnswer(
+        (realInvocation) => Future.value(validUserCredentialsSecond.user));
+    when(innerStorage.save(validUserCredentialsSecond)).thenAnswer(
+        (realInvocation) async => Future.value(validUserCredentialsSecond));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
-    final User actualUser = await userManager.updateUser(validUserCredentialsSecond.user);
+    final User actualUser = await userManager.refreshUser();
 
     // assert
-    verify(apiService.updateUserProfile(validUserCredentialsSecond.user)).called(1);
-    expect(actualUser,validUserCredentialsSecond.user);
+    verify(apiService.getUserProfile()).called(1);
+    expect(actualUser, validUserCredentialsSecond.user);
   });
 
-  test(
-      'should throw UnauthorizedUserException when refreshUser is called but user is not logged in',
-      () async {
-    // arrange
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+  test('Double refresh user', () async {
+    when(apiService.getUserProfile()).thenAnswer(
+        (realInvocation) => Future.value(validUserCredentials.user));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
+    await userManager.login("username", "pass");
 
-    // act
-    await userManager.login('username', 'pass');
-    await userManager.logout();
+    // expect(userManager.updates, emitsInOrder([validUserCredentials, validUserCredentials]));
 
-    // assert
-    verify(storage.delete()).called(1);
-    expect(userManager.refreshUser(), throwsA(isInstanceOf<UnauthorizedUserException>()));
+    await userManager.refreshUser();
+    await userManager.refreshUser();
+
+    verify(apiService.getUserProfile(token: validToken)).called(1);
+    verify(apiService.getUserProfile()).called(2);
   });
 
-  test('should throw UnauthorizedUserException when refreshUser is calles and user is not logged in', () async {
+  test('Refresh user when logged out', () async {
     // arrange
-    when(apiService.logout())
-        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.logout()).thenAnswer(
+        (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
@@ -324,26 +338,10 @@ void main() {
         throwsA(isInstanceOf<UnauthorizedUserException>()));
   });
 
-  test('should refresh user profile when user is logged in', () async {
-    // arrange
-    when(apiService.getUserProfile())
-        .thenAnswer((realInvocation) => Future.value(validUserCredentialsSecond.user));
-    when(innerStorage.save(validUserCredentialsSecond))
-        .thenAnswer((realInvocation) async => Future.value(validUserCredentialsSecond));
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
-
-    // act
-    await userManager.login('username', 'pass');
-    final User actualUser = await userManager.refreshUser();
-
-    // assert
-    verify(apiService.getUserProfile()).called(1);
-    expect(actualUser,validUserCredentialsSecond.user);
-  });
-
   test('Deactivate User', () async {
     // arrange
-    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+    when(apiService.login("username", "pass"))
+        .thenAnswer((_) => Future.value(validCredentials));
 
     // act
     await userManager.login('username', 'pass');
