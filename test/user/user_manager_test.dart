@@ -199,4 +199,23 @@ void main() {
 
     expect(usrUpdates3, emits(isFalse));
   });
+
+  test('Double logout', () async {
+    // arrange
+    when(apiService.logout())
+        .thenAnswer((_) => Future.value(http.Response('{"loggedOut": true}', 200)));
+    when(apiService.login("username", "pass")).thenAnswer((_) => Future.value(validCredentials));
+
+    // assert later
+    expectLater(userManager.updates, emitsInOrder([null, validUserCredentials, null]));
+
+    // act
+    await userManager.login("username", "pass");
+    await userManager.logout();
+    await userManager.logout();
+
+    // assert
+    verify(apiService.logout()).called(1);
+    expect(storage.get(), completion(isNull));
+  });
 }
