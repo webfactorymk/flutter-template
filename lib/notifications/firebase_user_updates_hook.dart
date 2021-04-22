@@ -32,7 +32,7 @@ class FirebaseUserHook implements UserUpdatesHook<UserCredentials> {
   }
 
   Future<void> _onUserAuthorized(UserCredentials userCredentials) async {
-    _crashlytics.setUserIdentifier(userCredentials!.user.id);
+    _crashlytics.setUserIdentifier(userCredentials.user.id);
     //todo _notificationsManager.enable();
   }
 

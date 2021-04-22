@@ -10,7 +10,6 @@ class MockLogger extends Mock implements AbstractLogger {}
 /// Tests for [FilteredLogger].
 void main() {
   late MockLogger logger;
-  late FilteredLogger filteredLogger;
 
   setUp(() {
     logger = MockLogger();
@@ -19,7 +18,7 @@ void main() {
   test('log debug, warn and error', () {
     //setup
     final Exception error = Exception('Test exp');
-    filteredLogger = FilteredLogger(logger, (_) => true);
+    final FilteredLogger filteredLogger = FilteredLogger(logger, (_) => true);
 
     //execute
     filteredLogger.d(logMessage);
@@ -36,7 +35,7 @@ void main() {
   test('log filter all logs', () {
     //setup
     final Exception error = Exception('Test exp');
-    filteredLogger = FilteredLogger(logger, (_) => false);
+    final FilteredLogger filteredLogger = FilteredLogger(logger, (_) => false);
 
     //execute
     filteredLogger.d(logMessage);
