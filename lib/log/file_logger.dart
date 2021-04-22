@@ -30,7 +30,7 @@ class FileLogger implements AbstractLogger {
   /// Creates a new file logger with file in the application's
   /// documents directory named flutter_logs_{platform}_{flavor}.txt
   factory FileLogger.withDefaultFile() =>
-      FileLogger._(globalLogFileLock, () async {
+      FileLogger(globalLogFileLock, () async {
         final flavor = FlavorConfig.isDev() ? "dev" : "stg";
         final platform = Platform.isIOS ? "iOS" : "Android";
 
@@ -44,7 +44,7 @@ class FileLogger implements AbstractLogger {
   FileLogger.withFile(this._fileLock, this._logFile)
       : createFileFn = (() => Future.value(_logFile));
 
-  FileLogger._(this._fileLock, this.createFileFn);
+  FileLogger(this._fileLock, this.createFileFn);
 
   @override
   void d(String message) {
@@ -58,7 +58,7 @@ class FileLogger implements AbstractLogger {
 
   @override
   void e(Object error) {
-    _log('(E)  ${error.toString()}');
+    _log('(E) ${error.toString()}');
   }
 
   /// Determines the absolute file path and file name.
@@ -80,12 +80,16 @@ class FileLogger implements AbstractLogger {
     );
   }
 
+  /// Returns all log messages buffered while the previous log
+  /// file write op was being executed.
   Future<String> _flushLogBuffer() => _bufferLock.synchronized(() {
         final bufferedLogs = _logLineBuffer;
         _logLineBuffer = '';
         return bufferedLogs;
       });
 
+  /// Appends the lines at the end of the log file.
+  /// The file needs to be initialized beforehand.
   Future<void> _appendLines(String lines) async {
     await _logFile!.writeAsString(lines, mode: FileMode.append, flush: true);
   }
@@ -104,12 +108,14 @@ class FileLogger implements AbstractLogger {
 
     // We use a different lock here to separate file ops from other actions.
     await _fileLock.synchronized(() async {
+      //print('FileLogger: Entering file lock');
       final appendText = await _flushLogBuffer();
       if (appendText.isEmpty) {
         return;
       }
       await _ensureFileSet();
       await _appendLines(appendText);
+      //print('FileLogger: Exiting file lock');
     });
   }
 }
