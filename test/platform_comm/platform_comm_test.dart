@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/platform_comm/item_converter.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -27,7 +24,7 @@ void main() {
 
   group('InvokeMethod', () {
     group('InvokeMethod, no serializer and deserializer', () {
-      final String tParameter = 'testParam1';
+      final String tParameter = 'testParam';
       final String expectedValue = 'success';
 
       test('InvokeMethod, no parameters', () async {
@@ -88,7 +85,7 @@ void main() {
 
   group('InvokeProcedure', () {
     group('InvokeProcedure, no serializer', () {
-      final String tParameter = 'testParam1';
+      final String tParameter = 'testParam';
       final String expectedValue = 'success';
 
       test('InvokeProcedure, no parameters', () async {
