@@ -20,6 +20,7 @@ void main() {
     platformComm = PlatformComm(mockMethodChannel);
     serializer = (int param) => param.toString();
     deserializer = (dynamic data) => data.toString();
+    TestWidgetsFlutterBinding.ensureInitialized();
   });
 
   group('InvokeMethod', () {
@@ -141,6 +142,48 @@ void main() {
         expect(mockMethodChannel.invokeMethod(tMethod, tParameterSerialized),
             completion(equals(expectedValue)));
       });
+    });
+  });
+
+  group('ListenMethod', () {
+    final String tParameter1 = 'testParam1';
+    final String tParameter2 = 'testParam2';
+
+    test('ListenMethodNoParams', () async {
+      // arrange
+      List<MethodCall> log = <MethodCall>[];
+      MethodChannel channel = const MethodChannel('customChannel');
+      PlatformComm tPlatformComm = PlatformComm(channel);
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        log.add(methodCall);
+      });
+
+      // act
+      tPlatformComm.invokeMethod(method: tMethod, param: []);
+
+      // assert
+      expect(log.length, equals(1));
+      expect(log.first.method, equals(tMethod));
+      expect(log.first.arguments, equals([]));
+    });
+
+    test('ListenMethod, with params', () async {
+      // arrange
+      List<MethodCall> log = <MethodCall>[];
+      MethodChannel channel = const MethodChannel('customChannel');
+      PlatformComm tPlatformComm = PlatformComm(channel);
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        log.add(methodCall);
+      });
+
+      // act
+      tPlatformComm
+          .invokeMethod(method: tMethod, param: [tParameter1, tParameter2]);
+
+      // assert
+      expect(log.length, equals(1));
+      expect(log.first.method, equals(tMethod));
+      expect(log.first.arguments, equals([tParameter1, tParameter2]));
     });
   });
 }

@@ -73,7 +73,7 @@ class PlatformComm {
   }
 
   /// Like [listenMethod] but without params.
-  Subscription listenMethodNoParams<P>({
+  Subscription listenMethodNoParams({
     required String method,
     required PlatformCallbackNoParams callback,
   }) {
