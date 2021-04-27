@@ -24,9 +24,9 @@ class PlatformComm {
   PlatformComm(this._methodChannel) {
     _methodChannel.setMethodCallHandler((call) {
       Logger.d('Platform callback: ${call.method} w/ args ${call.arguments}');
-      if (_platformCallbackMap.containsKey(call.method)) {
-        final result = _platformCallbackMap[call.method]?.call(call.arguments);
-        return Future.value(result);
+      final callback = _platformCallbackMap[call.method];
+      if (callback != null) {
+        return Future.value(callback.call(call.arguments));
       } else {
         return Future.error(MissingPluginException('No method found'));
       }
