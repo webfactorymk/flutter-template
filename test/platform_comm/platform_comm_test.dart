@@ -6,78 +6,89 @@ import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'platform_comm_test.mocks.dart';
+import 'test_method_channel.dart';
+
+abstract class NoParamFunction {
+  dynamic call();
+}
+
+abstract class ParamFunction<P> {
+  dynamic call(P);
+}
+
+class NoParamFunctionMock extends Mock implements NoParamFunction {}
+
+class ParamFunctionMock<P> extends Mock implements ParamFunction<P> {}
 
 @GenerateMocks([MethodChannel])
 void main() {
   late MockMethodChannel mockMethodChannel;
   late PlatformComm platformComm;
-  late Serialize<int> serializer;
-  late Deserialize<String> deserializer;
-  final String tMethod = 'testMethod';
+  final String method = 'testMethod';
 
-  setUp(() {
-    mockMethodChannel = MockMethodChannel();
-    platformComm = PlatformComm(mockMethodChannel);
-    serializer = (int param) => param.toString();
-    deserializer = (dynamic data) => data.toString();
-    TestWidgetsFlutterBinding.ensureInitialized();
-  });
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   group('InvokeMethod', () {
+    setUp(() {
+      mockMethodChannel = MockMethodChannel();
+      platformComm = PlatformComm(mockMethodChannel);
+    });
+
     group('InvokeMethod, no serializer and deserializer', () {
-      final String tParameter = 'testParam';
       final String expectedValue = 'success';
 
       test('InvokeMethod, no parameters', () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<String>(tMethod, []))
+        when(mockMethodChannel.invokeMethod<String>(method, []))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
         var actualValue =
-            await platformComm.invokeMethod<String, String>(method: tMethod);
+            await platformComm.invokeMethod<String, String>(method: method);
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, [])).called(1);
+        verify(mockMethodChannel.invokeMethod(method, [])).called(1);
         expect(actualValue, expectedValue);
       });
 
       test('InvokeMethod, with parameters', () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<String>(tMethod, tParameter))
+        final String param = 'testParam';
+        when(mockMethodChannel.invokeMethod<String>(method, param))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
         var actualValue = await platformComm.invokeMethod<String, String>(
-            method: tMethod, param: tParameter);
+            method: method, param: param);
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, tParameter)).called(1);
+        verify(mockMethodChannel.invokeMethod(method, param)).called(1);
         expect(actualValue, expectedValue);
       });
     });
 
     group('InvokeMethod, with serializer and deserializer', () {
-      int tParameter = 1;
-      String tParameterSerialized = '1';
-      int expectedValue = 2;
-      String expectedValueDeSerialized = '2';
-
       test('InvokeMethod, with parameters, serializer and deserializer',
           () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<int>(tMethod, tParameterSerialized))
+        Serialize<int> serializer = (int param) => param.toString();
+        Deserialize<String> deserializer = (dynamic data) => data.toString();
+        int param = 1;
+        String paramSerialized = '1';
+        int expectedValue = 2;
+        String expectedValueDeSerialized = '2';
+        when(mockMethodChannel.invokeMethod<int>(method, paramSerialized))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
         var actualValue = await platformComm.invokeMethod<String, int>(
-            method: tMethod,
-            param: tParameter,
+            method: method,
+            param: param,
             serializeParams: serializer,
             deserializeResult: deserializer);
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, tParameterSerialized))
+        verify(mockMethodChannel.invokeMethod(method, paramSerialized))
             .called(1);
         expect(actualValue, expectedValueDeSerialized);
       });
@@ -85,105 +96,112 @@ void main() {
   });
 
   group('InvokeProcedure', () {
+    setUp(() {
+      mockMethodChannel = MockMethodChannel();
+      platformComm = PlatformComm(mockMethodChannel);
+    });
+
     group('InvokeProcedure, no serializer', () {
-      final String tParameter = 'testParam';
       final String expectedValue = 'success';
 
       test('InvokeProcedure, no parameters', () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<String>(tMethod, []))
+        when(mockMethodChannel.invokeMethod<String>(method, []))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
-        await platformComm.invokeProcedure(method: tMethod);
+        await platformComm.invokeProcedure(method: method);
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, [])).called(1);
-        expect(mockMethodChannel.invokeMethod<String>(tMethod, []),
+        verify(mockMethodChannel.invokeMethod(method, [])).called(1);
+        expect(mockMethodChannel.invokeMethod<String>(method, []),
             completion(equals(expectedValue)));
       });
 
       test('InvokeProcedure, with parameters', () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<String>(tMethod, tParameter))
+        final String param = 'testParam';
+        when(mockMethodChannel.invokeMethod<String>(method, param))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
         await platformComm.invokeProcedure<String>(
-            method: tMethod, param: tParameter);
+            method: method, param: param);
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, tParameter)).called(1);
-        expect(mockMethodChannel.invokeMethod(tMethod, tParameter),
+        verify(mockMethodChannel.invokeMethod(method, param)).called(1);
+        expect(mockMethodChannel.invokeMethod(method, param),
             completion(equals(expectedValue)));
       });
     });
 
     group('InvokeProcedure, with serializer', () {
-      int tParameter = 1;
-      String tParameterSerialized = '1';
-      int expectedValue = 2;
-
       test('InvokeMethod, with parameters and serializer', () async {
         // arrange
-        when(mockMethodChannel.invokeMethod<int>(tMethod, tParameterSerialized))
+        Serialize<int> serializer = (int param) => param.toString();
+        int param = 1;
+        String paramSerialized = '1';
+        int expectedValue = 2;
+        when(mockMethodChannel.invokeMethod<int>(method, paramSerialized))
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
         await platformComm.invokeProcedure<int>(
-          method: tMethod,
-          param: tParameter,
+          method: method,
+          param: param,
           serializeParams: serializer,
         );
 
         // assert
-        verify(mockMethodChannel.invokeMethod(tMethod, tParameterSerialized))
+        verify(mockMethodChannel.invokeMethod(method, paramSerialized))
             .called(1);
-        expect(mockMethodChannel.invokeMethod(tMethod, tParameterSerialized),
+        expect(mockMethodChannel.invokeMethod(method, paramSerialized),
             completion(equals(expectedValue)));
       });
     });
   });
 
   group('ListenMethod', () {
-    final String tParameter1 = 'testParam1';
-    final String tParameter2 = 'testParam2';
+    late TestMethodChannel channel;
+    late PlatformComm platformComm;
+    late Future Function(MethodCall call)? handler;
+
+    setUp(() {
+      channel = TestMethodChannel('customChannel');
+      platformComm = PlatformComm(channel);
+      handler = channel.handler;
+    });
 
     test('ListenMethodNoParams', () async {
       // arrange
-      List<MethodCall> log = <MethodCall>[];
-      MethodChannel channel = const MethodChannel('customChannel');
-      PlatformComm tPlatformComm = PlatformComm(channel);
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        log.add(methodCall);
-      });
+      NoParamFunctionMock mockNoParamFunction = NoParamFunctionMock();
 
       // act
-      tPlatformComm.invokeMethod(method: tMethod, param: []);
+      platformComm.listenMethodNoParams(
+          method: method, callback: mockNoParamFunction.call);
+      await handler?.call(MethodCall(method, []));
 
       // assert
-      expect(log.length, equals(1));
-      expect(log.first.method, equals(tMethod));
-      expect(log.first.arguments, equals([]));
+      verify(mockNoParamFunction.call()).called(1);
     });
 
     test('ListenMethod, with params', () async {
       // arrange
-      List<MethodCall> log = <MethodCall>[];
-      MethodChannel channel = const MethodChannel('customChannel');
-      PlatformComm tPlatformComm = PlatformComm(channel);
-      channel.setMockMethodCallHandler((MethodCall methodCall) async {
-        log.add(methodCall);
-      });
+      final String param = 'testParam';
+      ParamFunctionMock<String> mockParamFunction = ParamFunctionMock<String>();
 
       // act
-      tPlatformComm
-          .invokeMethod(method: tMethod, param: [tParameter1, tParameter2]);
+      platformComm.listenMethod(
+          method: method,
+          callback: (param) async => mockParamFunction.call(param));
+      await handler?.call(MethodCall(method, param));
 
       // assert
-      expect(log.length, equals(1));
-      expect(log.first.method, equals(tMethod));
-      expect(log.first.arguments, equals([tParameter1, tParameter2]));
+      verify(mockParamFunction.call(param)).called(1);
+    });
+
+    tearDown(() {
+      channel.setMockMethodCallHandler(null);
     });
   });
 }
