@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 part 'user_credentials.g.dart';
 

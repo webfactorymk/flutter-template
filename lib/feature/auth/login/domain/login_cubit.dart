@@ -13,7 +13,7 @@ class LoginCubit extends Cubit<LoginState> {
     Logger.d('LoginCubit - User login: username $username');
     emit(LoginInProgress());
 
-   // await userManager.login(username, password);
+    await userManager.login(username, password);
     emit(LoginSuccess());
   }
 }
