@@ -7,7 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/app_routes.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/auth/login/login_page.dart';
+import 'package:flutter_template/feature/auth/login/domain/login_cubit.dart';
+import 'package:flutter_template/feature/auth/login/presentation/login_page.dart';
 import 'package:flutter_template/feature/home/home_page.dart';
 import 'package:flutter_template/resources/strings.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
@@ -17,6 +18,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'feature/auth/global_handler/global_auth_cubit.dart';
 import 'feature/auth/global_handler/global_auth_state.dart';
+import 'feature/auth/register/presentation/signup_page.dart';
+import 'user/user_manager.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -59,61 +62,69 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final LoginCubit loginCubit = LoginCubit(serviceLocator.get<UserManager>());
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'NotoSansJP',
-      ),
-      localizationsDelegates: [
-        RefreshLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        const LocalizedStringsDelegate(['en', 'mk'],
-            fallbackLocale: const Locale('en')),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LoginCubit>(create: (context) {
+          return loginCubit;
+        }),
       ],
-      supportedLocales: [
-        const Locale('en'), // English
-        const Locale('mk'), // Macedonian
-      ],
-      navigatorObservers: [],
-      //todo maybe add navigation observer here
-      routes: {
-        Routes.home: (context) => HomePage(),
-        Routes.login: (context) => LoginPage(),
-        // Routes.signUp: (context) => SignUpPage(),
-        // Routes.signUpSuccess: (context) => SignUpSuccessPage(),
-      },
-      home: BlocConsumer<GlobalAuthCubit, GlobalAuthState>(
-        listener: (listenerContext, state) {
-          if (state is AuthenticationFailure) {
-            Navigator.popUntil(
-                listenerContext, (Route<dynamic> route) => route.isFirst);
-          }
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'NotoSansJP',
+        ),
+        localizationsDelegates: [
+          RefreshLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          const LocalizedStringsDelegate(['en', 'mk'],
+              fallbackLocale: const Locale('en')),
+        ],
+        supportedLocales: [
+          const Locale('en'), // English
+          const Locale('mk'), // Macedonian
+        ],
+        navigatorObservers: [],
+        //todo maybe add navigation observer here
+        routes: {
+          Routes.home: (context) => HomePage(),
+          Routes.login: (context) => LoginPage(),
+          Routes.signUp: (context) => SignUpPage(),
+          //Routes.signUpSuccess: (context) => SignUpSuccessPage(),
         },
-        builder: (context, state) {
-          if (!FlavorConfig.isProduction()) {
-            WidgetsBinding.instance?.addPostFrameCallback(
-                (_) => _insertOverlay(context, _buildVersion));
-          }
+        home: BlocConsumer<GlobalAuthCubit, GlobalAuthState>(
+          listener: (listenerContext, state) {
+            if (state is AuthenticationFailure) {
+              Navigator.popUntil(
+                  listenerContext, (Route<dynamic> route) => route.isFirst);
+            }
+          },
+          builder: (context, state) {
+            if (!FlavorConfig.isProduction()) {
+              WidgetsBinding.instance?.addPostFrameCallback(
+                  (_) => _insertOverlay(context, _buildVersion));
+            }
 
-          if (state is AuthenticationSuccess) {
-            return HomePage();
-          } else if (state is AuthenticationFailure) {
-            return LoginPage(sessionExpiredRedirect: state.sessionExpired);
-          } else {
-            return Scaffold(
-              body: BasicCircularProgressIndicator(),
-            );
-          }
-        },
+            if (state is AuthenticationSuccess) {
+              return HomePage();
+            } else if (state is AuthenticationFailure) {
+              return LoginPage(sessionExpiredRedirect: state.sessionExpired);
+            } else {
+              return Scaffold(
+                body: BasicCircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }
