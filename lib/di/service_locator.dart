@@ -2,6 +2,7 @@ import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/api_service.dart';
 import 'package:flutter_template/network/http/http_api_service_stub.dart';
+import 'package:flutter_template/network/http/interceptors/mock_api_service.dart';
 import 'package:flutter_template/notifications/firebase_token_storage.dart';
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -65,7 +66,10 @@ Future<void> setupDependencies() async {
   //   ..addResponseInterceptor(responseInterceptorAuth)
   //   ..addResponseInterceptor(responseInterceptorAppVersion);
   //Api Service - abstraction over the communication with server
-  final ApiService apiService = HttpApiServiceStub();
+  ApiService apiService = HttpApiServiceStub();
+  if (FlavorConfig.isMock()) {
+    apiService = MockApiService();
+  }
 
   // Firebase
   final FirebaseUserHook firebaseUserHook = FirebaseUserHook();
