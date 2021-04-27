@@ -1,11 +1,12 @@
 import 'package:flutter_template/config/flavor_config.dart';
-import 'package:flutter_template/network/http/http_api_service_stub.dart';
-import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/api_service.dart';
+import 'package:flutter_template/network/http/http_api_service_stub.dart';
 import 'package:flutter_template/notifications/firebase_token_storage.dart';
+import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_manager.dart';
+import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
 import 'package:single_item_storage/cached_storage.dart';
@@ -87,6 +88,9 @@ Future<void> setupDependencies() async {
   final PlatformComm platformComm = PlatformComm.globalAppChannel()
     ..listenToNativeLogs();
 
+  // AppLifecycle Observer
+  final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
+
   serviceLocator
     // ..registerSingleton<LanguageRequestInterceptor>(languageRequestInterceptor)
     // ..registerSingleton<AuthRequestInterceptor>(authRequestInterceptor)
@@ -95,7 +99,8 @@ Future<void> setupDependencies() async {
     // ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<ApiService>(apiService)
     ..registerSingleton<UserManager>(userManager)
-    ..registerSingleton<PlatformComm>(platformComm);
+    ..registerSingleton<PlatformComm>(platformComm)
+    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver);
 }
 
 //todo find a way to know when the app ends and call this
