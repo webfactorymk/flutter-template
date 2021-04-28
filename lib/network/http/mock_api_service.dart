@@ -54,8 +54,7 @@ class MockApiService implements ApiService {
 
   @override
   Future<void> signUp(User user) {
-    // TODO: implement signUp
-    throw UnimplementedError();
+    return Future.value();
   }
 
   @override

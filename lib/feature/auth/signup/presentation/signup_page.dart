@@ -13,7 +13,11 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: BlocConsumer<SignUpCubit, SignUpState>(
-        listener: (listenerContext, state) {},
+        listener: (listenerContext, state) {
+          if (state is SignUpSuccess) {
+            Navigator.of(context).pop();
+          }
+        },
         builder: (context, state) {
           if (state is SignUpInProgress) {
             return BasicCircularProgressIndicator();
