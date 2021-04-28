@@ -18,6 +18,6 @@ class LoginFailure extends LoginState {
 
   @override
   String toString() {
-    return 'LoginFailure{error: $error}';
+    return 'LoginFailure {error: $error}';
   }
 }

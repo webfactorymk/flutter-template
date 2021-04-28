@@ -10,6 +10,7 @@ import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/feature/auth/login/domain/login_cubit.dart';
 import 'package:flutter_template/feature/auth/login/presentation/login_page.dart';
 import 'package:flutter_template/feature/home/home_page.dart';
+import 'package:flutter_template/network/api_service.dart';
 import 'package:flutter_template/resources/strings.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
@@ -18,7 +19,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'feature/auth/global_handler/global_auth_cubit.dart';
 import 'feature/auth/global_handler/global_auth_state.dart';
-import 'feature/auth/register/presentation/signup_page.dart';
+import 'feature/auth/signup/domain/signup_cubit.dart';
+import 'feature/auth/signup/presentation/signup_page.dart';
 import 'user/user_manager.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -63,6 +65,9 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     final LoginCubit loginCubit = LoginCubit(serviceLocator.get<UserManager>());
+    final SignUpCubit signUpCubit = SignUpCubit(
+        serviceLocator.get<ApiService>(), serviceLocator.get<UserManager>());
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -71,6 +76,9 @@ class _AppState extends State<App> {
       providers: [
         BlocProvider<LoginCubit>(create: (context) {
           return loginCubit;
+        }),
+        BlocProvider<SignUpCubit>(create: (context) {
+          return signUpCubit;
         }),
       ],
       child: MaterialApp(
