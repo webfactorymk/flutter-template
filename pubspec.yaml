@@ -77,10 +77,14 @@ dev_dependencies:
   bloc_test: ^8.0.0
   json_serializable: ^4.1.0
   mockito: ^5.0.5
+  flutter_driver:
+    sdk: flutter
 
-#dependency_overrides:
+dependency_overrides:
 #  logging: ^1.0.1
-
+  crypto: ^3.0.0
+  build: ^2.0.0
+  convert: ^3.0.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
