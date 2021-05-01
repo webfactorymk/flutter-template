@@ -10,7 +10,7 @@ void main() async {
   FlavorConfig.set(
     Flavor.DEV,
     FlavorValues(
-      baseApiUrl: baseUrlDev + apiPrefix,
+      baseUrlApi: baseUrlDev + apiPrefix,
     ),
   );
 

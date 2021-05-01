@@ -5,7 +5,7 @@ import 'package:flutter_template/log/logger.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 
-const String authHeaderKey = HttpHeaders.authorizationHeader;
+const String authHeaderKey = 'Authorization';
 String authHeaderValue(String token) => 'Bearer $token';
 
 const String cookieHeaderKey = 'Cookie';

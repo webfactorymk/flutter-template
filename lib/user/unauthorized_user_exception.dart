@@ -8,7 +8,3 @@ class UnauthorizedUserException implements Exception {
     return 'UnauthorizedUserException{message: $message}';
   }
 }
-
-class UnauthorizedUserHandler {
-  void onUnauthorizedUserEvent() {}
-}

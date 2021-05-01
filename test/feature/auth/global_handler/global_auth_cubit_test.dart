@@ -5,29 +5,30 @@ import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
-import 'package:flutter_template/network/api_service.dart';
+import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/memory_storage.dart';
+import 'package:single_item_storage/observed_storage.dart';
 
-class MockApiService extends Mock implements ApiService {}
+class MockApiService extends Mock implements UserApiService {}
 
 final user = User(id: "id", email: "email");
 
 /// Bloc tests for [GlobalAuthCubit]
 void main() {
   late UserManager userManager;
-  late ApiService apiService;
+  late UserApiService apiService;
 
   setUp(() {
     apiService = MockApiService();
-    userManager = UserManager(apiService, MemoryStorage());
+    userManager = UserManager(apiService, ObservedStorage(MemoryStorage()));
 
-    when(apiService.login('username', 'password')).thenAnswer(
+    when(apiService.login('username', 'password').toType()).thenAnswer(
         (_) => Future.value(Credentials('token', RefreshToken('rt', 0))));
-    when(apiService.getUserProfile()).thenAnswer((_) => Future.value(user));
-    when(apiService.logout()).thenAnswer((_) => Future.value());
+    when(apiService.getUserProfile().toType()).thenAnswer((_) => Future.value(user));
+    when(apiService.logout().toType()).thenAnswer((_) => Future.value());
   });
 
   tearDown(() {

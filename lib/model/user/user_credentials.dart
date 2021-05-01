@@ -1,13 +1,14 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 part 'user_credentials.g.dart';
 
 /// Wrapper class for [User] with [Credentials].
 @JsonSerializable()
+@immutable
 class UserCredentials extends Equatable {
   final User user;
   final Credentials? credentials;
@@ -18,6 +19,9 @@ class UserCredentials extends Equatable {
       _$UserCredentialsFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserCredentialsToJson(this);
+
+  UserCredentials copy({User? user, Credentials? cred}) =>
+      UserCredentials(user ?? this.user, cred ?? this.credentials);
 
   @override
   List<Object?> get props => [user, credentials];

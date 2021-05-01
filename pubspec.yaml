@@ -39,11 +39,11 @@ dependencies:
   # network
   http: ^0.13.1
   chopper: ^4.0.0-nullsafety.1 # todo update to stable
-  jwt_decoder: 2.0.1 # todo delete if JWT is used
+  jwt_decoder: 2.0.1 # todo delete if JWT is not used
 
   # data
-  single_item_storage: ^1.0.0
-  single_item_shared_prefs: ^0.0.1
+  single_item_storage: ^1.0.4
+  single_item_shared_prefs: ^0.0.2
   shared_preferences: ^2.0.5
 
   # architecture
@@ -73,9 +73,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: any
+  chopper_generator: ^4.0.0-nullsafety.1
+  json_serializable: ^4.1.0
   flutter_email_sender: ^5.0.0
   bloc_test: ^8.0.0
-  json_serializable: ^4.1.0
   mockito: ^5.0.5
 
 #dependency_overrides:

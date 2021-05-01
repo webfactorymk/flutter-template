@@ -2,13 +2,13 @@ import 'dart:io';
 
 class HttpExceptionCode extends HttpException {
   final int? statusCode;
-  final String stringKey;
+  final dynamic errorResponse;
 
   HttpExceptionCode(
     String message, {
     Uri? uri,
     required this.statusCode,
-    this.stringKey = 'default_error',
+    this.errorResponse = 'no error response',
   }) : super(message, uri: uri);
 
   @override
@@ -17,6 +17,6 @@ class HttpExceptionCode extends HttpException {
         'message: $message, '
         'uri: $uri, '
         'statusCode: $statusCode, '
-        'stringKey: $stringKey}';
+        'errorResponse: $errorResponse}';
   }
 }
