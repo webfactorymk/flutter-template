@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_template/log/logger.dart';
-import 'package:flutter_template/platform_comm/item_converter.dart';
+import 'package:flutter_template/data/item_converter.dart';
 import 'package:flutter_template/platform_comm/platform_callback.dart';
 import 'package:flutter_template/util/subscription.dart';
 
@@ -13,10 +13,10 @@ export 'app_platform_methods.dart';
 /// To obtain an instance use `serviceLocator.get<PlatformComm>()`
 class PlatformComm {
   final MethodChannel _methodChannel;
-  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map();
+  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map(); //todo add support for more listeners
 
-  factory PlatformComm.globalAppChannel() => PlatformComm(MethodChannel(
-      'com.my-app.package-name.global')); //todo change channel name
+  factory PlatformComm.generalAppChannel() => PlatformComm(MethodChannel(
+      'com.my-app.package-name.general')); //todo change channel name
 
   factory PlatformComm.onChannel(String channelName) =>
       PlatformComm(MethodChannel(channelName));
@@ -35,6 +35,15 @@ class PlatformComm {
 
   /// Invokes a platform method with or without parameters
   /// and expects a result.
+  ///
+  /// Use [serializeParams] to convert your [param] to serializable data
+  /// that can be sent through a [MethodChannel.invokeMethod] like JSON
+  /// string for example.
+  ///
+  /// The same goes for [deserializeResult]. Provide the conversion from
+  /// raw dynamic data returned from the platform method to your type [R].
+  ///
+  /// See [MethodChannel.invokeMethod].
   Future<R> invokeMethod<R, P>({
     required String method,
     P? param,
