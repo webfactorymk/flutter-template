@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/util/enum_util.dart' as EnumUtil;
+import 'package:flutter_template/util/enum_util.dart' as EnumUtil;
 
 enum MockEnum { first, second }
 

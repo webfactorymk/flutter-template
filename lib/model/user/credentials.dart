@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -6,6 +7,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 part 'credentials.g.dart';
 
 @JsonSerializable()
+@immutable
 class Credentials extends Equatable {
   final String token;
   final RefreshToken refreshToken;
