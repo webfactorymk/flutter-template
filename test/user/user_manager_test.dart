@@ -54,7 +54,6 @@ void main() {
       logoutHooks: [logoutHook],
     );
 
-    when()
     when(apiService.getUserProfile(authHeader: 'Bearer $validToken').toType())
         .thenAnswer((_) async => Future.value(validUserCredentials.user));
   });
