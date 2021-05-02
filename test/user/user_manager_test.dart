@@ -5,11 +5,13 @@ import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/unauthorized_user_exception.dart';
 import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/cached_storage.dart';
+import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/observed_storage.dart';
 import 'package:single_item_storage/storage.dart';
 
@@ -32,19 +34,17 @@ bool Function(UserCredentials?) userCredentialsToBool() {
 }
 
 /// Tests for [UserManager]
-@GenerateMocks([UserApiService, LoginHook, LogoutHook, Storage])
+@GenerateMocks([UserApiService, LoginHook, LogoutHook])
 void main() {
-  late TestUserManager userManager;
+  late UserManager userManager;
   late UserApiService apiService;
-  late ObservedStorage storage;
-  late Storage<UserCredentials?> innerStorage;
+  late ObservedStorage<UserCredentials> storage;
   late LoginHook<UserCredentials> loginHook;
   late LogoutHook logoutHook;
 
   setUp(() {
     apiService = MockUserApiService();
-    innerStorage = MockStorage();
-    storage = ObservedStorage(CachedStorage(innerStorage));
+    storage = ObservedStorage<UserCredentials>(CachedStorage(MemoryStorage()));
     loginHook = MockLoginHook();
     logoutHook = MockLogoutHook();
     userManager = TestUserManager(
@@ -54,10 +54,7 @@ void main() {
       logoutHooks: [logoutHook],
     );
 
-    when(innerStorage.save(validUserCredentials)).thenAnswer(
-        (realInvocation) async => Future.value(validUserCredentials));
-    when(storage.get()).thenAnswer(
-        (realInvocation) async => Future.value(validUserCredentials));
+    when()
     when(apiService.getUserProfile(authHeader: 'Bearer $validToken').toType())
         .thenAnswer((_) async => Future.value(validUserCredentials.user));
   });
@@ -228,14 +225,10 @@ void main() {
 
     // assert
     expect(actualUserCredentials.credentials, validCredentials);
-    verify(innerStorage.get()).called(1);
-    verify(innerStorage.save(actualUserCredentials)).called(2);
   });
 
   test('Update credentials when user logged out', () async {
     // arrange
-    when(innerStorage.get())
-        .thenAnswer((realInvocation) => Future.value(validUserCredentials));
     when(apiService.logout().toType()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
     when(apiService.login("username", "pass").toType())
@@ -256,8 +249,6 @@ void main() {
         (realInvocation) => Future.value(validUserCredentialsSecond.user));
     when(apiService.updateUserProfile(validUserCredentialsSecond.user).toType())
         .thenAnswer((_) => Future.value(validUserCredentialsSecond.user));
-    when(innerStorage.save(validUserCredentialsSecond)).thenAnswer(
-        (realInvocation) async => Future.value(validUserCredentialsSecond));
     when(apiService.login("username", "pass").toType())
         .thenAnswer((_) => Future.value(validCredentials));
 
@@ -293,8 +284,6 @@ void main() {
     // arrange
     when(apiService.getUserProfile().toType()).thenAnswer(
         (realInvocation) => Future.value(validUserCredentialsSecond.user));
-    when(innerStorage.save(validUserCredentialsSecond)).thenAnswer(
-        (realInvocation) async => Future.value(validUserCredentialsSecond));
     when(apiService.login("username", "pass").toType())
         .thenAnswer((_) => Future.value(validCredentials));
 

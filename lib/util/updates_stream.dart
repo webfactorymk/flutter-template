@@ -41,11 +41,13 @@ mixin UpdatesStream<T> {
 
   T? _lastEmittedItem;
   Object? _lastEmittedError;
+  bool _hasEmittedItem = false;
 
   /// Emits update event to the stream.
   @protected
   @mustCallSuper
   void addUpdate(T? event) {
+    _hasEmittedItem = true;
     _lastEmittedItem = event;
     _lastEmittedError = null;
     _streamController.add(event);
@@ -56,6 +58,7 @@ mixin UpdatesStream<T> {
   @protected
   @mustCallSuper
   void addError(Object error) {
+    _hasEmittedItem = true;
     _lastEmittedError = error;
     _lastEmittedItem = null;
     _streamController.addError(error);
@@ -79,13 +82,14 @@ mixin UpdatesStream<T> {
       .stream;
 
   // Single item stream that emits the last item, or last error, if any.
-  Stream<T> _lastEmittedItemStream() {
-    if (_lastEmittedItem != null) {
-      return Stream.value(_lastEmittedItem!);
+  Stream<T?> _lastEmittedItemStream() {
+    if (_hasEmittedItem) {
+      if (_lastEmittedError != null) {
+        return Stream.error(_lastEmittedError!);
+      }
+      return Stream.value(_lastEmittedItem);
+    } else {
+      return Stream.empty();
     }
-    if (_lastEmittedError != null) {
-      return Stream.error(_lastEmittedError!);
-    }
-    return Stream.empty();
   }
 }
