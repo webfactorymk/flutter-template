@@ -16,7 +16,7 @@ class PlatformComm {
   final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map(); //todo add support for more listeners
 
   factory PlatformComm.generalAppChannel() => PlatformComm(MethodChannel(
-      'com.my-app.package-name.general')); //todo change channel name
+      'com.my-app.package-name.general')); //todo change channel name here and on native side
 
   factory PlatformComm.onChannel(String channelName) =>
       PlatformComm(MethodChannel(channelName));
@@ -36,7 +36,7 @@ class PlatformComm {
   /// Invokes a platform method with or without parameters
   /// and expects a result.
   ///
-  /// Use [serializeParams] to convert your [param] to serializable data
+  /// Use [serializeParam] to convert your [param] to serializable data
   /// that can be sent through a [MethodChannel.invokeMethod] like JSON
   /// string for example.
   ///
@@ -47,22 +47,22 @@ class PlatformComm {
   Future<R> invokeMethod<R, P>({
     required String method,
     P? param,
-    Serialize<P>? serializeParams,
+    Serialize<P>? serializeParam,
     Deserialize<R>? deserializeResult,
   }) =>
       _methodChannel
           .invokeMethod(method,
-              param != null ? (serializeParams?.call(param) ?? param) : [])
+              param != null ? (serializeParam?.call(param) ?? param) : [])
           .then((data) => deserializeResult?.call(data) ?? data);
 
   /// Like invoke method, but it doesn't expect a result.
   Future<void> invokeProcedure<P>({
     required String method,
     P? param,
-    Serialize<P>? serializeParams,
+    Serialize<P>? serializeParam,
   }) =>
       _methodChannel.invokeMethod(
-          method, param != null ? (serializeParams?.call(param) ?? param) : []);
+          method, param != null ? (serializeParam?.call(param) ?? param) : []);
 
   /// Listens for the specified [method] to be invoked
   /// overwriting any previously registered listeners.
