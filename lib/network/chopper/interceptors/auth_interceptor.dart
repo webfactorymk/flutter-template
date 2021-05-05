@@ -4,9 +4,11 @@ import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/util/http_util.dart';
 import 'package:single_item_storage/storage.dart';
+import 'package:synchronized/synchronized.dart';
 
 /// [RequestInterceptor] that adds authorization header on each request.
 class AuthInterceptor implements RequestInterceptor {
+  static Lock _lock = Lock();
   final Storage<UserCredentials> _userStore;
   final AuthenticatorHelperJwt _authenticator;
 
@@ -14,20 +16,22 @@ class AuthInterceptor implements RequestInterceptor {
 
   @override
   Future<Request> onRequest(Request request) async {
-    final Credentials? credentials = (await _userStore.get())?.credentials;
-    if (credentials != null) {
-      String? newTokenMaybe = await _authenticator.refreshIfTokenExpired(
-        credentials: credentials,
-        onError: (_) => null,
-      );
-      return applyHeader(
-        request,
-        authHeaderKey,
-        authHeaderValue(newTokenMaybe ?? credentials.token),
-        override: true,
-      );
-    } else {
-      return request;
-    }
+    return _lock.synchronized<Request>(() async {
+      final Credentials? credentials = (await _userStore.get())?.credentials;
+      if (credentials != null) {
+        String? newTokenMaybe = await _authenticator.refreshIfTokenExpired(
+          credentials: credentials,
+          onError: (_) => null,
+        );
+        return applyHeader(
+          request,
+          authHeaderKey,
+          authHeaderValue(newTokenMaybe ?? credentials.token),
+          override: true,
+        );
+      } else {
+        return request;
+      }
+    });
   }
 }
