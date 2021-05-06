@@ -3,6 +3,7 @@ import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/http_api_service_provider.dart';
+import 'package:flutter_template/network/mock/mock_user_api_service.dart';
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
@@ -76,9 +77,13 @@ Future<void> setupDependencies() async {
   );
 
   final AuthenticatorHelperJwt authHelperJwt = apiProvider.getAuthHelperJwt();
-  final UserApiService userApi = apiProvider.getUserApiService();
+  UserApiService userApi = apiProvider.getUserApiService();
   final UserAuthApiService userAuthApi = apiProvider.getUserAuthApiService();
   final TasksApiService tasksApi = apiProvider.getTasksApiService();
+
+  if (FlavorConfig.isMock()) {
+    userApi = MockUserApiService();
+  }
 
   // Firebase
   final UserUpdatesHook<UserCredentials> firebaseUserHook =
