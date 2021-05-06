@@ -59,9 +59,8 @@ void main() {
       client: mockClient,
       converter: JsonTypeConverterProvider.getDefault(),
       interceptors: [
-        AuthInterceptor(
-            AuthenticatorHelperJwt(
-                mockUserAuthApiService, userCredentialsStorage)),
+        AuthInterceptor(AuthenticatorHelperJwt(
+            mockUserAuthApiService, userCredentialsStorage)),
       ],
     );
     apiService = TasksApiService.create(chopperClient);
@@ -69,22 +68,28 @@ void main() {
 
   group('Test tasks api service - chopper implementation', () {
     test('valid token, 200 response, no refresh', () async {
+      // arrange
       userCredentialsStorage.save(NetworkTestHelper.validUserCredentials);
 
+      // act
       final postsResponse = await apiService.getTask('2');
       print(postsResponse.body);
 
+      // assert
       expect(postsResponse.statusCode, equals(200));
       expect(json.decode(postsResponse.bodyString)['refreshToken'], null);
     });
 
     test('invalid token, 401 response', () async {
+      // act
       final postsResponse = await apiService.getTask('2');
 
+      // assert
       expect(postsResponse.statusCode, equals(401));
     });
 
     test('invalid token, 401 response, refresh', () async {
+      // arrange
       Response<Credentials> response = Response(
           http.Response('test', 200), NetworkTestHelper.validCredentials);
       when(mockUserAuthApiService.refreshToken(any))
@@ -92,23 +97,28 @@ void main() {
       await userCredentialsStorage
           .save(NetworkTestHelper.expiredUserCredentials);
 
+      // act
       final Response<Task> actual = await apiService.getTask('2');
 
-      // expect(actual.statusCode, equals(401));
+      // assert
       expect(actual.body, equals(taskMap[2]));
     });
 
     test('invalid token, 401 response, refresh failed', () async {
+      // arrange
       when(mockUserAuthApiService.refreshToken(any))
           .thenAnswer((_) => Future.error(Exception('refresh token failed')));
 
+      // act
       final Response<Task> actual = await apiService.getTask('2');
 
+      // assert
       expect(actual.statusCode, equals(401));
       expect(actual.body, equals(null));
     });
 
     test('multiple 401 responses, refresh token once, retry all', () async {
+      // arrange
       Response<Credentials> response = Response(
           http.Response('test', 200), NetworkTestHelper.validCredentials);
       when(mockUserAuthApiService.refreshToken(any))
@@ -116,6 +126,7 @@ void main() {
       await userCredentialsStorage
           .save(NetworkTestHelper.expiredUserCredentials);
 
+      // act
       final List<Response<Task>> responseList =
           List.unmodifiable(await Future.wait([
         apiService.getTask('1'),
@@ -123,6 +134,7 @@ void main() {
         apiService.getTask('3'),
       ]));
 
+      // assert
       expect(responseList[0].statusCode, equals(200));
       expect(responseList[0].body, equals(taskMap[1]));
       expect(responseList[1].statusCode, equals(200));
