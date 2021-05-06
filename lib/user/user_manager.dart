@@ -4,11 +4,13 @@ import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
-import 'package:flutter_template/network/api_service.dart';
-import 'package:flutter_template/network/errors/unauthorized_user_exception.dart';
+import 'package:flutter_template/network/util/http_util.dart';
+import 'package:flutter_template/network/user_api_service.dart';
+import 'package:flutter_template/user/unauthorized_user_exception.dart';
 import 'package:flutter_template/user/user_hooks.dart';
 import 'package:flutter_template/util/nullable_util.dart';
 import 'package:flutter_template/util/updates_stream.dart';
+import 'package:single_item_storage/observed_storage.dart';
 import 'package:single_item_storage/storage.dart';
 
 /// Manages a single logged-in user within the app.
@@ -22,25 +24,33 @@ import 'package:single_item_storage/storage.dart';
 ///
 /// To obtain an instance use `serviceLocator.get<UserManager>()`
 class UserManager with UpdatesStream<UserCredentials> {
-  final ApiService _apiService;
-  final Storage<UserCredentials?> _userStore;
   final Set<LoginHook<UserCredentials>> loginHooks;
   final Set<LogoutHook> logoutHooks;
+  final UserApiService _apiService;
+  final Storage<UserCredentials> _userStore;
+  late final StreamSubscription _userUpdatesSubscription;
 
   UserManager(
     this._apiService,
-    this._userStore, {
+    ObservedStorage<UserCredentials> observedStorage, {
     Iterable<LoginHook<UserCredentials>> loginHooks = const [],
     Iterable<LogoutHook> logoutHooks = const [],
     Iterable<UserUpdatesHook<UserCredentials>> updateHooks = const [],
   })  : this.loginHooks = Set.unmodifiable(loginHooks),
-        this.logoutHooks = Set.unmodifiable(logoutHooks) {
+        this.logoutHooks = Set.unmodifiable(logoutHooks),
+        this._userStore = observedStorage.silent {
     updateHooks.forEach((hook) => hook.onUserUpdatesProvided(updatesSticky));
 
     _userStore.get().onError((error, stackTrace) async {
       Logger.e(error ?? 'Error loading user from disk');
       return null;
     }).then((user) => addUpdate(user));
+
+    _userUpdatesSubscription =
+        observedStorage.updatesSticky.distinct().listen((userCredentials) {
+      Logger.d('UserManager - Info: User storage modified outside UserManager');
+      addUpdate(userCredentials);
+    });
   }
 
   /// Emits a user update event to listeners
@@ -70,8 +80,10 @@ class UserManager with UpdatesStream<UserCredentials> {
       return _userStore.get().asNonNullable();
     }
 
-    final credentials = await _apiService.login(username, password);
-    final user = await _apiService.getUserProfile(token: credentials.token);
+    final credentials = await _apiService.login(username, password).toType();
+    final user = await _apiService
+        .getUserProfile(authHeader: authHeaderValue(credentials.token))
+        .toType();
     final userCredentials = UserCredentials(user, credentials);
 
     Logger.d('UserManager - Login success: $userCredentials');
@@ -98,7 +110,7 @@ class UserManager with UpdatesStream<UserCredentials> {
       return;
     }
 
-    await _apiService.logout();
+    await _apiService.logout().toType();
     await _userStore.delete();
     Logger.d('UserManager - Logout success');
 
@@ -157,7 +169,7 @@ class UserManager with UpdatesStream<UserCredentials> {
       throw UnauthorizedUserException('Refreshing a logged out user');
     }
 
-    final User newUser = await _apiService.getUserProfile();
+    final User newUser = await _apiService.getUserProfile().toType();
 
     final UserCredentials? oldUserCredentials = await _userStore.get();
     final UserCredentials newUserCredentials = UserCredentials(
@@ -188,6 +200,7 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// Call when the app is closing.
   /// This method does not delete saved data.
   Future<void> teardown() async {
+    await _userUpdatesSubscription.cancel();
     await closeUpdatesStream();
   }
 }

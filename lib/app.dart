@@ -9,6 +9,9 @@ import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/feature/auth/login/login_page.dart';
 import 'package:flutter_template/feature/home/home_page.dart';
+import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/model/task/task_group.dart';
+import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/resources/strings.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
@@ -48,6 +51,16 @@ class _AppState extends State<App> {
 
     if (!FlavorConfig.isProduction()) {
       _getBuildVersion();
+      serviceLocator
+          .get<PlatformComm>()
+          .echoMessage('echo')
+          .catchError((error) => 'Test platform method error: $error')
+          .then((backEcho) => Logger.d("Test message 'echo' - '$backEcho'"));
+      serviceLocator
+          .get<PlatformComm>()
+          .echoObject(TaskGroup('TG-id', 'Test group', List.of(['1', '2'])))
+          .then((backEcho) => Logger.d("Test message TaskGroup - '$backEcho'"))
+          .catchError((error) => Logger.e('Test platform method err.: $error'));
     }
   }
 

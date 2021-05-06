@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_template/config/crashlytics_config.dart';
+import 'package:flutter_template/config/firebase_config.dart';
+import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/config/logger_config.dart';
 import 'package:flutter_template/log/bloc_events_logger.dart';
 import 'package:flutter_template/di/service_locator.dart' as serviceLocator;
@@ -12,7 +13,7 @@ Future<void> preAppConfig() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = BlocEventsLogger();
 
-  await configureCrashlytics();
+  await configureFirebase();
   await serviceLocator.setupDependencies();
   initLogger();
 }

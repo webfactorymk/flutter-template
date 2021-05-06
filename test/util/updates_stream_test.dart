@@ -48,6 +48,12 @@ void main() {
 
     numberComponent.setNumber(null);
   });
+
+  test('no updates', () {
+    expect(numberComponent.updatesSticky, emitsInOrder([]));
+
+    numberComponent.updatesSticky.listen((_) {});
+  });
 }
 
 class NumberComponent with UpdatesStream<int> {

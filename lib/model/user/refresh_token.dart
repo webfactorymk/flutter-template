@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'refresh_token.g.dart';
 
 @JsonSerializable()
+@immutable
 class RefreshToken extends Equatable {
   final String token;
   final int expiresAt;

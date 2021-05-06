@@ -10,7 +10,7 @@ void main() async {
   FlavorConfig.set(
     Flavor.STAGING,
     FlavorValues(
-      baseApiUrl: baseUrlStage + apiPrefix,
+      baseUrlApi: baseUrlStage + apiPrefix,
     ),
   );
 

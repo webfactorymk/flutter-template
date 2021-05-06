@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_template/log/logger.dart';
-import 'package:flutter_template/platform_comm/item_converter.dart';
+import 'package:flutter_template/data/item_converter.dart';
 import 'package:flutter_template/platform_comm/platform_callback.dart';
 import 'package:flutter_template/util/subscription.dart';
 
@@ -13,10 +13,10 @@ export 'app_platform_methods.dart';
 /// To obtain an instance use `serviceLocator.get<PlatformComm>()`
 class PlatformComm {
   final MethodChannel _methodChannel;
-  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map();
+  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map(); //todo add support for more listeners
 
-  factory PlatformComm.globalAppChannel() => PlatformComm(MethodChannel(
-      'com.my-app.package-name.global')); //todo change channel name
+  factory PlatformComm.generalAppChannel() => PlatformComm(MethodChannel(
+      'com.my-app.package-name.general')); //todo change channel name here and on native side
 
   factory PlatformComm.onChannel(String channelName) =>
       PlatformComm(MethodChannel(channelName));
@@ -24,32 +24,45 @@ class PlatformComm {
   PlatformComm(this._methodChannel) {
     _methodChannel.setMethodCallHandler((call) {
       Logger.d('Platform callback: ${call.method} w/ args ${call.arguments}');
-      return _platformCallbackMap[call.method]?.call(call.arguments) ??
-          Future.error(MissingPluginException('No method found'));
+      final callback = _platformCallbackMap[call.method];
+      if (callback != null) {
+        return Future.value(callback.call(call.arguments));
+      } else {
+        return Future.error(MissingPluginException('No method found'));
+      }
     });
   }
 
   /// Invokes a platform method with or without parameters
   /// and expects a result.
+  ///
+  /// Use [serializeParam] to convert your [param] to serializable data
+  /// that can be sent through a [MethodChannel.invokeMethod] like JSON
+  /// string for example.
+  ///
+  /// The same goes for [deserializeResult]. Provide the conversion from
+  /// raw dynamic data returned from the platform method to your type [R].
+  ///
+  /// See [MethodChannel.invokeMethod].
   Future<R> invokeMethod<R, P>({
     required String method,
     P? param,
-    Serialize<P>? serializeParams,
+    Serialize<P>? serializeParam,
     Deserialize<R>? deserializeResult,
   }) =>
       _methodChannel
           .invokeMethod(method,
-              param != null ? (serializeParams?.call(param) ?? param) : [])
+              param != null ? (serializeParam?.call(param) ?? param) : [])
           .then((data) => deserializeResult?.call(data) ?? data);
 
   /// Like invoke method, but it doesn't expect a result.
   Future<void> invokeProcedure<P>({
     required String method,
     P? param,
-    Serialize<P>? serializeParams,
+    Serialize<P>? serializeParam,
   }) =>
       _methodChannel.invokeMethod(
-          method, param != null ? (serializeParams?.call(param) ?? param) : []);
+          method, param != null ? (serializeParam?.call(param) ?? param) : []);
 
   /// Listens for the specified [method] to be invoked
   /// overwriting any previously registered listeners.
@@ -73,7 +86,7 @@ class PlatformComm {
   }
 
   /// Like [listenMethod] but without params.
-  Subscription listenMethodNoParams<P>({
+  Subscription listenMethodNoParams({
     required String method,
     required PlatformCallbackNoParams callback,
   }) {
