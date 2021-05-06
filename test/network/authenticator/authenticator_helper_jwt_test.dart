@@ -5,6 +5,7 @@ import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
+import 'package:flutter_template/network/util/http_util.dart';
 import 'package:flutter_template/user/unauthorized_user_exception.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -14,7 +15,6 @@ import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/storage.dart';
 import 'package:http/http.dart' as http;
 
-import '../../user/user_manager_test.dart';
 import '../network_test_helper.dart';
 import 'authenticator_helper_jwt_test.mocks.dart';
 
@@ -45,30 +45,30 @@ void main() {
 
     test('refreshUserCredentials, token not expired', () async {
       // arrange
-      storage.save(validUserCredentials);
+      storage.save(NetworkTestHelper.validUserCredentials);
 
       // act
       String? actual = await authenticatorHelperJwt.refreshIfTokenExpired(
           onError: (_) => null);
 
       // assert
-      expect(actual, null);
+      expect(actual, NetworkTestHelper.validToken);
     });
 
     test('refreshUserCredentials, token expired', () async {
       // arrange
-      Response<Credentials> response =
-          Response(http.Response('test', 200), validCredentials);
-      await storage.save(NetworkTestHelper.expiredUserCredentials);
+      Response<Credentials> response = Response(
+          http.Response('test', 200), NetworkTestHelper.validCredentials);
       when(mockUserAuthApiService.refreshToken(any))
           .thenAnswer((_) async => Future.value(response));
+      await storage.save(NetworkTestHelper.expiredUserCredentials);
 
       // act
       String? actual = await authenticatorHelperJwt.refreshIfTokenExpired(
           onError: (e) => throw e);
 
       // assert
-      expect(actual, equals(validToken));
+      expect(actual, equals(NetworkTestHelper.validToken));
     });
   });
 
@@ -85,48 +85,84 @@ void main() {
       expect(
           authenticatorHelperJwt.interceptResponse(
               Request('GET', 'task/2', 'http://example.com',
-                  headers: {'Authorization': 'Bearer '}),
+                  headers: {authHeaderKey: 'Bearer '}),
               validResponse),
           throwsA(isInstanceOf<UnauthorizedUserException>()));
     });
 
-    test('interceptResponse, no token', () async {
+    test('interceptResponse, expired token', () async {
       // assert
       expect(
           authenticatorHelperJwt.interceptResponse(
               Request('GET', 'task/2', 'http://example.com', headers: {
-                'Authorization': 'Bearer ' + NetworkTestHelper.expiredToken
+                authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken
               }),
               validResponse),
           throwsA(isInstanceOf<UnauthorizedUserException>()));
     });
 
-    test('interceptResponse, no token', () async {
+    test('interceptResponse, expired token, valid token stored', () async {
       // arrange
       storage.save(NetworkTestHelper.validUserCredentials);
 
       // act
       Request? actualRequest = await authenticatorHelperJwt.interceptResponse(
           Request('GET', 'task/2', 'http://example.com', headers: {
-            'Authorization': 'Bearer ' + NetworkTestHelper.expiredToken
+            authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken
           }),
           validResponse);
 
       // assert
-      expect(actualRequest?.headers['Authorization'],
-          NetworkTestHelper.validToken);
+      expect(
+          actualRequest?.headers[authHeaderKey], NetworkTestHelper.validToken);
     });
   });
 
   group('interceptRequest', () {
-    test('interceptResponse, no token', () async {
+    test('interceptRequest, no token', () async {
+      // arrange
+      Request expected = Request('GET', 'task/2', 'http://example.com',
+          headers: {authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken});
+
+      // act
+      Request actual = await authenticatorHelperJwt.interceptRequest(expected);
+
+      // assert
+      expect(actual, expected);
+    });
+
+    test('interceptRequest, expired token', () async {
+      // arrange
+      Response<Credentials> response = Response(
+          http.Response('test', 200), NetworkTestHelper.validCredentials);
+      when(mockUserAuthApiService.refreshToken(any))
+          .thenAnswer((_) async => Future.value(response));
+      storage.save(NetworkTestHelper.expiredUserCredentials);
+      Request expected = Request('GET', 'task/2', 'http://example.com',
+          headers: {authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken});
+
+      // act
+      Request actual = await authenticatorHelperJwt.interceptRequest(expected);
+
       // assert
       expect(
-          authenticatorHelperJwt.interceptRequest(
-              Request('GET', 'task/2', 'http://example.com', headers: {
-                'Authorization': 'Bearer ' + NetworkTestHelper.expiredToken
-              })),
-          throwsA(isInstanceOf<UnauthorizedUserException>()));
+          await storage.get(), equals(NetworkTestHelper.validUserCredentials));
+      expect(actual, isNot(equals(expected)));
+    });
+
+    test('interceptRequest, expired token, valid token stored', () async {
+      // arrange
+      storage.save(NetworkTestHelper.validUserCredentials);
+      Request expected = Request('GET', 'task/2', 'http://example.com',
+          headers: {authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken});
+
+      // act
+      Request actual = await authenticatorHelperJwt.interceptRequest(expected);
+
+      // assert
+      expect(actual, isNot(equals(expected)));
+      expect(actual.headers[authHeaderKey],
+          equals('Bearer ' + NetworkTestHelper.validToken));
     });
   });
 }
