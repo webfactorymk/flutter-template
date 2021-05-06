@@ -36,11 +36,14 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "mk.webfactory.flutter.flutter_template"
-        minSdkVersion 16
+        applicationId "mk.webfactory.flutter_template"
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        // TODO: Set to true to use flutter engine caching for Android
+        buildConfigField 'boolean', 'USE_CACHED_FLUTTER_ENGINE', 'false'
     }
 
     buildTypes {
@@ -49,6 +52,55 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    flavorDimensions 'default'
+
+    productFlavors {
+        mock {
+            dimension 'default'
+            applicationIdSuffix ".mock"
+            versionNameSuffix "-mock"
+            flutter {
+                target 'lib/main_mock.dart'
+            }
+        }
+        dev {
+            dimension 'default'
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            flutter {
+                target 'lib/main_dev.dart'
+            }
+        }
+        staging {
+            dimension 'default'
+            applicationIdSuffix ".stg"
+            versionNameSuffix "-stg"
+            flutter {
+                target 'lib/main_staging.dart'
+            }
+
+        }
+        production {
+            dimension 'default'
+            flutter {
+                target 'lib/main_production.dart'
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -60,4 +112,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+    testImplementation 'org.mockito:mockito-core:3.5.13'
 }

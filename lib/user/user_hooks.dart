@@ -52,3 +52,15 @@ abstract class UserUpdatesHook<U> {
   /// __Just mind to unsubscribe when done using it__.
   void onUserUpdatesProvided(Stream<U?> userUpdates);
 }
+
+/// Stub hook that implements [LoginHook], [LogoutHook], [UserUpdatesHook].
+class StubHook<T> implements LoginHook<T>, LogoutHook, UserUpdatesHook<T> {
+  @override
+  void onUserUpdatesProvided(Stream<T?> userUpdates) {}
+
+  @override
+  Future<void> postLogin(T user) => Future.value();
+
+  @override
+  Future<void> postLogout() => Future.value();
+}

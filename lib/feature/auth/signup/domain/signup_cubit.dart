@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/user/user.dart';
-import 'package:flutter_template/network/api_service.dart';
+import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 import 'signup_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
-  final ApiService apiService;
+  final UserApiService apiService;
   final UserManager userManager;
 
   SignUpCubit(this.apiService, this.userManager) : super(SignUpInitial());

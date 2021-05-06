@@ -1,6 +1,0 @@
-package mk.webfactory.flutter.flutter_template
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity: FlutterActivity() {
-}

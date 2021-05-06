@@ -10,7 +10,7 @@ void main() async {
   FlavorConfig.set(
     Flavor.MOCK,
     FlavorValues(
-      baseApiUrl: baseUrlDev + apiPrefix,
+      baseUrlApi: baseUrlDev + apiPrefix,
     ),
   );
 

@@ -10,7 +10,10 @@ import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/feature/auth/login/domain/login_cubit.dart';
 import 'package:flutter_template/feature/auth/login/presentation/login_page.dart';
 import 'package:flutter_template/feature/home/home_page.dart';
-import 'package:flutter_template/network/api_service.dart';
+import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/model/task/task_group.dart';
+import 'package:flutter_template/network/user_api_service.dart';
+import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/resources/strings.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
@@ -53,6 +56,16 @@ class _AppState extends State<App> {
 
     if (!FlavorConfig.isProduction()) {
       _getBuildVersion();
+      serviceLocator
+          .get<PlatformComm>()
+          .echoMessage('echo')
+          .catchError((error) => 'Test platform method error: $error')
+          .then((backEcho) => Logger.d("Test message 'echo' - '$backEcho'"));
+      serviceLocator
+          .get<PlatformComm>()
+          .echoObject(TaskGroup('TG-id', 'Test group', List.of(['1', '2'])))
+          .then((backEcho) => Logger.d("Test message TaskGroup - '$backEcho'"))
+          .catchError((error) => Logger.e('Test platform method err.: $error'));
     }
   }
 
@@ -66,7 +79,8 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     final LoginCubit loginCubit = LoginCubit(serviceLocator.get<UserManager>());
     final SignUpCubit signUpCubit = SignUpCubit(
-        serviceLocator.get<ApiService>(), serviceLocator.get<UserManager>());
+        serviceLocator.get<UserApiService>(),
+        serviceLocator.get<UserManager>());
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,

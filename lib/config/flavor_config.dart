@@ -4,12 +4,12 @@ enum Flavor { MOCK, DEV, STAGING, PRODUCTION }
 
 /// App specific flavor values.
 class FlavorValues {
-  final String baseApiUrl;
+  final String baseUrlApi;
 
   //todo add flavor specific values here
 
   FlavorValues({
-    required this.baseApiUrl,
+    required this.baseUrlApi,
   });
 }
 

@@ -55,12 +55,19 @@ Implementations:
 [tasks_repository]: ./lib/data/tasks_repository.dart
 
 
-## [ApiService]
+## ApiService
 
 Abstraction over the API communication that defines (all) endpoints. 
 This templates uses [Chopper], an http client generator, to make network requests.
 
-[ApiService]: ./lib/network/api_service.dart
+- [UserApiService] - User related endpoints
+- [UserAuthApiService] - User re-authentication endpoints
+- [TasksApiService] - Tasks, TaskGroups, and task actions endpoints
+
+[UserApiService]: lib/network/user_api_service.dart
+[UserAuthApiService]: lib/network/user_auth_api_service.dart
+[TasksApiService]: lib/network/tasks_api_service.dart
+
 [Chopper]: https://pub.dev/packages/chopper
 
 
@@ -82,12 +89,14 @@ For more information and generating code continuously see [the documentation][js
 
 <img src="https://flutter.dev/assets/development/data-and-backend/state-mgmt/ui-equals-function-of-state-54b01b000694caf9da439bd3f774ef22b00e92a62d3b2ade4f2e95c8555b8ca7.png" alt="High level diagram" width="350">
 
-This template does not yet use a [state management tool][state_management_options]. Instead, each app service has an updates [Stream][dart_streams] that clients can subscribe to and receive state updates. It's up to you to use a tool of your choice, or don't use one at all. 
+~~This template attempts to be unopinionated and does not yet use a [state management tool][state_management_options].~~ ...we use [BLoC] now. But, each app service has an updates [Stream][dart_streams] that clients can subscribe to and receive state updates. See the [UpdatesStream<T> mixin][updates_mixin]. It's up to you to use a tool of your choice, or don't use one at all. 
 See `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdatesStream` in [TasksRepository][tasks_repository]
 
 [declarative_ui]: https://flutter.dev/docs/development/data-and-backend/state-mgmt/declarative
 [state_management_options]: https://flutter.dev/docs/development/data-and-backend/state-mgmt/options
 [dart_streams]: https://dart.dev/tutorials/language/streams
+[BLoC]: https://pub.dev/packages/flutter_bloc
+[updates_mixin]: lib/util/updates_stream.dart
 
 
 # Dependency Management
