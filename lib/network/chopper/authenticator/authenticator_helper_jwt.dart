@@ -193,7 +193,7 @@ class AuthenticatorHelperJwt {
           return applyHeader(
             request,
             authHeaderKey,
-            tokenCurrent,
+            authHeaderValue(tokenCurrent),
             override: true,
           );
         }
@@ -214,7 +214,7 @@ class AuthenticatorHelperJwt {
         return applyHeader(
           request,
           authHeaderKey,
-          newCredentials.token,
+          authHeaderValue(newCredentials.token),
           override: true,
         );
       },
