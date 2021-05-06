@@ -76,9 +76,13 @@ Future<void> setupDependencies() async {
   );
 
   final AuthenticatorHelperJwt authHelperJwt = apiProvider.getAuthHelperJwt();
-  final UserApiService userApi = apiProvider.getUserApiService();
+  UserApiService userApi = apiProvider.getUserApiService();
   final UserAuthApiService userAuthApi = apiProvider.getUserAuthApiService();
   final TasksApiService tasksApi = apiProvider.getTasksApiService();
+
+  if (FlavorConfig.isMock()) {
+    userApi = apiProvider.getMockUserApiService();
+  }
 
   // Firebase
   final UserUpdatesHook<UserCredentials> firebaseUserHook =
