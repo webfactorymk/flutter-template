@@ -4,7 +4,6 @@ import 'package:flutter_template/feature/force_update/force_update_handler.dart'
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/interceptors/error_interceptor.dart';
-import 'package:flutter_template/network/mock_user_api_service.dart';
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
@@ -73,7 +72,6 @@ class HttpApiServiceProvider {
       services: [
         UserApiService.create(),
         TasksApiService.create(),
-        MockUserApiService.create(),
       ],
       authenticator: RefreshTokenAuthenticator(authenticatorHelper),
       converter: converter,
@@ -119,8 +117,4 @@ class HttpApiServiceProvider {
   /// Returns singleton TasksApiService.
   TasksApiService getTasksApiService() =>
       _defaultClient.getService<TasksApiService>();
-
-  /// Returns singleton MockUserApiService.
-  MockUserApiService getMockUserApiService() =>
-      _defaultClient.getService<MockUserApiService>();
 }
