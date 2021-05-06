@@ -1,11 +1,19 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_template/notifications/apns_token_storage.dart';
+import 'package:flutter_template/notifications/firebase_token_storage.dart';
 
 /// Manages push notifications of logged-in user within the app.
 class NotificationsManager {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseTokenStorage _fcmTokenStorage;
+  final APNSTokenStorage _apnsTokenStorage;
 
-  NotificationsManager();
+  NotificationsManager(
+      this._fcmTokenStorage,
+      this._apnsTokenStorage
+      );
 
   setupPushNotifications() async {
     if (Platform.isIOS) {
@@ -92,11 +100,23 @@ class NotificationsManager {
     return token;
   }
 
-  _onAPNSTokenReceived(String? token) {
+  Future<void> _onAPNSTokenReceived(String? token) async {
+    final storedToken = await _apnsTokenStorage.get();
+
+    if (storedToken == null || storedToken != token) {
+      await _apnsTokenStorage.save(token!);
+    }
+
     print('APNS Token $token');
   }
 
-  _onFCMTokenReceived(String? token) {
+  Future<void> _onFCMTokenReceived(String? token) async {
+    final storedToken = await _fcmTokenStorage.get();
+
+    if (storedToken == null || storedToken != token) {
+      await _fcmTokenStorage.save(token!);
+    }
+
     print('FCM Token $token');
   }
 
