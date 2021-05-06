@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1",
         "android_client_info": {
-          "package_name": "mk.webfactory.flutter.flutter_template"
+          "package_name": "mk.webfactory.flutter_template"
         }
       },
       "oauth_client": [
@@ -18,7 +18,155 @@
           "client_id": "1",
           "client_type": 1,
           "android_info": {
-            "package_name": "mk.webfactory.flutter.flutter_template",
+            "package_name": "mk.webfactory.flutter_template",
+            "certificate_hash": "1"
+          }
+        },
+        {
+          "client_id": "1",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1",
+        "android_client_info": {
+          "package_name": "mk.webfactory.flutter_template.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mk.webfactory.flutter_template.dev",
+            "certificate_hash": "1"
+          }
+        },
+        {
+          "client_id": "1",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1",
+        "android_client_info": {
+          "package_name": "mk.webfactory.flutter_template.mock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mk.webfactory.flutter_template.mock",
+            "certificate_hash": "1"
+          }
+        },
+        {
+          "client_id": "1",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1",
+        "android_client_info": {
+          "package_name": "mk.webfactory.flutter_template.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mk.webfactory.flutter_template.dev",
+            "certificate_hash": "1"
+          }
+        },
+        {
+          "client_id": "1",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1",
+        "android_client_info": {
+          "package_name": "mk.webfactory.flutter_template.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mk.webfactory.flutter_template.stg",
             "certificate_hash": "1"
           }
         },
