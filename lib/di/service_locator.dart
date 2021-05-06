@@ -9,6 +9,7 @@ import 'package:flutter_template/notifications/firebase_token_storage.dart';
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_manager.dart';
+import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info/package_info.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
@@ -71,6 +72,9 @@ Future<void> setupDependencies() async {
   final PlatformComm platformComm = PlatformComm.generalAppChannel()
     ..listenToNativeLogs();
 
+  // UI
+  AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
+
   serviceLocator
     //..registerSingleton<TasksRepository>(tasksRepository)
     // ..registerSingleton<NotificationsManager>(notificationsManager)
@@ -80,7 +84,8 @@ Future<void> setupDependencies() async {
     ..registerSingleton<UserAuthApiService>(userAuthApi)
     ..registerSingleton<TasksApiService>(tasksApi)
     ..registerSingleton<UserManager>(userManager)
-    ..registerSingleton<PlatformComm>(platformComm);
+    ..registerSingleton<PlatformComm>(platformComm)
+    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver);
 }
 
 //todo find a way to know when the app ends and call this
