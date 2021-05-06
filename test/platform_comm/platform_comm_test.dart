@@ -84,7 +84,7 @@ void main() {
         var actualValue = await platformComm.invokeMethod<String, int>(
             method: method,
             param: param,
-            serializeParams: serializer,
+            serializeParam: serializer,
             deserializeResult: deserializer);
 
         // assert
@@ -149,7 +149,7 @@ void main() {
         await platformComm.invokeProcedure<int>(
           method: method,
           param: param,
-          serializeParams: serializer,
+          serializeParam: serializer,
         );
 
         // assert

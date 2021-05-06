@@ -4,7 +4,7 @@ import androidx.annotation.UiThread
 
 interface ResultCallback<R> {
 
-    /** Handles a successful result. Possibly null. */
+    /** Handles a successful result. */
     @UiThread
     fun success(result: R)
 

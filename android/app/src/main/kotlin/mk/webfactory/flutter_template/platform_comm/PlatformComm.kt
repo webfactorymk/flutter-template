@@ -3,7 +3,6 @@ package mk.webfactory.flutter_template.platform_comm
 import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import mk.webfactory.flutter_template.App
 
 /** A call that's received from the flutter side. */
 typealias Callback<P> = (P) -> Any?
