@@ -1,3 +1,4 @@
+import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/notifications/firebase_token_storage.dart';
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
+import 'package:flutter_template/user/user_hooks.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
@@ -52,7 +54,10 @@ Future<void> setupDependencies() async {
   final TasksApiService tasksApi = apiProvider.getTasksApiService();
 
   // Firebase
-  final FirebaseUserHook firebaseUserHook = FirebaseUserHook();
+  final UserUpdatesHook<UserCredentials> firebaseUserHook =
+      shouldConfigureFirebase()
+          ? FirebaseUserHook()
+          : StubHook<UserCredentials>();
 
   // Notifications
   //todo notifications manager, init handlers, mem leaks
