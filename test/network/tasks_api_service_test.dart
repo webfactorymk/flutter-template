@@ -60,7 +60,6 @@ void main() {
       converter: JsonTypeConverterProvider.getDefault(),
       interceptors: [
         AuthInterceptor(
-            userCredentialsStorage,
             AuthenticatorHelperJwt(
                 mockUserAuthApiService, userCredentialsStorage)),
       ],
