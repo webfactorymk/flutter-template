@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:package_info/package_info.dart';
 
-import '../network_test_helper.dart';
+import '../../network_test_helper.dart';
 import 'version_interceptor_test.mocks.dart';
 
 @GenerateMocks([PackageInfo])

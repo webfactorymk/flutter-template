@@ -8,7 +8,7 @@ import 'package:single_item_storage/cached_storage.dart';
 import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/storage.dart';
 
-import '../network_test_helper.dart';
+import '../../network_test_helper.dart';
 
 void main() {
   late Storage<String> storage;

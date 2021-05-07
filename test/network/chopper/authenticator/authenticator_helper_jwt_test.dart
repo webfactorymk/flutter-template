@@ -15,7 +15,7 @@ import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/storage.dart';
 import 'package:http/http.dart' as http;
 
-import '../network_test_helper.dart';
+import '../../network_test_helper.dart';
 import 'authenticator_helper_jwt_test.mocks.dart';
 
 @GenerateMocks([UserAuthApiService])
