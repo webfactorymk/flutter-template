@@ -2,8 +2,8 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/model/user/user.dart';
-import 'package:flutter_template/network/mock/mock_response.dart';
 import 'package:flutter_template/network/user_api_service.dart';
+import 'package:http/http.dart' as http;
 
 const String mockToken =
     "eyJhbGciOiJIUzI1NiJ9.eyJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNDIyMDYwMSwiaWF0IjoxNjE5NTI2MjAxfQ.yjTgXqiqGH3F-ycq2I3Ec-v3l0mzVV8Rg_RijsR50do";
@@ -81,4 +81,8 @@ class MockUserApiService implements UserApiService {
     // TODO: implement updateUserProfile
     throw UnimplementedError();
   }
+}
+
+class MockResponse extends http.BaseResponse {
+  MockResponse(int statusCode) : super(statusCode);
 }
