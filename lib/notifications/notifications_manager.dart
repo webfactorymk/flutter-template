@@ -23,7 +23,7 @@ class NotificationsManager {
 
   setupPushNotifications() async {
     if (Platform.isIOS) {
-      final _ = await requestPermissions();
+      await requestPermissions();
 
       final apnsToken = await _fcm.getAPNSToken();
       _onAPNSTokenReceived(apnsToken);
