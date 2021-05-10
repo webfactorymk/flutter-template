@@ -10,7 +10,7 @@ import 'package:flutter_template/user/user_hooks.dart';
 /// - Sets user identifier
 /// - Enables/Disables [NotificationsManager]
 /// - Cleans up user data on logout
-class FirebaseUserHook implements UserUpdatesHook<UserCredentials> {
+class FirebaseUserHook implements UserUpdatesHook<UserCredentials>, LogoutHook {
   final FirebaseCrashlytics _crashlytics;
   final NotificationsManager _notificationsManager;
 
@@ -34,15 +34,21 @@ class FirebaseUserHook implements UserUpdatesHook<UserCredentials> {
   Future<void> _onUserAuthorized(UserCredentials userCredentials) async {
     _crashlytics.setUserIdentifier(userCredentials.user.id);
 
-    await _notificationsManager.setupPushNotifications();
+    if (!_notificationsManager.setupStarted) {
+      await _notificationsManager.setupPushNotifications();
+    }
+    _notificationsManager.userAuthorized = true;
   }
 
   Future<void> _onUserUnauthorized() async {
     final timeNow = DateTime.now().millisecondsSinceEpoch;
     _crashlytics.setUserIdentifier('n/a: $timeNow');
 
-    await _notificationsManager.disablePushNotifications();
+    _notificationsManager.userAuthorized = false;
   }
+
+  @override
+  Future<void> postLogout() => _notificationsManager.disablePushNotifications();
 
   Future<void> tearDown() async {
     await _streamSubscription?.cancel();

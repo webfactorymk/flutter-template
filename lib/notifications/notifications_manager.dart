@@ -16,6 +16,9 @@ class NotificationsManager {
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
 
+  bool _setupStarted = false;
+  bool userAuthorized = false;
+
   NotificationsManager({
     Storage<String>? fcmTokenStorage,
     Storage<String>? apnsTokenStorage,
@@ -28,7 +31,14 @@ class NotificationsManager {
     }
   }
 
+  bool get setupStarted => _setupStarted;
+
   setupPushNotifications() async {
+    if (_setupStarted) {
+      Logger.d('NotificationsManager - Setup: Aborting, already completed.');
+    }
+    _setupStarted = true;
+
     if (Platform.isIOS) {
       await requestPermissions();
 
@@ -40,25 +50,35 @@ class NotificationsManager {
     _onFCMTokenReceived(fcmToken);
 
     _fcm.onTokenRefresh.listen((token) {
-      Logger.d('FCM Token refresh');
+      Logger.d('NotificationsManager - FCM Token refresh');
       _onFCMTokenReceived(token);
     });
 
     FirebaseMessaging.onMessage.listen((message) {
-      _onMessage(message);
+      if (userAuthorized) {
+        _onMessage(message);
+      }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _onAppOpenedFromMessage(message);
+      if (userAuthorized) {
+        _onAppOpenedFromMessage(message);
+      }
     });
 
-    FirebaseMessaging.onBackgroundMessage((message) => _onMessage(message));
+    FirebaseMessaging.onBackgroundMessage((message) async {
+      if (userAuthorized) {
+        _onMessage(message);
+      }
+    });
   }
 
-  disablePushNotifications() async {
+  Future<void> disablePushNotifications() async {
     await _fcm.deleteToken();
     await _fcmTokenStorage.delete();
     await _apnsTokenStorage.delete();
+
+    _setupStarted = false;
   }
 
   /// Requests permissions for push notifications on iOS
@@ -84,12 +104,13 @@ class NotificationsManager {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      Logger.d('User granted permission');
+      Logger.d('NotificationsManager - User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      Logger.d('User granted provisional permission');
+      Logger.d('NotificationsManager - User granted provisional permission');
     } else {
-      Logger.w('User declined or has not accepted permission');
+      Logger.w(
+          'NotificationsManager - User declined or not accepted permission');
     }
 
     return settings;
@@ -130,7 +151,7 @@ class NotificationsManager {
   }
 
   Future<void> _onFCMTokenReceived(String? token) async {
-    Logger.d('FCM Token $token');
+    Logger.d('NotificationsManager - FCM Token $token');
 
     final storedToken = await _fcmTokenStorage.get();
 
@@ -140,10 +161,10 @@ class NotificationsManager {
   }
 
   _onMessage(RemoteMessage message) {
-    Logger.d('New remote message}');
+    Logger.d('NotificationsManager - New remote message}');
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
-    Logger.d('Opened from remote message');
+    Logger.d('NotificationsManager - Opened from remote message');
   }
 }
