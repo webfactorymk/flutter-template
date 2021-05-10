@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
+import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_hooks.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -50,18 +52,12 @@ Future<void> setupDependencies() async {
   final UserAuthApiService userAuthApi = apiProvider.getUserAuthApiService();
   final TasksApiService tasksApi = apiProvider.getTasksApiService();
 
-  // Firebase
+  // Firebase and Notifications
+  final NotificationsManager notificationsManager = NotificationsManager();
   final UserUpdatesHook<UserCredentials> firebaseUserHook =
       shouldConfigureFirebase()
-          ? FirebaseUserHook()
+          ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
           : StubHook<UserCredentials>();
-
-  // Notifications
-  //todo notifications manager, init handlers, mem leaks
-  // final NotificationsManager notificationsManager = NotificationsManager(
-  //   apiService,
-  //   firebaseTokenStorage,
-  // );
 
   // User Manager
   final UserManager userManager = UserManager(
@@ -79,7 +75,7 @@ Future<void> setupDependencies() async {
 
   serviceLocator
     //..registerSingleton<TasksRepository>(tasksRepository)
-    // ..registerSingleton<NotificationsManager>(notificationsManager)
+    ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
     ..registerSingleton<UserApiService>(userApi)

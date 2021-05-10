@@ -8,6 +8,8 @@ const String apnsDeviceTokenKey = 'apns-device-token';
 const String fcmDeviceTokenKey = 'firebase-device-token';
 
 /// Manages push notifications of logged-in user within the app.
+///
+/// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
 class NotificationsManager {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final Storage<String> _fcmTokenStorage;
