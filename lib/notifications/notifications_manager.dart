@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
@@ -11,7 +12,7 @@ const String fcmDeviceTokenKey = 'firebase-device-token';
 ///
 /// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
 class NotificationsManager {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  late final FirebaseMessaging _fcm;
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
 
@@ -21,7 +22,11 @@ class NotificationsManager {
   })  : _fcmTokenStorage = fcmTokenStorage ??
             SharedPrefsStorage<String>.primitive(itemKey: fcmDeviceTokenKey),
         _apnsTokenStorage = apnsTokenStorage ??
-            SharedPrefsStorage<String>.primitive(itemKey: apnsDeviceTokenKey);
+            SharedPrefsStorage<String>.primitive(itemKey: apnsDeviceTokenKey) {
+    if (shouldConfigureFirebase()) {
+      _fcm = FirebaseMessaging.instance;
+    }
+  }
 
   setupPushNotifications() async {
     if (Platform.isIOS) {
