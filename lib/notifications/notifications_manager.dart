@@ -57,18 +57,24 @@ class NotificationsManager {
     FirebaseMessaging.onMessage.listen((message) {
       if (userAuthorized) {
         _onMessage(message);
+      } else {
+        Logger.w('NotificationsManager - Message missed. User unauthorized');
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (userAuthorized) {
         _onAppOpenedFromMessage(message);
+      } else {
+        Logger.w('NotificationsManager - App not opened. User unauthorized');
       }
     });
 
     FirebaseMessaging.onBackgroundMessage((message) async {
       if (userAuthorized) {
         _onMessage(message);
+      } else {
+        Logger.w('NotificationsManager - Bg message missed. User unauthorized');
       }
     });
   }
