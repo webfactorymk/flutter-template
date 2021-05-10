@@ -48,6 +48,12 @@ class NotificationsManager {
     FirebaseMessaging.onBackgroundMessage((message) => _onMessage(message));
   }
 
+  disablePushNotifications() async {
+    await _fcm.deleteToken();
+    await _fcmTokenStorage.delete();
+    await _apnsTokenStorage.delete();
+  }
+
   /// Requests permissions for push notifications on iOS
   /// There is no need to call this method on Android
   /// if called on Android it will always return authorization status authorized
