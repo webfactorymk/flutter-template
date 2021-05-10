@@ -713,7 +713,7 @@ packages:
       name: single_item_shared_prefs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   single_item_storage:
     dependency: "direct main"
     description:
