@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
@@ -9,7 +8,7 @@ const String fcmDeviceTokenKey = 'firebase-device-token';
 
 /// Manages push notifications of logged-in user within the app.
 class NotificationsManager {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
 
@@ -25,14 +24,14 @@ class NotificationsManager {
     if (Platform.isIOS) {
       final _ = await requestPermissions();
 
-      final apnsToken = await _firebaseMessaging.getAPNSToken();
+      final apnsToken = await _fcm.getAPNSToken();
       _onAPNSTokenReceived(apnsToken);
     }
 
-    final fcmToken = await _firebaseMessaging.getToken();
+    final fcmToken = await _fcm.getToken();
     _onFCMTokenReceived(fcmToken);
 
-    _firebaseMessaging.onTokenRefresh.listen((token) {
+    _fcm.onTokenRefresh.listen((token) {
       print('FCM Token refresh');
       _onFCMTokenReceived(token);
     });
@@ -51,14 +50,16 @@ class NotificationsManager {
   /// Requests permissions for push notifications on iOS
   /// There is no need to call this method on Android
   /// if called on Android it will always return authorization status authorized
-  Future<NotificationSettings> requestPermissions({alert: true,
+  Future<NotificationSettings> requestPermissions({
+    alert: true,
     announcement: false,
     badge: true,
     carPlay: false,
     criticalAlert: false,
     provisional: false,
-    sound: true}) async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+    sound: true,
+  }) async {
+    NotificationSettings settings = await _fcm.requestPermission(
       alert: alert,
       announcement: announcement,
       badge: badge,
@@ -85,8 +86,7 @@ class NotificationsManager {
   Future<bool> isPushAuthorized() async {
     // return true;
 
-    final notificationSettings =
-    await _firebaseMessaging.getNotificationSettings();
+    final notificationSettings = await _fcm.getNotificationSettings();
     return notificationSettings.authorizationStatus ==
         AuthorizationStatus.authorized;
   }
@@ -94,15 +94,14 @@ class NotificationsManager {
   /// Returns the current authorization status for push notifications
   /// On Android it is always authorized
   Future<AuthorizationStatus> getAuthorizationStatus() async {
-    final notificationSettings =
-    await _firebaseMessaging.getNotificationSettings();
+    final notificationSettings = await _fcm.getNotificationSettings();
     return notificationSettings.authorizationStatus;
   }
 
   /// Returns ANPS token for iOS
   /// Return null for Android/web
   Future<String?> getAPNSToken() async {
-    final token = await _firebaseMessaging.getAPNSToken();
+    final token = await _fcm.getAPNSToken();
     return token;
   }
 
