@@ -6,7 +6,6 @@ import 'package:flutter_template/network/chopper/http_api_service_provider.dart'
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
-import 'package:flutter_template/notifications/firebase_token_storage.dart';
 import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_hooks.dart';
@@ -35,8 +34,6 @@ Future<void> setupDependencies() async {
     fromMap: (map) => UserCredentials.fromJson(map),
     toMap: (user) => user.toJson(),
   )));
-
-  final FirebaseTokenStorage firebaseTokenStorage = FirebaseTokenStorage();
 
   // Network
 

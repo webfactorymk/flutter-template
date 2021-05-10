@@ -1,19 +1,25 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_template/notifications/apns_token_storage.dart';
-import 'package:flutter_template/notifications/firebase_token_storage.dart';
+import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
+import 'package:single_item_storage/storage.dart';
+
+const String apnsDeviceTokenKey = 'apns-device-token';
+const String fcmDeviceTokenKey = 'firebase-device-token';
 
 /// Manages push notifications of logged-in user within the app.
 class NotificationsManager {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FirebaseTokenStorage _fcmTokenStorage;
-  final APNSTokenStorage _apnsTokenStorage;
+  final Storage<String> _fcmTokenStorage;
+  final Storage<String> _apnsTokenStorage;
 
-  NotificationsManager(
-      this._fcmTokenStorage,
-      this._apnsTokenStorage
-      );
+  NotificationsManager({
+    Storage<String>? fcmTokenStorage,
+    Storage<String>? apnsTokenStorage,
+  })  : _fcmTokenStorage = fcmTokenStorage ??
+            SharedPrefsStorage<String>.primitive(itemKey: fcmDeviceTokenKey),
+        _apnsTokenStorage = apnsTokenStorage ??
+            SharedPrefsStorage<String>.primitive(itemKey: apnsDeviceTokenKey);
 
   setupPushNotifications() async {
     if (Platform.isIOS) {
