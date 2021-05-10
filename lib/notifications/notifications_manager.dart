@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_template/log/logger.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
 import 'package:single_item_storage/storage.dart';
 
@@ -32,7 +33,7 @@ class NotificationsManager {
     _onFCMTokenReceived(fcmToken);
 
     _fcm.onTokenRefresh.listen((token) {
-      print('FCM Token refresh');
+      Logger.d('FCM Token refresh');
       _onFCMTokenReceived(token);
     });
 
@@ -70,12 +71,12 @@ class NotificationsManager {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
+      Logger.d('User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
+      Logger.d('User granted provisional permission');
     } else {
-      print('User declined or has not accepted permission');
+      Logger.w('User declined or has not accepted permission');
     }
 
     return settings;
@@ -106,30 +107,30 @@ class NotificationsManager {
   }
 
   Future<void> _onAPNSTokenReceived(String? token) async {
+    Logger.d('APNS Token $token');
+
     final storedToken = await _apnsTokenStorage.get();
 
     if (storedToken == null || storedToken != token) {
       await _apnsTokenStorage.save(token!);
     }
-
-    print('APNS Token $token');
   }
 
   Future<void> _onFCMTokenReceived(String? token) async {
+    Logger.d('FCM Token $token');
+
     final storedToken = await _fcmTokenStorage.get();
 
     if (storedToken == null || storedToken != token) {
       await _fcmTokenStorage.save(token!);
     }
-
-    print('FCM Token $token');
   }
 
   _onMessage(RemoteMessage message) {
-    print('New remote message}');
+    Logger.d('New remote message}');
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
-    print('Opened from remote message');
+    Logger.d('Opened from remote message');
   }
 }
