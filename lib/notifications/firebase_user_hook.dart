@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
+import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/user/user_hooks.dart';
 
 /// Listens for user updates events and configures firebase accordingly.
@@ -9,14 +10,13 @@ import 'package:flutter_template/user/user_hooks.dart';
 /// - Sets user identifier
 /// - Enables/Disables [NotificationsManager]
 /// - Cleans up user data on logout
-class FirebaseUserHook implements UserUpdatesHook<UserCredentials> {
+class FirebaseUserHook implements UserUpdatesHook<UserCredentials>, LogoutHook {
   final FirebaseCrashlytics _crashlytics;
-  // final NotificationsManager _notificationsManager;
+  final NotificationsManager _notificationsManager;
 
   StreamSubscription<UserCredentials?>? _streamSubscription;
 
-  FirebaseUserHook()
-      : _crashlytics = FirebaseCrashlytics.instance;
+  FirebaseUserHook(this._crashlytics, this._notificationsManager);
 
   @override
   void onUserUpdatesProvided(Stream<UserCredentials?> userUpdates) {
@@ -33,14 +33,22 @@ class FirebaseUserHook implements UserUpdatesHook<UserCredentials> {
 
   Future<void> _onUserAuthorized(UserCredentials userCredentials) async {
     _crashlytics.setUserIdentifier(userCredentials.user.id);
-    //todo _notificationsManager.enable();
+
+    if (!_notificationsManager.setupStarted) {
+      await _notificationsManager.setupPushNotifications();
+    }
+    _notificationsManager.userAuthorized = true;
   }
 
   Future<void> _onUserUnauthorized() async {
-    _crashlytics
-        .setUserIdentifier('n/a: ${DateTime.now().millisecondsSinceEpoch}');
-    //todo await _notificationsManager.deleteToken();
+    final timeNow = DateTime.now().millisecondsSinceEpoch;
+    _crashlytics.setUserIdentifier('n/a: $timeNow');
+
+    _notificationsManager.userAuthorized = false;
   }
+
+  @override
+  Future<void> postLogout() => _notificationsManager.disablePushNotifications();
 
   Future<void> tearDown() async {
     await _streamSubscription?.cancel();

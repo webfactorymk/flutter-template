@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -7,7 +8,8 @@ import 'package:flutter_template/network/mock/mock_user_api_service.dart';
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
-import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
+import 'package:flutter_template/notifications/firebase_user_hook.dart';
+import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_hooks.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -38,36 +40,6 @@ Future<void> setupDependencies() async {
 
   // Network
 
-  // final RequestInterceptorJwt requestInterceptorJwt = RequestInterceptorJwt();
-  // final ResponseInterceptorAuth responseInterceptorAuth =
-  //     ResponseInterceptorAuth();
-  // final ResponseInterceptorAppVersion responseInterceptorAppVersion =
-  //     ResponseInterceptorAppVersion();
-  // final LanguageRequestInterceptor languageRequestInterceptor =
-  //     LanguageRequestInterceptor();
-  // final RequestInterceptorAppVersion appVersionRequestInterceptor =
-  //     RequestInterceptorAppVersion(await PackageInfo.fromPlatform());
-  // final DataConverter dataConverter = JsonDataConverter();
-  //
-  // // Authenticator (refresh token)
-  // final AuthenticatorApiService authService =
-  //     HttpAuthenticatorApi(baseUrlApi, Client(), dataConverter);
-  // final AuthenticatorJwt authenticator =
-  //     AuthenticatorJwt(authService); //set user mgr
-  // final ErrorHandler errorHandler = ErrorHandler();
-  //
-  // final UnauthorizedUserHandler unauthorizedUserHandler =
-  // UnauthorizedUserHandlerImpl(userManager);
-  // responseInterceptorAuth.unauthorizedUserHandler = unauthorizedUserHandler;
-  // errorHandler.unauthorizedUserHandler = unauthorizedUserHandler;
-  //
-  // final Client httpClient = HttpClient(Client(), authenticator, errorHandler)
-  //   ..addInterceptor(requestInterceptorJwt)
-  //   ..addInterceptor(languageRequestInterceptor)
-  //   ..addInterceptor(appVersionRequestInterceptor)
-  //   ..addResponseInterceptor(responseInterceptorAuth)
-  //   ..addResponseInterceptor(responseInterceptorAppVersion);
-
   final String baseUrlApi = FlavorConfig.values.baseUrlApi;
 
   HttpApiServiceProvider apiProvider = HttpApiServiceProvider(
@@ -85,25 +57,16 @@ Future<void> setupDependencies() async {
     userApi = MockUserApiService();
   }
 
-  // Firebase
-  final UserUpdatesHook<UserCredentials> firebaseUserHook =
-      shouldConfigureFirebase()
-          ? FirebaseUserHook()
-          : StubHook<UserCredentials>();
-
-  // Notifications
-  //todo notifications manager, init handlers, mem leaks
-  // final NotificationsManager notificationsManager = NotificationsManager(
-  //   apiService,
-  //   firebaseTokenStorage,
-  // );
+  // Firebase and Notifications
+  final NotificationsManager notificationsManager = NotificationsManager();
+  final firebaseUserHook = shouldConfigureFirebase()
+      ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
+      : StubHook<UserCredentials>();
 
   // User Manager
-  final UserManager userManager = UserManager(
-    userApi,
-    userStorage,
-    updateHooks: [firebaseUserHook],
-  );
+  final UserManager userManager = UserManager(userApi, userStorage,
+      updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
+      logoutHooks: [firebaseUserHook as LogoutHook]);
 
   // Platform comm
   final PlatformComm platformComm = PlatformComm.generalAppChannel()
@@ -114,7 +77,7 @@ Future<void> setupDependencies() async {
 
   serviceLocator
     //..registerSingleton<TasksRepository>(tasksRepository)
-    // ..registerSingleton<NotificationsManager>(notificationsManager)
+    ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
     ..registerSingleton<UserApiService>(userApi)

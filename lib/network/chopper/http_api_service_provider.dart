@@ -81,7 +81,7 @@ class HttpApiServiceProvider {
         HeadersInterceptor({'Cache-Control': 'no-cache'}),
         VersionInterceptor(packageInfo),
         LanguageInterceptor(localeStore),
-        AuthInterceptor(userStore, authenticatorHelper),
+        AuthInterceptor(authenticatorHelper),
         // Both
         HttpLoggerInterceptor(),
         // Response
