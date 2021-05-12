@@ -12,7 +12,7 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   SignUpCubit(this.apiService, this.userManager) : super(SignUpInitial());
 
-  Future<void> onUserSigUp(String email, String password) async {
+  Future<void> onUserSignUp(String email, String password) async {
     Logger.d('SignUpCubit - User sign up: email $email');
     emit(SignUpInProgress());
     final User user = User(id: "id", email: email);

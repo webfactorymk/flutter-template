@@ -64,6 +64,6 @@ class SignUpPage extends StatelessWidget {
 
   void _onSignUpPressed(BuildContext context) {
     BlocProvider.of<SignUpCubit>(context)
-        .onUserSigUp(_emailController.text, _passwordController.text);
+        .onUserSignUp(_emailController.text, _passwordController.text);
   }
 }

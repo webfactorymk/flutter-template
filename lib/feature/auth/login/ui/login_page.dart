@@ -7,8 +7,8 @@ import 'package:flutter_template/widgets/circular_progress_indicator.dart';
 
 class LoginPage extends StatelessWidget {
   final bool sessionExpiredRedirect;
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   LoginPage({Key? key, this.sessionExpiredRedirect = false}) : super(key: key);
 
