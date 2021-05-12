@@ -4,10 +4,11 @@ import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/http_api_service_provider.dart';
+import 'package:flutter_template/network/mock/mock_user_api_service.dart';
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
-import 'package:flutter_template/notifications/firebase_user_updates_hook.dart';
+import 'package:flutter_template/notifications/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_hooks.dart';
@@ -48,30 +49,31 @@ Future<void> setupDependencies() async {
   );
 
   final AuthenticatorHelperJwt authHelperJwt = apiProvider.getAuthHelperJwt();
-  final UserApiService userApi = apiProvider.getUserApiService();
+  UserApiService userApi = apiProvider.getUserApiService();
   final UserAuthApiService userAuthApi = apiProvider.getUserAuthApiService();
   final TasksApiService tasksApi = apiProvider.getTasksApiService();
 
+  if (FlavorConfig.isMock()) {
+    userApi = MockUserApiService();
+  }
+
   // Firebase and Notifications
   final NotificationsManager notificationsManager = NotificationsManager();
-  final UserUpdatesHook<UserCredentials> firebaseUserHook =
-      shouldConfigureFirebase()
-          ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
-          : StubHook<UserCredentials>();
+  final firebaseUserHook = shouldConfigureFirebase()
+      ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
+      : StubHook<UserCredentials>();
 
   // User Manager
-  final UserManager userManager = UserManager(
-    userApi,
-    userStorage,
-    updateHooks: [firebaseUserHook],
-  );
+  final UserManager userManager = UserManager(userApi, userStorage,
+      updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
+      logoutHooks: [firebaseUserHook as LogoutHook]);
 
   // Platform comm
   final PlatformComm platformComm = PlatformComm.generalAppChannel()
     ..listenToNativeLogs();
 
   // UI
-  AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
+  final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
 
   serviceLocator
     //..registerSingleton<TasksRepository>(tasksRepository)

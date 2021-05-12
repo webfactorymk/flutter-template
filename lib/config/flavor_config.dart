@@ -1,6 +1,6 @@
 import 'package:flutter_template/util/enum_util.dart';
 
-enum Flavor { DEV, STAGING, PRODUCTION }
+enum Flavor { MOCK, DEV, STAGING, PRODUCTION }
 
 /// App specific flavor values.
 class FlavorValues {
@@ -28,6 +28,8 @@ abstract class FlavorConfig {
   }
 
   static bool isInitialized() => _flavor != null; //in tests it's not
+
+  static bool isMock() => _flavor! == Flavor.MOCK;
 
   static bool isDev() => _flavor! == Flavor.DEV;
 
