@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/app_routes.dart';
-import 'package:flutter_template/feature/auth/login/domain/login.dart';
+import 'package:flutter_template/feature/auth/login/bloc/login.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
 
 class LoginPage extends StatelessWidget {

@@ -7,24 +7,24 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/app_routes.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/auth/login/domain/login_cubit.dart';
-import 'package:flutter_template/feature/auth/login/presentation/login_page.dart';
+import 'package:flutter_template/feature/auth/global_handler/global_auth_cubit.dart';
 import 'package:flutter_template/feature/home/home_page.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/resources/strings.dart';
+import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'feature/auth/global_handler/global_auth_cubit.dart';
 import 'feature/auth/global_handler/global_auth_state.dart';
-import 'feature/auth/signup/domain/signup_cubit.dart';
-import 'feature/auth/signup/presentation/signup_page.dart';
-import 'user/user_manager.dart';
+import 'feature/auth/login/bloc/login.dart';
+import 'feature/auth/login/ui/login_page.dart';
+import 'feature/auth/signup/bloc/signup.dart';
+import 'feature/auth/signup/ui/signup_page.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
