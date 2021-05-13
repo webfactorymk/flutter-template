@@ -49,6 +49,6 @@ abstract class JsonTypeConverterProvider {
       )
       .build();
 
-//todo add more coverters
+//todo add more converters
 //todo generate this class for each json serializable model
 }

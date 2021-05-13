@@ -1,13 +1,13 @@
 import 'dart:convert';
+
 import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';
-import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/converters/json_type_converter_provider.dart';
+import 'package:flutter_template/network/chopper/generated/chopper_tasks_api_service.dart';
 import 'package:flutter_template/network/chopper/interceptors/auth_interceptor.dart';
-import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -44,7 +44,7 @@ final Map<int, Task> taskMap = Map.unmodifiable({
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late TasksApiService apiService;
+  late ChopperTasksApiService apiService;
   late Storage<UserCredentials> userCredentialsStorage;
   late http.Client mockClient;
   late ChopperClient chopperClient;
@@ -63,7 +63,7 @@ void main() {
             mockUserAuthApiService, userCredentialsStorage)),
       ],
     );
-    apiService = TasksApiService.create(chopperClient);
+    apiService = ChopperTasksApiService.create(chopperClient);
   });
 
   group('Test tasks api service - chopper implementation', () {
@@ -90,10 +90,8 @@ void main() {
 
     test('invalid token, 401 response, refresh', () async {
       // arrange
-      Response<Credentials> response = Response(
-          http.Response('test', 200), NetworkTestHelper.validCredentials);
-      when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value(response));
+      when(mockUserAuthApiService.refreshToken(any)).thenAnswer(
+          (_) async => Future.value(NetworkTestHelper.validCredentials));
       await userCredentialsStorage
           .save(NetworkTestHelper.expiredUserCredentials);
 
@@ -119,10 +117,8 @@ void main() {
 
     test('multiple 401 responses, refresh token once, retry all', () async {
       // arrange
-      Response<Credentials> response = Response(
-          http.Response('test', 200), NetworkTestHelper.validCredentials);
-      when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value(response));
+      when(mockUserAuthApiService.refreshToken(any)).thenAnswer(
+          (_) async => Future.value(NetworkTestHelper.validCredentials));
       await userCredentialsStorage
           .save(NetworkTestHelper.expiredUserCredentials);
 

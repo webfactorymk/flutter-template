@@ -1,54 +1,42 @@
-export 'chopper/converters/response_to_type_converter.dart';
-
-import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
-import 'package:flutter_template/network/util/http_util.dart';
-
-part 'user_api_service.chopper.dart';
+import 'package:flutter_template/network/chopper/generated/chopper_user_api_service.dart';
+import 'package:flutter_template/network/chopper/converters/response_to_type_converter.dart';
 
 /// User api service.
 ///
 /// To obtain an instance use `serviceLocator.get<UserApiService>()`
-@ChopperApi()
-abstract class UserApiService extends ChopperService {
-  static create([ChopperClient? client]) => _$UserApiService(client);
+class UserApiService {
+  final ChopperUserApiService _chopper;
+
+  UserApiService(this._chopper);
 
   /// Registers a user
-  @Post(path: '/user/register')
-  Future<Response> signUp(@Body() User user);
+  Future<void> signUp(User user) => _chopper.signUp(user).toType();
 
   /// Gets the logged in user
-  @Post(path: '/user/login')
-  @FactoryConverter(request: FormUrlEncodedConverter.requestFactory)
-  Future<Response<Credentials>> login(
-    @Field() String username,
-    @Field() String password,
-  );
+  Future<Credentials> login(String username, String password) =>
+      _chopper.login(username, password).toType();
 
   /// Returns user profile details
-  @Get(path: '/user')
-  Future<Response<User>> getUserProfile({
-    @Header(authHeaderKey) String? authHeader,
-  });
+  Future<User> getUserProfile({String? authHeader}) =>
+      _chopper.getUserProfile(authHeader: authHeader).toType();
 
   /// Updates user profile details
-  @Put(path: '/user')
-  Future<Response<User>> updateUserProfile(@Body() User user);
+  Future<User> updateUserProfile(User user) =>
+      _chopper.updateUserProfile(user).toType();
 
   /// Sends a request for resetting the user's password
-  @Post(path: '/user/reset-password')
-  Future<Response<void>> resetPassword(@Body() String email);
+  Future<void> resetPassword(String email) =>
+      _chopper.resetPassword(email).toType();
 
   /// Adds token needed for logged in user to receive push notifications
-  @Post(path: '/user/notifications-token')
-  Future<Response> addNotificationsToken(@Body() String token);
+  Future<void> addNotificationsToken(String token) =>
+      _chopper.addNotificationsToken(token).toType();
 
   /// Logs out the user from server
-  @Post(path: '/user/logout', optionalBody: true)
-  Future<Response<void>> logout();
+  Future<void> logout() => _chopper.logout().toType();
 
   /// Deactivates the user
-  @Delete(path: '/user')
-  Future<Response<void>> deactivate();
+  Future<void> deactivate() => _chopper.deactivate().toType();
 }

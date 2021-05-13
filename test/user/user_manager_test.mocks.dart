@@ -4,14 +4,11 @@
 
 import 'dart:async' as _i5;
 
-import 'package:chopper/src/base.dart' as _i2;
-import 'package:chopper/src/response.dart' as _i3;
-import 'package:flutter_template/model/user/credentials.dart' as _i7;
-import 'package:flutter_template/model/user/user.dart' as _i6;
+import 'package:flutter_template/model/user/credentials.dart' as _i2;
+import 'package:flutter_template/model/user/user.dart' as _i3;
 import 'package:flutter_template/network/user_api_service.dart' as _i4;
-import 'package:flutter_template/user/user_hooks.dart' as _i8;
+import 'package:flutter_template/user/user_hooks.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:single_item_storage/storage.dart' as _i9;
 
 // ignore_for_file: comment_references
 // ignore_for_file: unnecessary_parenthesis
@@ -20,12 +17,9 @@ import 'package:single_item_storage/storage.dart' as _i9;
 
 // ignore_for_file: avoid_redundant_argument_values
 
-class _FakeChopperClient extends _i1.Fake implements _i2.ChopperClient {}
+class _FakeCredentials extends _i1.Fake implements _i2.Credentials {}
 
-class _FakeType extends _i1.Fake implements Type {}
-
-class _FakeResponse<BodyType> extends _i1.Fake
-    implements _i3.Response<BodyType> {}
+class _FakeUser extends _i1.Fake implements _i3.User {}
 
 /// A class which mocks [UserApiService].
 ///
@@ -36,71 +30,52 @@ class MockUserApiService extends _i1.Mock implements _i4.UserApiService {
   }
 
   @override
-  _i2.ChopperClient get client =>
-      (super.noSuchMethod(Invocation.getter(#client),
-          returnValue: _FakeChopperClient()) as _i2.ChopperClient);
-  @override
-  set client(_i2.ChopperClient? _client) =>
-      super.noSuchMethod(Invocation.setter(#client, _client),
-          returnValueForMissingStub: null);
-  @override
-  Type get definitionType =>
-      (super.noSuchMethod(Invocation.getter(#definitionType),
-          returnValue: _FakeType()) as Type);
-  @override
-  _i5.Future<_i3.Response<dynamic>> signUp(_i6.User? user) =>
+  _i5.Future<void> signUp(_i3.User? user) =>
       (super.noSuchMethod(Invocation.method(#signUp, [user]),
-              returnValue:
-                  Future<_i3.Response<dynamic>>.value(_FakeResponse<dynamic>()))
-          as _i5.Future<_i3.Response<dynamic>>);
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
   @override
-  _i5.Future<_i3.Response<_i7.Credentials>> login(
-          String? username, String? password) =>
+  _i5.Future<_i2.Credentials> login(String? username, String? password) =>
       (super.noSuchMethod(Invocation.method(#login, [username, password]),
-              returnValue: Future<_i3.Response<_i7.Credentials>>.value(
-                  _FakeResponse<_i7.Credentials>()))
-          as _i5.Future<_i3.Response<_i7.Credentials>>);
+              returnValue: Future<_i2.Credentials>.value(_FakeCredentials()))
+          as _i5.Future<_i2.Credentials>);
   @override
-  _i5.Future<_i3.Response<_i6.User>> getUserProfile({String? authHeader}) =>
+  _i5.Future<_i3.User> getUserProfile({String? authHeader}) =>
       (super.noSuchMethod(
               Invocation.method(#getUserProfile, [], {#authHeader: authHeader}),
-              returnValue: Future<_i3.Response<_i6.User>>.value(
-                  _FakeResponse<_i6.User>()))
-          as _i5.Future<_i3.Response<_i6.User>>);
+              returnValue: Future<_i3.User>.value(_FakeUser()))
+          as _i5.Future<_i3.User>);
   @override
-  _i5.Future<_i3.Response<_i6.User>> updateUserProfile(_i6.User? user) =>
+  _i5.Future<_i3.User> updateUserProfile(_i3.User? user) =>
       (super.noSuchMethod(Invocation.method(#updateUserProfile, [user]),
-              returnValue: Future<_i3.Response<_i6.User>>.value(
-                  _FakeResponse<_i6.User>()))
-          as _i5.Future<_i3.Response<_i6.User>>);
+              returnValue: Future<_i3.User>.value(_FakeUser()))
+          as _i5.Future<_i3.User>);
   @override
-  _i5.Future<_i3.Response<void>> resetPassword(String? email) =>
+  _i5.Future<void> resetPassword(String? email) =>
       (super.noSuchMethod(Invocation.method(#resetPassword, [email]),
-              returnValue:
-                  Future<_i3.Response<void>>.value(_FakeResponse<void>()))
-          as _i5.Future<_i3.Response<void>>);
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
   @override
-  _i5.Future<_i3.Response<dynamic>> addNotificationsToken(String? token) =>
+  _i5.Future<void> addNotificationsToken(String? token) =>
       (super.noSuchMethod(Invocation.method(#addNotificationsToken, [token]),
-              returnValue:
-                  Future<_i3.Response<dynamic>>.value(_FakeResponse<dynamic>()))
-          as _i5.Future<_i3.Response<dynamic>>);
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
   @override
-  _i5.Future<_i3.Response<void>> logout() => (super.noSuchMethod(
-          Invocation.method(#logout, []),
-          returnValue: Future<_i3.Response<void>>.value(_FakeResponse<void>()))
-      as _i5.Future<_i3.Response<void>>);
+  _i5.Future<void> logout() =>
+      (super.noSuchMethod(Invocation.method(#logout, []),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
   @override
-  _i5.Future<_i3.Response<void>> deactivate() => (super.noSuchMethod(
-          Invocation.method(#deactivate, []),
-          returnValue: Future<_i3.Response<void>>.value(_FakeResponse<void>()))
-      as _i5.Future<_i3.Response<void>>);
+  _i5.Future<void> deactivate() =>
+      (super.noSuchMethod(Invocation.method(#deactivate, []),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
 }
 
 /// A class which mocks [LoginHook].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginHook<U> extends _i1.Mock implements _i8.LoginHook<U> {
+class MockLoginHook<U> extends _i1.Mock implements _i6.LoginHook<U> {
   MockLoginHook() {
     _i1.throwOnMissingStub(this);
   }
@@ -115,7 +90,7 @@ class MockLoginHook<U> extends _i1.Mock implements _i8.LoginHook<U> {
 /// A class which mocks [LogoutHook].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogoutHook extends _i1.Mock implements _i8.LogoutHook {
+class MockLogoutHook extends _i1.Mock implements _i6.LogoutHook {
   MockLogoutHook() {
     _i1.throwOnMissingStub(this);
   }
@@ -123,28 +98,6 @@ class MockLogoutHook extends _i1.Mock implements _i8.LogoutHook {
   @override
   _i5.Future<void> postLogout() =>
       (super.noSuchMethod(Invocation.method(#postLogout, []),
-          returnValue: Future<void>.value(null),
-          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
-}
-
-/// A class which mocks [Storage].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockStorage<E> extends _i1.Mock implements _i9.Storage<E> {
-  MockStorage() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i5.Future<E> save(E? item) =>
-      (super.noSuchMethod(Invocation.method(#save, [item]),
-          returnValue: Future<E>.value(null)) as _i5.Future<E>);
-  @override
-  _i5.Future<E?> get() => (super.noSuchMethod(Invocation.method(#get, []),
-      returnValue: Future<E?>.value(null)) as _i5.Future<E?>);
-  @override
-  _i5.Future<void> delete() =>
-      (super.noSuchMethod(Invocation.method(#delete, []),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i5.Future<void>);
 }

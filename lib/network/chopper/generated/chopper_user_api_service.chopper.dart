@@ -1,20 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_api_service.dart';
+part of 'chopper_user_api_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
 // **************************************************************************
 
 // ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
-class _$UserApiService extends UserApiService {
-  _$UserApiService([ChopperClient? client]) {
+class _$ChopperUserApiService extends ChopperUserApiService {
+  _$ChopperUserApiService([ChopperClient? client]) {
     if (client == null) return;
     this.client = client;
   }
 
   @override
-  final definitionType = UserApiService;
+  final definitionType = ChopperUserApiService;
 
   @override
   Future<Response<dynamic>> signUp(User user) {

@@ -60,7 +60,7 @@ void main() {
       Response<Credentials> response = Response(
           http.Response('test', 200), NetworkTestHelper.validCredentials);
       when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value(response));
+          .thenAnswer((_) async => Future.value());
       await storage.save(NetworkTestHelper.expiredUserCredentials);
 
       // act
@@ -136,7 +136,7 @@ void main() {
       Response<Credentials> response = Response(
           http.Response('test', 200), NetworkTestHelper.validCredentials);
       when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value(response));
+          .thenAnswer((_) async => Future.value());
       storage.save(NetworkTestHelper.expiredUserCredentials);
       Request expected = Request('GET', 'task/2', 'http://example.com',
           headers: {authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken});

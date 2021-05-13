@@ -80,10 +80,9 @@ class UserManager with UpdatesStream<UserCredentials> {
       return _userStore.get().asNonNullable();
     }
 
-    final credentials = await _apiService.login(username, password).toType();
+    final credentials = await _apiService.login(username, password);
     final user = await _apiService
-        .getUserProfile(authHeader: authHeaderValue(credentials.token))
-        .toType();
+        .getUserProfile(authHeader: authHeaderValue(credentials.token));
     final userCredentials = UserCredentials(user, credentials);
 
     Logger.d('UserManager - Login success: $userCredentials');
@@ -110,7 +109,7 @@ class UserManager with UpdatesStream<UserCredentials> {
       return;
     }
 
-    await _apiService.logout().toType();
+    await _apiService.logout();
     await _userStore.delete();
     Logger.d('UserManager - Logout success');
 
@@ -169,7 +168,7 @@ class UserManager with UpdatesStream<UserCredentials> {
       throw UnauthorizedUserException('Refreshing a logged out user');
     }
 
-    final User newUser = await _apiService.getUserProfile().toType();
+    final User newUser = await _apiService.getUserProfile();
 
     final UserCredentials? oldUserCredentials = await _userStore.get();
     final UserCredentials newUserCredentials = UserCredentials(

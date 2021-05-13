@@ -1,20 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tasks_api_service.dart';
+part of 'chopper_tasks_api_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
 // **************************************************************************
 
 // ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
-class _$TasksApiService extends TasksApiService {
-  _$TasksApiService([ChopperClient? client]) {
+class _$ChopperTasksApiService extends ChopperTasksApiService {
+  _$ChopperTasksApiService([ChopperClient? client]) {
     if (client == null) return;
     this.client = client;
   }
 
   @override
-  final definitionType = TasksApiService;
+  final definitionType = ChopperTasksApiService;
 
   @override
   Future<Response<List<TaskGroup>>> getTaskGroups() {

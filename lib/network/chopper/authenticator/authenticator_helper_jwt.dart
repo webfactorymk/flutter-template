@@ -241,7 +241,6 @@ class AuthenticatorHelperJwt {
   Future<Credentials> _refreshToken(RefreshToken refreshToken) async {
     final Credentials? newCredentials = await _userAuthApiService
         .refreshToken(refreshToken.token)
-        .toType()
         .timeout(Duration(seconds: TIMEOUT))
         .catchError(
       (_) => Future.value(null as Credentials),

@@ -25,10 +25,10 @@ void main() {
     apiService = MockApiService();
     userManager = UserManager(apiService, ObservedStorage(MemoryStorage()));
 
-    when(apiService.login('username', 'password').toType()).thenAnswer(
+    when(apiService.login('username', 'password')).thenAnswer(
         (_) => Future.value(Credentials('token', RefreshToken('rt', 0))));
-    when(apiService.getUserProfile().toType()).thenAnswer((_) => Future.value(user));
-    when(apiService.logout().toType()).thenAnswer((_) => Future.value());
+    when(apiService.getUserProfile()).thenAnswer((_) => Future.value(user));
+    when(apiService.logout()).thenAnswer((_) => Future.value());
   });
 
   tearDown(() {

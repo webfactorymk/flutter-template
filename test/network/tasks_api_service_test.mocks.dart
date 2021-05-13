@@ -2,12 +2,10 @@
 // in flutter_template/test/network/tasks_api_service_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
-import 'package:chopper/src/base.dart' as _i2;
-import 'package:chopper/src/response.dart' as _i3;
-import 'package:flutter_template/model/user/credentials.dart' as _i6;
-import 'package:flutter_template/network/user_auth_api_service.dart' as _i4;
+import 'package:flutter_template/model/user/credentials.dart' as _i2;
+import 'package:flutter_template/network/user_auth_api_service.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: comment_references
@@ -17,39 +15,20 @@ import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: avoid_redundant_argument_values
 
-class _FakeChopperClient extends _i1.Fake implements _i2.ChopperClient {}
-
-class _FakeType extends _i1.Fake implements Type {}
-
-class _FakeResponse<BodyType> extends _i1.Fake
-    implements _i3.Response<BodyType> {}
+class _FakeCredentials extends _i1.Fake implements _i2.Credentials {}
 
 /// A class which mocks [UserAuthApiService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserAuthApiService extends _i1.Mock
-    implements _i4.UserAuthApiService {
+    implements _i3.UserAuthApiService {
   MockUserAuthApiService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.ChopperClient get client =>
-      (super.noSuchMethod(Invocation.getter(#client),
-          returnValue: _FakeChopperClient()) as _i2.ChopperClient);
-  @override
-  set client(_i2.ChopperClient? _client) =>
-      super.noSuchMethod(Invocation.setter(#client, _client),
-          returnValueForMissingStub: null);
-  @override
-  Type get definitionType =>
-      (super.noSuchMethod(Invocation.getter(#definitionType),
-          returnValue: _FakeType()) as Type);
-  @override
-  _i5.Future<_i3.Response<_i6.Credentials>> refreshToken(
-          String? refreshToken) =>
+  _i4.Future<_i2.Credentials> refreshToken(String? refreshToken) =>
       (super.noSuchMethod(Invocation.method(#refreshToken, [refreshToken]),
-              returnValue: Future<_i3.Response<_i6.Credentials>>.value(
-                  _FakeResponse<_i6.Credentials>()))
-          as _i5.Future<_i3.Response<_i6.Credentials>>);
+              returnValue: Future<_i2.Credentials>.value(_FakeCredentials()))
+          as _i4.Future<_i2.Credentials>);
 }

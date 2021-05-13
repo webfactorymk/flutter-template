@@ -1,56 +1,49 @@
-export 'chopper/converters/response_to_type_converter.dart';
-
-import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/task/api/complete_task.dart';
 import 'package:flutter_template/model/task/api/create_task.dart';
 import 'package:flutter_template/model/task/api/create_task_group.dart';
 import 'package:flutter_template/model/task/api/reopen_task.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_group.dart';
-
-part 'tasks_api_service.chopper.dart';
+import 'package:flutter_template/network/chopper/converters/response_to_type_converter.dart';
+import 'package:flutter_template/network/chopper/generated/chopper_tasks_api_service.dart';
 
 /// Tasks api service.
 ///
 /// To obtain an instance use `serviceLocator.get<TasksApiService>()`
-@ChopperApi()
-abstract class TasksApiService extends ChopperService {
+class TasksApiService {
+  final ChopperTasksApiService _chopper;
 
-  static create([ChopperClient? client]) => _$TasksApiService(client);
+  TasksApiService(this._chopper);
 
   /// Get all task groups for the logged in user.
-  @Get(path: '/task-groups')
-  Future<Response<List<TaskGroup>>> getTaskGroups();
+  Future<List<TaskGroup>> getTaskGroups() => _chopper.getTaskGroups().toType();
 
   /// Find a task group by id.
-  @Get(path: '/task-groups/{id}')
-  Future<Response<TaskGroup>> getTaskGroup(@Path('id') String id);
+  Future<TaskGroup> getTaskGroup(String id) =>
+      _chopper.getTaskGroup(id).toType();
 
   /// Find a task by id.
-  @Get(path: '/task/{id}')
-  Future<Response<Task>> getTask(@Path('id') String taskId);
+  Future<Task> getTask(String taskId) => _chopper.getTask(taskId).toType();
 
   /// Opens a previously "completed" task.
-  @Put(path: '/task/{id}')
-  Future<Response> reopenTask(@Path('id') String id, @Body() ReopenTask body);
+  Future<void> reopenTask(String id, ReopenTask body) =>
+      _chopper.reopenTask(id, body).toType();
 
   /// Mark a task as done.
-  @Put(path: '/task/{id}')
-  Future<Response> completeTask(@Path('id') String id, @Body() CompleteTask ct);
+  Future<void> completeTask(String id, CompleteTask ct) =>
+      _chopper.completeTask(id, ct).toType();
 
   /// Creates a new [Task].
-  @Post(path: '/task')
-  Future<Response<Task>> createTask(@Body() CreateTask createTask);
+  Future<Task> createTask(CreateTask createTask) =>
+      _chopper.createTask(createTask).toType();
 
   /// Creates a new [TaskGroup].
-  @Post(path: '/task-groups')
-  Future<Response<TaskGroup>> createTaskGroup(@Body() CreateTaskGroup ctg);
+  Future<TaskGroup> createTaskGroup(CreateTaskGroup ctg) =>
+      _chopper.createTaskGroup(ctg).toType();
 
   /// Deletes all tasks.
-  @Delete(path: '/task')
-  Future<Response> deleteAllTasks();
+  Future<void> deleteAllTasks() => _chopper.deleteAllTasks().toType();
 
   /// Deletes all task groups.
-  @Delete(path: '/task-groups')
-  Future<Response> deleteAllTaskGroups();
+  Future<void> deleteAllTaskGroups() => _chopper.deleteAllTaskGroups().toType();
 }

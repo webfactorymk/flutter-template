@@ -13,7 +13,6 @@ import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/cached_storage.dart';
 import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/observed_storage.dart';
-import 'package:single_item_storage/storage.dart';
 
 import 'test_user_manager.dart';
 import 'user_manager_test.mocks.dart';
@@ -54,7 +53,7 @@ void main() {
       logoutHooks: [logoutHook],
     );
 
-    when(apiService.getUserProfile(authHeader: 'Bearer $validToken').toType())
+    when(apiService.getUserProfile(authHeader: 'Bearer $validToken'))
         .thenAnswer((_) async => Future.value(validUserCredentials.user));
   });
 
@@ -69,7 +68,7 @@ void main() {
   });
 
   test('Login Success', () async {
-    when(apiService.login("username", "password").toType())
+    when(apiService.login("username", "password"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
@@ -86,7 +85,7 @@ void main() {
   });
 
   test('Double login', () async {
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
@@ -116,9 +115,9 @@ void main() {
   });
 
   test('Logout Success', () async {
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
     expect(
@@ -134,7 +133,7 @@ void main() {
   });
 
   test('Logout Error', () async {
-    when(apiService.login("username", "password").toType())
+    when(apiService.login("username", "password"))
         .thenAnswer((_) => Future.value(validCredentials));
     when(apiService.logout()).thenThrow(Exception("Can't log-out!"));
 
@@ -149,9 +148,9 @@ void main() {
 
   test('Double logout', () async {
     // arrange
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // assert later
@@ -173,9 +172,9 @@ void main() {
   });
 
   test('User updates stream', () async {
-    when(apiService.login("jojo", "123").toType())
+    when(apiService.login("jojo", "123"))
         .thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
     Stream<bool> userUpdates = userManager.updates.map(userCredentialsToBool());
@@ -189,9 +188,9 @@ void main() {
   });
 
   test('User updates multiple stream subscription', () async {
-    when(apiService.login("jojo", "123").toType())
+    when(apiService.login("jojo", "123"))
         .thenAnswer((_) => Future.value(validCredentials));
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
     Stream<bool> usrUpdates1 = userManager.updates.map(userCredentialsToBool());
@@ -211,10 +210,10 @@ void main() {
 
   test('Update credentials success', () async {
     // arrange
-    when(apiService.getUserProfile(authHeader: 'Bearer $validToken').toType())
+    when(apiService.getUserProfile(authHeader: 'Bearer $validToken'))
         .thenAnswer(
             (realInvocation) => Future.value(validUserCredentials.user));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -228,9 +227,9 @@ void main() {
 
   test('Update credentials when user logged out', () async {
     // arrange
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -244,11 +243,11 @@ void main() {
 
   test('Update user success', () async {
     // arrange
-    when(apiService.getUserProfile().toType()).thenAnswer(
+    when(apiService.getUserProfile()).thenAnswer(
         (realInvocation) => Future.value(validUserCredentialsSecond.user));
-    when(apiService.updateUserProfile(validUserCredentialsSecond.user).toType())
+    when(apiService.updateUserProfile(validUserCredentialsSecond.user))
         .thenAnswer((_) => Future.value(validUserCredentialsSecond.user));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -264,9 +263,9 @@ void main() {
 
   test('Update user when logged out', () async {
     // arrange
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -281,9 +280,9 @@ void main() {
 
   test('Refresh user success', () async {
     // arrange
-    when(apiService.getUserProfile().toType()).thenAnswer(
+    when(apiService.getUserProfile()).thenAnswer(
         (realInvocation) => Future.value(validUserCredentialsSecond.user));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -296,9 +295,9 @@ void main() {
   });
 
   test('Double refresh user', () async {
-    when(apiService.getUserProfile().toType()).thenAnswer(
+    when(apiService.getUserProfile()).thenAnswer(
         (realInvocation) => Future.value(validUserCredentials.user));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
     await userManager.login("username", "pass");
 
@@ -314,9 +313,9 @@ void main() {
 
   test('Refresh user when logged out', () async {
     // arrange
-    when(apiService.logout().toType()).thenAnswer(
+    when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
@@ -331,7 +330,7 @@ void main() {
 
   test('Deactivate User', () async {
     // arrange
-    when(apiService.login("username", "pass").toType())
+    when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
     // act
