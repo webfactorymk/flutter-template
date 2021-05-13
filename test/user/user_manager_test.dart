@@ -33,17 +33,19 @@ bool Function(UserCredentials?) userCredentialsToBool() {
 }
 
 /// Tests for [UserManager]
-@GenerateMocks([UserApiService, LoginHook, LogoutHook])
+@GenerateMocks([UserApiService, LoginHook, LogoutHook, UserUpdatesHook])
 void main() {
   late UserManager userManager;
   late UserApiService apiService;
   late ObservedStorage<UserCredentials> storage;
-  late LoginHook<UserCredentials> loginHook;
-  late LogoutHook logoutHook;
+  late MockUserUpdatesHook<UserCredentials> updatesHook;
+  late MockLoginHook<UserCredentials> loginHook;
+  late MockLogoutHook logoutHook;
 
   setUp(() {
     apiService = MockUserApiService();
     storage = ObservedStorage<UserCredentials>(CachedStorage(MemoryStorage()));
+    updatesHook = MockUserUpdatesHook();
     loginHook = MockLoginHook();
     logoutHook = MockLogoutHook();
     userManager = TestUserManager(
@@ -51,6 +53,7 @@ void main() {
       storage,
       loginHooks: [loginHook],
       logoutHooks: [logoutHook],
+      updateHooks: [updatesHook],
     );
 
     when(apiService.getUserProfile(authHeader: 'Bearer $validToken'))
@@ -71,7 +74,7 @@ void main() {
     when(apiService.login("username", "password"))
         .thenAnswer((_) => Future.value(validCredentials));
 
-    expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
+    expect(userManager.updatesSticky, emitsInOrder([null, validUserCredentials]));
 
     UserCredentials actualLoggedInUser =
         await userManager.login("username", "password");
@@ -82,13 +85,14 @@ void main() {
     expect(await userManager.getLoggedInUser(), equals(validUserCredentials));
 
     verify(loginHook.postLogin(validUserCredentials)).called(1);
+    verify(updatesHook.onUserUpdatesProvided(any)).called(1);
   });
 
   test('Double login', () async {
     when(apiService.login("username", "pass"))
         .thenAnswer((_) => Future.value(validCredentials));
 
-    expect(userManager.updates, emitsInOrder([null, validUserCredentials]));
+    expect(userManager.updatesSticky, emitsInOrder([null, validUserCredentials]));
 
     await userManager.login("username", "pass");
     UserCredentials actualLoggedInUser =
@@ -109,7 +113,7 @@ void main() {
 
     expect(userManager.login("username", "pass"),
         throwsA(isInstanceOf<Exception>()));
-    expect(userManager.updates, emits(isNull));
+    expect(userManager.updatesSticky, emits(isNull));
     expect(userManager.isLoggedIn(), completion(isFalse));
     expect(userManager.getLoggedInUser(), completion(isNull));
   });
@@ -121,7 +125,7 @@ void main() {
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
     expect(
-      userManager.updates,
+      userManager.updatesSticky,
       emitsInOrder([null, validUserCredentials, null]),
     );
 
@@ -137,7 +141,7 @@ void main() {
         .thenAnswer((_) => Future.value(validCredentials));
     when(apiService.logout()).thenThrow(Exception("Can't log-out!"));
 
-    // expect(userManager.updates, emitsInOrder([null, validUserCredentials, null]));
+    // expect(userManager.updatesSticky, emitsInOrder([null, validUserCredentials, null]));
 
     await userManager.login("username", "password");
     expect(userManager.logout(), throwsA(isInstanceOf<Exception>()));
@@ -155,7 +159,7 @@ void main() {
 
     // assert later
     expect(
-        userManager.updates, emitsInOrder([null, validUserCredentials, null]));
+        userManager.updatesSticky, emitsInOrder([null, validUserCredentials, null]));
 
     // act
     await userManager.login("username", "pass");
@@ -177,7 +181,7 @@ void main() {
     when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
-    Stream<bool> userUpdates = userManager.updates.map(userCredentialsToBool());
+    Stream<bool> userUpdates = userManager.updatesSticky.map(userCredentialsToBool());
 
     expect(userUpdates, emitsInOrder([false, true, false]));
 
@@ -193,9 +197,9 @@ void main() {
     when(apiService.logout()).thenAnswer(
         (_) => Future.value(http.Response('{"loggedOut": true}', 200)));
 
-    Stream<bool> usrUpdates1 = userManager.updates.map(userCredentialsToBool());
-    Stream<bool> usrUpdates2 = userManager.updates.map(userCredentialsToBool());
-    Stream<bool> usrUpdates3 = userManager.updates.map(userCredentialsToBool());
+    Stream<bool> usrUpdates1 = userManager.updatesSticky.map(userCredentialsToBool());
+    Stream<bool> usrUpdates2 = userManager.updatesSticky.map(userCredentialsToBool());
+    Stream<bool> usrUpdates3 = userManager.updatesSticky.map(userCredentialsToBool());
 
     expect(usrUpdates1, emitsInOrder([false, true, false]));
     expect(usrUpdates2, emitsInOrder([false, true, false]));
@@ -273,7 +277,6 @@ void main() {
     await userManager.logout();
 
     // assert
-    verify(storage.delete()).called(1);
     expect(userManager.updateUser(validUserCredentials.user),
         throwsA(isInstanceOf<UnauthorizedUserException>()));
   });
@@ -301,7 +304,7 @@ void main() {
         .thenAnswer((_) => Future.value(validCredentials));
     await userManager.login("username", "pass");
 
-    // expect(userManager.updates, emitsInOrder([validUserCredentials, validUserCredentials]));
+    // expect(userManager.updatesSticky, emitsInOrder([validUserCredentials, validUserCredentials]));
 
     await userManager.refreshUser();
     await userManager.refreshUser();
@@ -323,7 +326,6 @@ void main() {
     await userManager.logout();
 
     // assert
-    verify(storage.delete()).called(1);
     expect(userManager.refreshUser(),
         throwsA(isInstanceOf<UnauthorizedUserException>()));
   });
@@ -339,7 +341,6 @@ void main() {
 
     // assert
     verify(apiService.deactivate()).called(1);
-    verifyNever(storage.delete());
     expect(userManager.updates, emitsInOrder([null]));
   });
 }

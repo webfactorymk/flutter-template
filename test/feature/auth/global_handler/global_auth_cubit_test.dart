@@ -8,26 +8,31 @@ import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/observed_storage.dart';
 
-class MockApiService extends Mock implements UserApiService {}
+import '../../../network/network_test_helper.dart';
+import 'global_auth_cubit_test.mocks.dart';
 
 final user = User(id: "id", email: "email");
 
 /// Bloc tests for [GlobalAuthCubit]
+@GenerateMocks([UserApiService])
 void main() {
   late UserManager userManager;
   late UserApiService apiService;
 
   setUp(() {
-    apiService = MockApiService();
+    apiService = MockUserApiService();
     userManager = UserManager(apiService, ObservedStorage(MemoryStorage()));
 
-    when(apiService.login('username', 'password')).thenAnswer(
-        (_) => Future.value(Credentials('token', RefreshToken('rt', 0))));
-    when(apiService.getUserProfile()).thenAnswer((_) => Future.value(user));
+    when(apiService.login('username', 'password')).thenAnswer((_) =>
+        Future.value(
+            Credentials(NetworkTestHelper.validToken, RefreshToken('rt', 0))));
+    when(apiService.getUserProfile(authHeader: anyNamed('authHeader')))
+        .thenAnswer((_) => Future.value(user));
     when(apiService.logout()).thenAnswer((_) => Future.value());
   });
 

@@ -57,10 +57,8 @@ void main() {
 
     test('refreshUserCredentials, token expired', () async {
       // arrange
-      Response<Credentials> response = Response(
-          http.Response('test', 200), NetworkTestHelper.validCredentials);
-      when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value());
+      when(mockUserAuthApiService.refreshToken(any)).thenAnswer(
+          (_) async => Future.value(NetworkTestHelper.validCredentials));
       await storage.save(NetworkTestHelper.expiredUserCredentials);
 
       // act
@@ -133,10 +131,8 @@ void main() {
 
     test('interceptRequest, expired token', () async {
       // arrange
-      Response<Credentials> response = Response(
-          http.Response('test', 200), NetworkTestHelper.validCredentials);
-      when(mockUserAuthApiService.refreshToken(any))
-          .thenAnswer((_) async => Future.value());
+      when(mockUserAuthApiService.refreshToken(any)).thenAnswer(
+          (_) async => Future.value(NetworkTestHelper.validCredentials));
       storage.save(NetworkTestHelper.expiredUserCredentials);
       Request expected = Request('GET', 'task/2', 'http://example.com',
           headers: {authHeaderKey: 'Bearer ' + NetworkTestHelper.expiredToken});
