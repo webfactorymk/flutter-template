@@ -27,17 +27,17 @@ final Map<int, Task> taskMap = Map.unmodifiable({
       id: '1',
       title: "Post 1",
       description: "This is post one (1).",
-      taskStatus: TaskStatus.done),
+      status: TaskStatus.done),
   2: Task(
       id: '2',
       title: "Post 2",
       description: "This is post two (2).",
-      taskStatus: TaskStatus.done),
+      status: TaskStatus.done),
   3: Task(
       id: '3',
       title: "Post 3",
       description: "This is post tree (3).",
-      taskStatus: TaskStatus.done),
+      status: TaskStatus.done),
 });
 
 @GenerateMocks([UserAuthApiService])

@@ -9,7 +9,7 @@ part of 'create_task.dart';
 CreateTask _$CreateTaskFromJson(Map<String, dynamic> json) {
   return CreateTask(
     title: json['title'] as String,
-    description: json['description'] as String,
+    description: json['description'] as String?,
     taskStatus: _$enumDecode(_$TaskStatusEnumMap, json['status']),
   );
 }

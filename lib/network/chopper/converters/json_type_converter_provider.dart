@@ -1,7 +1,5 @@
-import 'package:flutter_template/model/task/api/complete_task.dart';
 import 'package:flutter_template/model/task/api/create_task.dart';
 import 'package:flutter_template/model/task/api/create_task_group.dart';
-import 'package:flutter_template/model/task/api/reopen_task.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/model/user/credentials.dart';
@@ -38,14 +36,6 @@ abstract class JsonTypeConverterProvider {
       .registerConverter<CreateTaskGroup>(
         toMap: (createTaskGroup) => createTaskGroup.toJson(),
         fromMap: (map) => CreateTaskGroup.fromJson(map),
-      )
-      .registerConverter<CompleteTask>(
-        toMap: (completeTask) => completeTask.toJson(),
-        fromMap: (map) => CompleteTask.fromJson(map),
-      )
-      .registerConverter<ReopenTask>(
-        toMap: (reopenTask) => reopenTask.toJson(),
-        fromMap: (map) => ReopenTask.fromJson(map),
       )
       .build();
 

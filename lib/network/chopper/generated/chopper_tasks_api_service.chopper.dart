@@ -32,30 +32,35 @@ class _$ChopperTasksApiService extends ChopperTasksApiService {
 
   @override
   Future<Response<Task>> getTask(String taskId) {
-    final $url = '/task/$taskId';
+    final $url = '/tasks/$taskId';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<Task, Task>($request);
   }
 
   @override
-  Future<Response<dynamic>> reopenTask(String id, ReopenTask body) {
-    final $url = '/task/$id';
-    final $body = body;
-    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+  Future<Response<List<Task>>> getTasks(String taskGroupId) {
+    final $url = '/task-groups/$taskGroupId/tasks';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<List<Task>, Task>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> reopenTask(String id) {
+    final $url = '/tasks/$id';
+    final $request = Request('PUT', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
-  Future<Response<dynamic>> completeTask(String id, CompleteTask ct) {
-    final $url = '/task/$id';
-    final $body = ct;
-    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+  Future<Response<dynamic>> completeTask(String id) {
+    final $url = '/tasks/$id';
+    final $request = Request('PUT', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<Task>> createTask(CreateTask createTask) {
-    final $url = '/task';
+    final $url = '/tasks';
     final $body = createTask;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<Task, Task>($request);
@@ -71,7 +76,7 @@ class _$ChopperTasksApiService extends ChopperTasksApiService {
 
   @override
   Future<Response<dynamic>> deleteAllTasks() {
-    final $url = '/task';
+    final $url = '/tasks';
     final $request = Request('DELETE', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }

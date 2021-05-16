@@ -75,7 +75,7 @@ void main() {
         id: '1',
         title: "Post 1",
         description: "This is post one (1).",
-        taskStatus: TaskStatus.done);
+        status: TaskStatus.done);
     Response<Task> validResponse = Response(http.Response('test', 401), task);
 
     test('interceptResponse, no token', () async {

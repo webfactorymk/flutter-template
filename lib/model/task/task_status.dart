@@ -1,6 +1,9 @@
 import 'package:flutter_template/util/collections_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+const DONE = TaskStatus.done;
+const NOT_DONE = TaskStatus.notDone;
+
 /// Current status of a [Task].
 enum TaskStatus {
   @JsonValue(0) notDone,
