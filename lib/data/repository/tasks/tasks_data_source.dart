@@ -4,6 +4,8 @@ import 'package:flutter_template/model/task/task_group.dart';
 /// Main entry point for accessing and manipulating tasks data.
 abstract class TasksDataSource {
 
+  abstract final String userId;
+
   /// Get all task groups for the logged in user.
   Future<List<TaskGroup>> getTaskGroups();
 
@@ -38,4 +40,7 @@ abstract class TasksDataSource {
 
   /// Deletes all task groups.
   Future<void> deleteAllTaskGroups();
+
+  /// Deletes all user data.
+  Future<void> deleteAllData();
 }

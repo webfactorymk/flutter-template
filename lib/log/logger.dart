@@ -15,3 +15,6 @@ abstract class Logger {
 
   static void e(Object error) => _logger?.e(error);
 }
+
+/// Convenience error function to use w/ [Future]s.
+void onErrorLog(error) => Logger.e(error);

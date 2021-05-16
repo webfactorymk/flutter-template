@@ -2,9 +2,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/data/mock/mock_user_api_service.dart';
-import 'package:flutter_template/data/repository/tasks/tasks_cache_data_source.dart';
-import 'package:flutter_template/data/repository/tasks/tasks_remote_data_source.dart';
-import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
+import 'package:flutter_template/di/user_scope_hook.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/http_api_service_provider.dart';
@@ -31,7 +29,7 @@ final GetIt serviceLocator = GetIt.asNewInstance();
 /// This method is called before the app launches, suspending any further
 /// execution until it finishes. To minimize the app loading time keep this
 /// setup fast and simple.
-Future<void> setupDependencies() async {
+Future<void> setupGlobalDependencies() async {
   // Data
 
   final ObservedStorage<UserCredentials> userStorage =
@@ -67,14 +65,16 @@ Future<void> setupDependencies() async {
       : StubHook<UserCredentials>();
 
   // User Manager
-  final UserManager userManager = UserManager(userApi, userStorage,
-      updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
-      logoutHooks: [firebaseUserHook as LogoutHook]);
-
-  // Repositories
-  final TasksRepository tasksRepository = TasksRepository(
-    remote: TasksRemoteDataSource(tasksApi),
-    cache: TasksCacheDataSource(),
+  final UserScopeHook userScopeHook = UserScopeHook();
+  final UserManager userManager = UserManager(
+    userApi,
+    userStorage,
+    loginHooks: [userScopeHook],
+    updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
+    logoutHooks: [
+      firebaseUserHook as LogoutHook,
+      userScopeHook,
+    ],
   );
 
   // Platform comm
@@ -85,7 +85,6 @@ Future<void> setupDependencies() async {
   final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
 
   serviceLocator
-    ..registerSingleton<TasksRepository>(tasksRepository)
     ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
@@ -101,6 +100,5 @@ Future<void> setupDependencies() async {
 void teardown() async {
   try {
     await serviceLocator.get<UserManager>().teardown();
-    await serviceLocator.get<TasksRepository>().teardown();
   } catch (exp) {}
 }

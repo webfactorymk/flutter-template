@@ -18,7 +18,7 @@ void main() {
   final TasksDataSource stubDataSource = new TasksStubDataSource();
 
   setUp(() {
-    tasksCacheDataSource = TasksCacheDataSource();
+    tasksCacheDataSource = TasksCacheDataSource('userId');
     tasksRepository = TasksRepository(
       cache: tasksCacheDataSource,
       remote: stubDataSource,

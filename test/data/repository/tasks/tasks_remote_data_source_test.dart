@@ -10,8 +10,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'tasks_data_source_base_test.dart';
 
 void main() {
-  executeTasksDataSourceBaseTests(
-      () => new TasksRemoteDataSource(MockApiService(TasksCacheDataSource())));
+  executeTasksDataSourceBaseTests(() => new TasksRemoteDataSource(
+        'userId',
+        MockApiService(TasksCacheDataSource('userId')),
+      ));
 }
 
 class MockApiService implements TasksApiService {

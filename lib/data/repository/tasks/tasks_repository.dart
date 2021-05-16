@@ -12,15 +12,22 @@ import 'package:flutter_template/util/updates_stream.dart';
 ///
 /// See [taskGroupUpdatesStream] and [taskEventUpdatesStream] for updates stream.
 ///
-/// To obtain an instance use `serviceLocator.get<TasksRepository>()`
+/// To obtain an instance use `serviceLocator.get<TasksRepository>()`.
+/// Mind that this component is user scoped and serviceLocator.get will
+/// work only if there is a user logged in.
 class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
   final TasksDataSource _remoteDataSource;
   final TasksDataSource _cacheDataSource;
 
+  @override
+  final String userId;
+
   TasksRepository({
     required TasksDataSource remote,
     required TasksDataSource cache,
-  })   : _remoteDataSource = remote,
+  })   : assert(remote.userId == cache.userId),
+        userId = remote.userId,
+        _remoteDataSource = remote,
         _cacheDataSource = cache;
 
   /// Returns a broadcast stream that tracks user's task groups.
@@ -35,6 +42,7 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
 
   Future<void> teardown() async {
     await closeUpdatesStream();
+    await _cacheDataSource.deleteAllData();
   }
 
   @override
@@ -111,4 +119,7 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
       .deleteAllTaskGroups()
       .then((_) => _cacheDataSource.deleteAllTaskGroups())
       .then((_) => addUpdate(<TaskGroup>[]));
+
+  @override
+  Future<void> deleteAllData() => _cacheDataSource.deleteAllData();
 }

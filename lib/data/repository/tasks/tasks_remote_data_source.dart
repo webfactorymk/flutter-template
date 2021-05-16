@@ -10,7 +10,10 @@ import 'tasks_data_source.dart';
 class TasksRemoteDataSource implements TasksDataSource {
   final TasksApiService _apiService;
 
-  TasksRemoteDataSource(this._apiService);
+  @override
+  final String userId;
+
+  TasksRemoteDataSource(this.userId, this._apiService);
 
   @override
   Future<void> completeTask(String taskId) => _apiService.completeTask(taskId);
@@ -55,4 +58,9 @@ class TasksRemoteDataSource implements TasksDataSource {
 
   @override
   Future<void> deleteAllTaskGroups() => _apiService.deleteAllTaskGroups();
+
+  @override
+  Future<void> deleteAllData() {
+    throw UnsupportedError('Only cached data can be cleared');
+  }
 }

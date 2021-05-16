@@ -6,6 +6,9 @@ import 'package:flutter_template/model/task/task_group.dart';
 /// Stub implementation of [TasksDataSource].
 class TasksStubDataSource implements TasksDataSource {
   @override
+  String get userId => 'userId';
+
+  @override
   Future<void> completeTask(String taskId) => Future.value();
 
   @override
@@ -34,4 +37,7 @@ class TasksStubDataSource implements TasksDataSource {
   @override
   Future<List<Task>> getTasks(String taskGroupId) =>
       Future.error(DataNotFoundException());
+
+  @override
+  Future<void> deleteAllData() => Future.value();
 }

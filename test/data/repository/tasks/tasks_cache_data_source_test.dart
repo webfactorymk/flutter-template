@@ -3,5 +3,5 @@ import 'package:flutter_template/data/repository/tasks/tasks_cache_data_source.d
 import 'tasks_data_source_base_test.dart';
 
 void main() {
-  executeTasksDataSourceBaseTests(() => new TasksCacheDataSource());
+  executeTasksDataSourceBaseTests(() => new TasksCacheDataSource('userId'));
 }

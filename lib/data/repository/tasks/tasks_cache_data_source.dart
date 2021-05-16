@@ -11,6 +11,11 @@ class TasksCacheDataSource implements TasksDataSource {
   Map<String, Task>? _tasks;
 
   @override
+  final String userId;
+
+  TasksCacheDataSource(this.userId);
+
+  @override
   Future<void> completeTask(String taskId) {
     return Future.microtask(() {
       final tasks = _tasks;
@@ -123,4 +128,10 @@ class TasksCacheDataSource implements TasksDataSource {
   @override
   Future<void> deleteAllTaskGroups() =>
       Future.microtask(() => _taskGroups?.clear());
+
+  @override
+  Future<void> deleteAllData() => Future.microtask(() {
+        _tasks?.clear();
+        _taskGroups?.clear();
+      });
 }
