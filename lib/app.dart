@@ -10,6 +10,7 @@ import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/resources/strings.dart';
+import 'package:flutter_template/routing/back_button_dispatcher.dart';
 import 'package:flutter_template/routing/global_route_information_parser.dart';
 import 'package:flutter_template/routing/global_router_delegate.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -67,6 +68,10 @@ class _AppState extends State<App> {
         serviceLocator.get<UserApiService>(),
         serviceLocator.get<UserManager>());
 
+    final AppRouterDelegate _routerDelegate = AppRouterDelegate();
+    final AppBackButtonDispatcher _backButtonDispatcher =
+        AppBackButtonDispatcher(_routerDelegate);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -105,7 +110,8 @@ class _AppState extends State<App> {
             const Locale('mk'), // Macedonian
           ],
           routeInformationParser: AppRouteInformationParser(),
-          routerDelegate: AppRouterDelegate(),
+          routerDelegate: _routerDelegate,
+          backButtonDispatcher: _backButtonDispatcher,
         ),
       ),
     );

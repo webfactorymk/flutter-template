@@ -70,7 +70,6 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
               return false;
             }
 
-            notifyListeners();
             return true;
           },
         );
