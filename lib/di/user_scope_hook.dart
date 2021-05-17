@@ -75,4 +75,4 @@ Future<bool> _pushUserScope(String userId) async {
 }
 
 /// Pops the user scope leaving baseScope as the top-most scope in the stack.
-Future<void> _popUserScope() => serviceLocator.popScopesTill('baseScope');
+Future<void> _popUserScope() => serviceLocator.popScopesTill(userScopeName);
