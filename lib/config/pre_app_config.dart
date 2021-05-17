@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/config/firebase_config.dart';
-import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/config/logger_config.dart';
+import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/di/service_locator.dart' as serviceLocatorConf;
 import 'package:flutter_template/log/bloc_events_logger.dart';
-import 'package:flutter_template/di/service_locator.dart' as serviceLocator;
+import 'package:flutter_template/user/user_manager.dart';
 
 /// Configuration that needs to be done before the Flutter app starts goes here.
 ///
@@ -14,6 +15,7 @@ Future<void> preAppConfig() async {
   Bloc.observer = BlocEventsLogger();
 
   await configureFirebase();
-  await serviceLocator.setupGlobalDependencies();
   initLogger();
+  await serviceLocatorConf.setupGlobalDependencies();
+  await serviceLocator.get<UserManager>().init();
 }

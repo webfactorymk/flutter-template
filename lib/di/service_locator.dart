@@ -14,7 +14,7 @@ import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
-import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
@@ -64,17 +64,15 @@ Future<void> setupGlobalDependencies() async {
   final NotificationsManager notificationsManager = NotificationsManager();
   final firebaseUserHook = shouldConfigureFirebase()
       ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
-      : StubHook<UserCredentials>();
+      : StubUserEventHook<UserCredentials>();
 
   // User Manager
   final UserScopeHook userScopeHook = UserScopeHook();
   final UserManager userManager = UserManager(
     userApi,
     userStorage,
-    loginHooks: [userScopeHook],
-    updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
-    logoutHooks: [
-      firebaseUserHook as LogoutHook,
+    userEventHooks: [
+      firebaseUserHook,
       userScopeHook,
     ],
   );

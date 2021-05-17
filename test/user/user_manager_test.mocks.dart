@@ -7,7 +7,7 @@ import 'dart:async' as _i5;
 import 'package:flutter_template/model/user/credentials.dart' as _i2;
 import 'package:flutter_template/model/user/user.dart' as _i3;
 import 'package:flutter_template/network/user_api_service.dart' as _i4;
-import 'package:flutter_template/user/user_hooks.dart' as _i6;
+import 'package:flutter_template/user/user_event_hook.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: comment_references
@@ -72,11 +72,11 @@ class MockUserApiService extends _i1.Mock implements _i4.UserApiService {
           returnValueForMissingStub: Future.value()) as _i5.Future<void>);
 }
 
-/// A class which mocks [LoginHook].
+/// A class which mocks [UserEventHook].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginHook<U> extends _i1.Mock implements _i6.LoginHook<U> {
-  MockLoginHook() {
+class MockUserEventHook<U> extends _i1.Mock implements _i6.UserEventHook<U> {
+  MockUserEventHook() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -85,34 +85,18 @@ class MockLoginHook<U> extends _i1.Mock implements _i6.LoginHook<U> {
       (super.noSuchMethod(Invocation.method(#postLogin, [user]),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i5.Future<void>);
-}
-
-/// A class which mocks [LogoutHook].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockLogoutHook extends _i1.Mock implements _i6.LogoutHook {
-  MockLogoutHook() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i5.Future<void> postLogout() =>
       (super.noSuchMethod(Invocation.method(#postLogout, []),
           returnValue: Future<void>.value(null),
           returnValueForMissingStub: Future.value()) as _i5.Future<void>);
-}
-
-/// A class which mocks [UserUpdatesHook].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockUserUpdatesHook<U> extends _i1.Mock
-    implements _i6.UserUpdatesHook<U> {
-  MockUserUpdatesHook() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   void onUserUpdatesProvided(_i5.Stream<U?>? userUpdates) => super.noSuchMethod(
       Invocation.method(#onUserUpdatesProvided, [userUpdates]),
       returnValueForMissingStub: null);
+  @override
+  _i5.Future<void> onUserLoaded(U? user) =>
+      (super.noSuchMethod(Invocation.method(#onUserLoaded, [user]),
+          returnValue: Future<void>.value(null),
+          returnValueForMissingStub: Future.value()) as _i5.Future<void>);
 }
