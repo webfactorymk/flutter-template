@@ -4,7 +4,7 @@ import 'package:flutter_template/model/user/user.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/unauthorized_user_exception.dart';
-import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -33,31 +33,27 @@ bool Function(UserCredentials?) userCredentialsToBool() {
 }
 
 /// Tests for [UserManager]
-@GenerateMocks([UserApiService, LoginHook, LogoutHook, UserUpdatesHook])
+@GenerateMocks([UserApiService, UserEventHook])
 void main() {
   late UserManager userManager;
   late UserApiService apiService;
   late ObservedStorage<UserCredentials> storage;
-  late MockUserUpdatesHook<UserCredentials> updatesHook;
-  late MockLoginHook<UserCredentials> loginHook;
-  late MockLogoutHook logoutHook;
+  late MockUserEventHook<UserCredentials> userEventHook;
 
-  setUp(() {
+  setUp(() async {
     apiService = MockUserApiService();
     storage = ObservedStorage<UserCredentials>(CachedStorage(MemoryStorage()));
-    updatesHook = MockUserUpdatesHook();
-    loginHook = MockLoginHook();
-    logoutHook = MockLogoutHook();
+    userEventHook = MockUserEventHook();
     userManager = TestUserManager(
       apiService,
       storage,
-      loginHooks: [loginHook],
-      logoutHooks: [logoutHook],
-      updateHooks: [updatesHook],
+      userEventHooks: [userEventHook],
     );
 
     when(apiService.getUserProfile(authHeader: 'Bearer $validToken'))
         .thenAnswer((_) async => Future.value(validUserCredentials.user));
+
+    await userManager.init();
   });
 
   tearDown(() async {
@@ -84,8 +80,8 @@ void main() {
     expect(await userManager.isLoggedIn(), isTrue);
     expect(await userManager.getLoggedInUser(), equals(validUserCredentials));
 
-    verify(loginHook.postLogin(validUserCredentials)).called(1);
-    verify(updatesHook.onUserUpdatesProvided(any)).called(1);
+    verify(userEventHook.postLogin(validUserCredentials)).called(1);
+    verify(userEventHook.onUserUpdatesProvided(any)).called(1);
   });
 
   test('Double login', () async {
@@ -104,7 +100,7 @@ void main() {
     expect(await userManager.getLoggedInUser(), equals(validUserCredentials));
 
     verify(apiService.login("username", "pass")).called(1);
-    verify(loginHook.postLogin(validUserCredentials)).called(1);
+    verify(userEventHook.postLogin(validUserCredentials)).called(1);
   });
 
   test('Login Failure', () async {

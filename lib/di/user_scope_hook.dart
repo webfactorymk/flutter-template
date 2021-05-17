@@ -1,12 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/di/user_scope.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
-import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 /// Creates and destroys the user scope on login/logout events.
-class UserScopeHook implements LoginHook<UserCredentials>, LogoutHook {
+///
+/// <br /> __The user scope component lifecycle__
+///
+/// a. created on:
+///     - app start if there is a logged in user
+///
+///     - user login
+///
+/// b. destroyed on:
+///     - user logout
+///
+/// c. recreated on:
+///     - new user login after session expiry
+///
+/// d. kept intact on:
+///     - same user login after session expiry
+class UserScopeHook extends UserEventHook<UserCredentials> {
   @override
   Future<void> postLogin(UserCredentials userCredentials) async {
     final userId = userCredentials.user.id;
@@ -22,6 +40,13 @@ class UserScopeHook implements LoginHook<UserCredentials>, LogoutHook {
     }
     await teardownUserScope().catchError(onErrorLog);
     await _popUserScope();
+  }
+
+  @override
+  Future<void> onUserLoaded(UserCredentials? userCred) async {
+    if (userCred != null && await _pushUserScope(userCred.user.id)) {
+      await setupUserScope(userCred.user.id);
+    }
   }
 }
 
@@ -50,4 +75,6 @@ Future<bool> _pushUserScope(String userId) async {
 }
 
 /// Pops the user scope leaving baseScope as the top-most scope in the stack.
-Future<void> _popUserScope() => serviceLocator.popScopesTill('baseScope');
+Future<void> _popUserScope() => serviceLocator
+    .popScopesTill(userScopeName)
+    .whenComplete(() => Logger.d('Pop userScope'));

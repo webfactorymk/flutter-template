@@ -7,7 +7,7 @@ class ConsoleLogger implements AbstractLogger {
 
   factory ConsoleLogger.create() {
     return ConsoleLogger(console.Logger(
-      printer: console.SimplePrinter(colors: true, printTime: true),
+      printer: console.SimplePrinter(colors: true, printTime: false),
     ));
   }
 

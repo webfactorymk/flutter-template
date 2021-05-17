@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
@@ -9,10 +10,11 @@ import 'package:flutter_template/network/chopper/http_api_service_provider.dart'
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
+import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
-import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
@@ -24,14 +26,13 @@ import 'package:single_item_storage/storage.dart';
 
 final GetIt serviceLocator = GetIt.asNewInstance();
 
-/// Sets up the app component's dependencies.
+/// Sets up the app global (baseScope) component's dependencies.
 ///
 /// This method is called before the app launches, suspending any further
 /// execution until it finishes. To minimize the app loading time keep this
 /// setup fast and simple.
 Future<void> setupGlobalDependencies() async {
   // Data
-
   final ObservedStorage<UserCredentials> userStorage =
       ObservedStorage<UserCredentials>(CachedStorage(SharedPrefsStorage(
     itemKey: 'model.user.user-credentials',
@@ -40,7 +41,7 @@ Future<void> setupGlobalDependencies() async {
   )));
 
   // Network
-
+  final NetworkUtils networkUtils = NetworkUtils(Connectivity());
   final String baseUrlApi = FlavorConfig.values.baseUrlApi;
 
   HttpApiServiceProvider apiProvider = HttpApiServiceProvider(
@@ -62,17 +63,15 @@ Future<void> setupGlobalDependencies() async {
   final NotificationsManager notificationsManager = NotificationsManager();
   final firebaseUserHook = shouldConfigureFirebase()
       ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
-      : StubHook<UserCredentials>();
+      : StubUserEventHook<UserCredentials>();
 
   // User Manager
   final UserScopeHook userScopeHook = UserScopeHook();
   final UserManager userManager = UserManager(
     userApi,
     userStorage,
-    loginHooks: [userScopeHook],
-    updateHooks: [firebaseUserHook as UserUpdatesHook<UserCredentials>],
-    logoutHooks: [
-      firebaseUserHook as LogoutHook,
+    userEventHooks: [
+      firebaseUserHook,
       userScopeHook,
     ],
   );
@@ -92,8 +91,9 @@ Future<void> setupGlobalDependencies() async {
     ..registerSingleton<UserAuthApiService>(userAuthApi)
     ..registerSingleton<TasksApiService>(tasksApi)
     ..registerSingleton<UserManager>(userManager)
+    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver)
     ..registerSingleton<PlatformComm>(platformComm)
-    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver);
+    ..registerSingleton<NetworkUtils>(networkUtils);
 }
 
 //todo find a way to know when the app ends and call this
