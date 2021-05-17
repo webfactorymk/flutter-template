@@ -42,8 +42,7 @@ Future<void> setupGlobalDependencies() async {
   )));
 
   // Network
-  final Connectivity connectivity = Connectivity();
-  final NetworkUtils networkUtils = NetworkUtils(connectivity);
+  final NetworkUtils networkUtils = NetworkUtils(Connectivity());
   final String baseUrlApi = FlavorConfig.values.baseUrlApi;
 
   HttpApiServiceProvider apiProvider = HttpApiServiceProvider(
@@ -88,7 +87,6 @@ Future<void> setupGlobalDependencies() async {
   final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
 
   serviceLocator
-    ..registerSingleton(networkUtils)
     ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
@@ -96,8 +94,9 @@ Future<void> setupGlobalDependencies() async {
     ..registerSingleton<UserAuthApiService>(userAuthApi)
     ..registerSingleton<TasksApiService>(tasksApi)
     ..registerSingleton<UserManager>(userManager)
+    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver)
     ..registerSingleton<PlatformComm>(platformComm)
-    ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver);
+    ..registerSingleton<NetworkUtils>(networkUtils);
 }
 
 //todo find a way to know when the app ends and call this
