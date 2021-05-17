@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_template/network/chopper/http_api_service_provider.dart'
 import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
+import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -40,7 +42,8 @@ Future<void> setupGlobalDependencies() async {
   )));
 
   // Network
-
+  final Connectivity connectivity = Connectivity();
+  final NetworkUtils networkUtils = NetworkUtils(connectivity);
   final String baseUrlApi = FlavorConfig.values.baseUrlApi;
 
   HttpApiServiceProvider apiProvider = HttpApiServiceProvider(
@@ -85,6 +88,7 @@ Future<void> setupGlobalDependencies() async {
   final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
 
   serviceLocator
+    ..registerSingleton(networkUtils)
     ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)

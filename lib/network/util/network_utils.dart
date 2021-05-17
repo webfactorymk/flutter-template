@@ -1,17 +1,14 @@
 import 'package:connectivity/connectivity.dart';
 
-/// Singleton.
 /// NetworkUtils class.
-/// To obtain instance use NetworkUtils.getInstance()
+///
+/// To obtain instance use serviceLocator.get<NetworkUtils>()
 class NetworkUtils {
-  static final NetworkUtils _instance = NetworkUtils._internal();
   late Connectivity _connectivity;
 
-  NetworkUtils._internal() {
-    _connectivity = Connectivity();
+  NetworkUtils(Connectivity connectivity) {
+    _connectivity = connectivity;
   }
-
-  static NetworkUtils getInstance() => _instance;
 
   Future<bool> isConnected() async {
     var result = await _connectivity.checkConnectivity();
