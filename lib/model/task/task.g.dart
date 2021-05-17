@@ -9,9 +9,9 @@ part of 'task.dart';
 Task _$TaskFromJson(Map<String, dynamic> json) {
   return Task(
     id: json['id'] as String,
+    status: _$enumDecode(_$TaskStatusEnumMap, json['status']),
     title: json['title'] as String,
-    description: json['description'] as String,
-    taskStatus: _$enumDecode(_$TaskStatusEnumMap, json['taskStatus']),
+    description: json['description'] as String?,
   );
 }
 
@@ -19,7 +19,7 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
       'description': instance.description,
-      'taskStatus': _$TaskStatusEnumMap[instance.taskStatus],
+      'status': _$TaskStatusEnumMap[instance.status],
     };
 
 K _$enumDecode<K, V>(

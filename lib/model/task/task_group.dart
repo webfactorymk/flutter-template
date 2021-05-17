@@ -13,7 +13,7 @@ class TaskGroup extends Equatable {
   final String name;
   final List<String> taskIds;
 
-  TaskGroup(this.id, this.name, this.taskIds);
+  const TaskGroup(this.id, this.name, this.taskIds);
 
   factory TaskGroup.fromJson(Map<String, dynamic> json) => _$TaskGroupFromJson(json);
 

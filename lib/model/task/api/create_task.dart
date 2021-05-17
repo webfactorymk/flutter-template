@@ -9,7 +9,7 @@ part 'create_task.g.dart';
 @immutable
 class CreateTask {
   final String title;
-  final String description;
+  final String? description;
   @JsonKey(name: 'status')
   final TaskStatus taskStatus;
 
@@ -19,7 +19,7 @@ class CreateTask {
   CreateTask.fromTask(Task task)
       : this.title = task.title,
         this.description = task.description,
-        this.taskStatus = task.taskStatus;
+        this.taskStatus = task.status;
 
   factory CreateTask.fromJson(Map<String, dynamic> json) =>
       _$CreateTaskFromJson(json);

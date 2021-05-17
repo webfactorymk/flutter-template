@@ -12,14 +12,14 @@ part 'task.g.dart';
 class Task extends Equatable {
   final String id;
   final String title;
-  final String description;
-  final TaskStatus taskStatus;
+  final String? description;
+  final TaskStatus status;
 
-  Task({
+  const Task({
     required this.id,
+    required this.status,
     required this.title,
-    required this.description,
-    required this.taskStatus,
+    this.description,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
@@ -35,16 +35,16 @@ class Task extends Equatable {
         id: this.id,
         title: title ?? this.title,
         description: description ?? this.description,
-        taskStatus: taskStatus ?? this.taskStatus,
+        status: taskStatus ?? this.status,
       );
 
   @checkResult
-  Task changeStatus(TaskStatus newTaskStatus) {
+  Task changeStatus(TaskStatus newStatus) {
     return new Task(
       id: id,
       title: title,
       description: description,
-      taskStatus: newTaskStatus,
+      status: newStatus,
     );
   }
 
@@ -57,7 +57,7 @@ class Task extends Equatable {
         'id: $id, '
         'title: $title, '
         'description: $description, '
-        'taskStatus: $taskStatus'
+        'taskStatus: $status'
         '}';
   }
 }

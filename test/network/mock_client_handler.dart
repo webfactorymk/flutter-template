@@ -26,7 +26,7 @@ MockClientHandler withMockClientHandler() {
     }
 
     // Posts requests
-    if (pathSegments[0] == 'task') {
+    if (pathSegments[0] == 'tasks') {
       if (pathSegments.length == 1) {
         //posts
         return success(taskMap.values.toList());

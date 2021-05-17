@@ -14,6 +14,6 @@ Future<void> preAppConfig() async {
   Bloc.observer = BlocEventsLogger();
 
   await configureFirebase();
-  await serviceLocator.setupDependencies();
+  await serviceLocator.setupGlobalDependencies();
   initLogger();
 }
