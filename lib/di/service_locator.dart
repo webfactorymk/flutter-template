@@ -26,14 +26,13 @@ import 'package:single_item_storage/storage.dart';
 
 final GetIt serviceLocator = GetIt.asNewInstance();
 
-/// Sets up the app component's dependencies.
+/// Sets up the app global (baseScope) component's dependencies.
 ///
 /// This method is called before the app launches, suspending any further
 /// execution until it finishes. To minimize the app loading time keep this
 /// setup fast and simple.
 Future<void> setupGlobalDependencies() async {
   // Data
-
   final ObservedStorage<UserCredentials> userStorage =
       ObservedStorage<UserCredentials>(CachedStorage(SharedPrefsStorage(
     itemKey: 'model.user.user-credentials',
