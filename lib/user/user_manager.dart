@@ -7,7 +7,7 @@ import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/util/http_util.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/unauthorized_user_exception.dart';
-import 'package:flutter_template/user/user_hooks.dart';
+import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/util/nullable_util.dart';
 import 'package:flutter_template/util/updates_stream.dart';
 import 'package:single_item_storage/observed_storage.dart';
@@ -24,33 +24,33 @@ import 'package:single_item_storage/storage.dart';
 ///
 /// To obtain an instance use `serviceLocator.get<UserManager>()`
 class UserManager with UpdatesStream<UserCredentials> {
-  final Set<LoginHook<UserCredentials>> loginHooks;
-  final Set<LogoutHook> logoutHooks;
   final UserApiService _apiService;
   final Storage<UserCredentials> _userStore;
-  late final StreamSubscription _userUpdatesSubscription;
+  final Set<UserEventHook<UserCredentials>> userEventHooks;
+  late final StreamSubscription _userStoreExternalUpdatesSubscription;
 
   UserManager(
     this._apiService,
     ObservedStorage<UserCredentials> observedStorage, {
-    Iterable<LoginHook<UserCredentials>> loginHooks = const [],
-    Iterable<LogoutHook> logoutHooks = const [],
-    Iterable<UserUpdatesHook<UserCredentials>> updateHooks = const [],
-  })  : this.loginHooks = Set.unmodifiable(loginHooks),
-        this.logoutHooks = Set.unmodifiable(logoutHooks),
-        this._userStore = observedStorage.silent {
-    updateHooks.forEach((hook) => hook.onUserUpdatesProvided(updatesSticky));
-
-    _userStore.get().onError((error, stackTrace) async {
-      Logger.e(error ?? 'Error loading user from disk');
-      return null;
-    }).then((user) => addUpdate(user));
-
-    _userUpdatesSubscription =
+    Iterable<UserEventHook<UserCredentials>> userEventHooks = const [],
+  })  : this._userStore = observedStorage.silent,
+        this.userEventHooks = Set.unmodifiable(userEventHooks) {
+    userEventHooks.forEach((hook) => hook.onUserUpdatesProvided(updatesSticky));
+    _userStoreExternalUpdatesSubscription =
         observedStorage.updatesSticky.distinct().listen((userCredentials) {
       Logger.d('UserManager - Info: User storage modified outside UserManager');
       addUpdate(userCredentials);
     });
+  }
+
+  /// Called to ensure the user is loaded from disk and awaits all
+  /// [UserEventHook.onUserLoaded] hooks.
+  Future<void> init() async {
+    final UserCredentials? loggedInUser = await _userStore.get();
+    for (var userEventHook in userEventHooks) {
+      await userEventHook.onUserLoaded(loggedInUser);
+    }
+    addUpdate(loggedInUser);
   }
 
   /// Emits a user update event to listeners
@@ -81,15 +81,15 @@ class UserManager with UpdatesStream<UserCredentials> {
     }
 
     final credentials = await _apiService.login(username, password);
-    final user = await _apiService
-        .getUserProfile(authHeader: authHeaderValue(credentials.token));
+    final user = await _apiService.getUserProfile(
+        authHeader: authHeaderValue(credentials.token));
     final userCredentials = UserCredentials(user, credentials);
 
     Logger.d('UserManager - Login success: $userCredentials');
     await _userStore.save(userCredentials);
 
-    for (var loginHook in loginHooks) {
-      await loginHook
+    for (var userEventHook in userEventHooks) {
+      await userEventHook
           .postLogin(userCredentials)
           .catchError((err) => Logger.e('UserManager - LoginHook error: $err'));
     }
@@ -113,8 +113,8 @@ class UserManager with UpdatesStream<UserCredentials> {
     await _userStore.delete();
     Logger.d('UserManager - Logout success');
 
-    for (var logoutHook in logoutHooks) {
-      await logoutHook
+    for (var userEventHook in userEventHooks) {
+      await userEventHook
           .postLogout()
           .catchError((e) => Logger.e('UserManager - LogoutHook error: $e'));
     }
@@ -199,7 +199,7 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// Call when the app is closing.
   /// This method does not delete saved data.
   Future<void> teardown() async {
-    await _userUpdatesSubscription.cancel();
+    await _userStoreExternalUpdatesSubscription.cancel();
     await closeUpdatesStream();
   }
 }
