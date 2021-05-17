@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template/app_routes.dart';
-import 'package:flutter_template/feature/auth/login/bloc/login.dart';
+import 'package:flutter_template/feature/auth/signup/bloc/signup.dart';
+import 'package:flutter_template/routing/auth_state.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
-  final bool sessionExpiredRedirect;
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  LoginPage({Key? key, this.sessionExpiredRedirect = false}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: BlocConsumer<LoginCubit, LoginState>(
-        listener: (listenerContext, state) {},
+      body: BlocConsumer<SignUpCubit, SignUpState>(
+        listener: (listenerContext, state) {
+          if (state is SignUpSuccess) {
+            Navigator.of(context).pop();
+          }
+        },
         builder: (context, state) {
-          if (state is LoginInProgress) {
+          if (state is SignUpInProgress) {
             return BasicCircularProgressIndicator();
           } else {
             return Padding(
@@ -28,14 +30,14 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Login Page'),
+                    Text('Sign Up Page'),
                     SizedBox(height: 10),
                     TextFormField(
-                      controller: _userNameController,
+                      controller: _emailController,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(15),
-                        hintText: "Username",
+                        hintText: "Email",
                       ),
                     ),
                     SizedBox(height: 10),
@@ -49,16 +51,8 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      child: Text('Login'),
-                      onPressed: () => _onLoginPressed(context),
-                    ),
-                    ElevatedButton(
                       child: Text('Sign up'),
                       onPressed: () => _onSignUpPressed(context),
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: Colors.black,
-                        primary: Colors.grey[300],
-                      ),
                     ),
                   ],
                 ),
@@ -70,12 +64,9 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void _onLoginPressed(BuildContext context) {
-    BlocProvider.of<LoginCubit>(context)
-        .onUserLogin(_userNameController.text, _passwordController.text);
-  }
-
   void _onSignUpPressed(BuildContext context) {
-    Navigator.of(context).pushNamed(Routes.signUp);
+    Provider.of<AuthState>(context, listen: false).signUpPressed = false;
+    BlocProvider.of<SignUpCubit>(context)
+        .onUserSignUp(_emailController.text, _passwordController.text);
   }
 }

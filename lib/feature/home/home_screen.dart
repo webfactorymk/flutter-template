@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
-class HomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

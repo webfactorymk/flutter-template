@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template/feature/auth/signup/bloc/signup.dart';
+import 'package:flutter_template/feature/auth/login/bloc/login.dart';
+import 'package:flutter_template/routing/auth_state.dart';
 import 'package:flutter_template/widgets/circular_progress_indicator.dart';
+import 'package:provider/provider.dart';
 
-class SignUpPage extends StatelessWidget {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+class LoginScreen extends StatelessWidget {
+  final bool sessionExpiredRedirect;
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  LoginScreen({Key? key, this.sessionExpiredRedirect = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: BlocConsumer<SignUpCubit, SignUpState>(
-        listener: (listenerContext, state) {
-          if (state is SignUpSuccess) {
-            Navigator.of(context).pop();
-          }
-        },
-        builder: (context, state) {
-          if (state is SignUpInProgress) {
+      body: BlocConsumer<LoginCubit, LoginState>(
+        listener: (listenerContext, state) {},
+        builder: (_, state) {
+          if (state is LoginInProgress) {
             return BasicCircularProgressIndicator();
           } else {
             return Padding(
@@ -28,14 +30,14 @@ class SignUpPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Sign Up Page'),
+                    Text('Login Page'),
                     SizedBox(height: 10),
                     TextFormField(
-                      controller: _emailController,
+                      controller: _userNameController,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(15),
-                        hintText: "Email",
+                        hintText: "Username",
                       ),
                     ),
                     SizedBox(height: 10),
@@ -49,8 +51,16 @@ class SignUpPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
+                      child: Text('Login'),
+                      onPressed: () => _onLoginPressed(context),
+                    ),
+                    ElevatedButton(
                       child: Text('Sign up'),
                       onPressed: () => _onSignUpPressed(context),
+                      style: ElevatedButton.styleFrom(
+                        onPrimary: Colors.black,
+                        primary: Colors.grey[300],
+                      ),
                     ),
                   ],
                 ),
@@ -62,8 +72,12 @@ class SignUpPage extends StatelessWidget {
     );
   }
 
+  void _onLoginPressed(BuildContext context) {
+    BlocProvider.of<LoginCubit>(context)
+        .onUserLogin(_userNameController.text, _passwordController.text);
+  }
+
   void _onSignUpPressed(BuildContext context) {
-    BlocProvider.of<SignUpCubit>(context)
-        .onUserSignUp(_emailController.text, _passwordController.text);
+    Provider.of<AuthState>(context, listen: false).signUpPressed = true;
   }
 }
