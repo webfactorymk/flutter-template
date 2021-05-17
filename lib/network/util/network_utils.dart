@@ -16,6 +16,8 @@ class NetworkUtils {
   Future<ConnectivityResult> getConnectivityResult() =>
       _connectivity.checkConnectivity();
 
+  /// There is no guarantee that the user has network connection
+  /// it only returns true if the device is connected with wi-fi or mobile data
   Future<bool> isConnected() async {
     var result = await _connectivity.checkConnectivity();
     return result != ConnectivityResult.none;
