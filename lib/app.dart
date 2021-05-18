@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
+import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/feature/auth/global_handler/global_auth_cubit.dart';
+import 'package:flutter_template/feature/home/task/bloc/tasks.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/network/user_api_service.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_template/resources/strings.dart';
 import 'package:flutter_template/routing/back_button_dispatcher.dart';
 import 'package:flutter_template/routing/global_route_information_parser.dart';
 import 'package:flutter_template/routing/global_router_delegate.dart';
+import 'package:flutter_template/routing/home_state.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:provider/provider.dart';
@@ -67,6 +70,8 @@ class _AppState extends State<App> {
     final SignUpCubit signUpCubit = SignUpCubit(
         serviceLocator.get<UserApiService>(),
         serviceLocator.get<UserManager>());
+    final TasksCubit taskCubit =
+        TasksCubit(serviceLocator.get<TasksRepository>());
 
     final AppRouterDelegate _routerDelegate = AppRouterDelegate();
     final AppBackButtonDispatcher _backButtonDispatcher =
@@ -76,8 +81,15 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return ChangeNotifierProvider(
-      create: (_) => AuthState(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthState(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => HomeState(),
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<GlobalAuthCubit>(create: (context) {
@@ -88,6 +100,9 @@ class _AppState extends State<App> {
           }),
           BlocProvider<SignUpCubit>(create: (context) {
             return signUpCubit;
+          }),
+          BlocProvider<TasksCubit>(create: (context) {
+            return taskCubit;
           }),
         ],
         child: MaterialApp.router(
