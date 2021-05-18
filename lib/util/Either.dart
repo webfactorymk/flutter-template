@@ -3,6 +3,14 @@ typedef O valueToPass<O>();
 class Either<E extends Exception, O> {
   Either();
 
+  factory Either.success(O value) {
+    return Success<E, O>(value);
+  }
+
+  factory Either.error(Exception e) {
+    return Error<E, O>(e);
+  }
+
   factory Either.build(valueToPass<O> func) {
     try {
       return Success<E, O>(func());
