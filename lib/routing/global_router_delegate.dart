@@ -50,18 +50,14 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   Widget build(BuildContext context) {
     final GlobalAuthCubit authCubit = BlocProvider.of<GlobalAuthCubit>(context);
     authState = context.watch<AuthState>();
-    return BlocConsumer(
+    return BlocBuilder(
       bloc: authCubit,
-      listener: (_, GlobalAuthState state) {
-        globalAuthState = state;
-        notifyListeners();
-      },
       builder: (BuildContext context, GlobalAuthState state) {
         if (!FlavorConfig.isProduction()) {
           WidgetsBinding.instance?.addPostFrameCallback(
               (_) => _insertOverlay(context, _buildVersion));
         }
-
+        globalAuthState = state;
         return Navigator(
           key: navigatorKey,
           pages: _getPages(globalAuthState),
