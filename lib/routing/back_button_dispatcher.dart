@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_template/routing/global_router_delegate.dart';
 
 class AppBackButtonDispatcher extends RootBackButtonDispatcher {
-  final AppRouterDelegate _routerDelegate;
+  final RouterDelegate _routerDelegate;
 
   AppBackButtonDispatcher(this._routerDelegate);
 
