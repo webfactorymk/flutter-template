@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
+import 'package:flutter_template/data/mock/mock_tasks_api_service.dart';
 import 'package:flutter_template/data/mock/mock_user_api_service.dart';
 import 'package:flutter_template/di/user_scope_hook.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -53,10 +54,11 @@ Future<void> setupGlobalDependencies() async {
   final AuthenticatorHelperJwt authHelperJwt = apiProvider.getAuthHelperJwt();
   UserApiService userApi = apiProvider.getUserApiService();
   final UserAuthApiService userAuthApi = apiProvider.getUserAuthApiService();
-  final TasksApiService tasksApi = apiProvider.getTasksApiService();
+  TasksApiService tasksApi = apiProvider.getTasksApiService();
 
   if (FlavorConfig.isMock()) {
     userApi = MockUserApiService();
+    tasksApi = MockTasksApiService();
   }
 
   // Firebase and Notifications
