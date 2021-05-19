@@ -110,7 +110,7 @@ void main() {
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
-        await platformComm.invokeProcedure(method: method);
+        await platformComm.invokeMethod(method: method);
 
         // assert
         verify(mockMethodChannel.invokeMethod(method, [])).called(1);
@@ -125,7 +125,7 @@ void main() {
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
-        await platformComm.invokeProcedure<String>(
+        await platformComm.invokeMethod<void, String>(
             method: method, param: param);
 
         // assert
@@ -146,7 +146,7 @@ void main() {
             .thenAnswer((realInvocation) => Future.value(expectedValue));
 
         // act
-        await platformComm.invokeProcedure<int>(
+        await platformComm.invokeMethod<void, int>(
           method: method,
           param: param,
           serializeParam: serializer,
@@ -155,8 +155,22 @@ void main() {
         // assert
         verify(mockMethodChannel.invokeMethod(method, paramSerialized))
             .called(1);
-        expect(mockMethodChannel.invokeMethod(method, paramSerialized),
-            completion(equals(expectedValue)));
+      });
+
+      test('InvokeMethod, with return type void and deserializer', () async {
+        // arrange
+        when(mockMethodChannel.invokeMethod<String>(method, 'param'))
+            .thenAnswer((realInvocation) => Future.value('result'));
+
+        // act
+        void voidUnusableResult = await platformComm.invokeMethod<void, String>(
+          method: method,
+          param: 'param',
+          deserializeResult: (resultRaw) => 23,
+        );
+
+        // assert
+        verify(mockMethodChannel.invokeMethod(method, 'param')).called(1);
       });
     });
   });
