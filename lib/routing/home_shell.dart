@@ -28,12 +28,9 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final AppBackButtonDispatcher _backButtonDispatcher =
         AppBackButtonDispatcher(_routerDelegate);
-    return Scaffold(
-      appBar: AppBar(),
-      body: Router(
-        routerDelegate: _routerDelegate,
-        backButtonDispatcher: _backButtonDispatcher,
-      ),
+    return Router(
+      routerDelegate: _routerDelegate,
+      backButtonDispatcher: _backButtonDispatcher,
     );
   }
 }
