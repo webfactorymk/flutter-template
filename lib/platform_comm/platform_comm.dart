@@ -33,6 +33,10 @@ class PlatformComm {
     });
   }
 
+  void teardown() {
+    _methodChannel.setMethodCallHandler(null);
+  }
+
   /// Invokes a platform method with or without parameters
   /// and expects a result.
   ///
