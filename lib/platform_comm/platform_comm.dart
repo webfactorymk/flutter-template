@@ -13,7 +13,8 @@ export 'app_platform_methods.dart';
 /// To obtain an instance use `serviceLocator.get<PlatformComm>()`
 class PlatformComm {
   final MethodChannel _methodChannel;
-  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map(); //todo add support for more listeners
+  final Map<String, PlatformCallbackRaw> _platformCallbackMap =
+      Map(); //todo add support for more listeners
 
   factory PlatformComm.generalAppChannel() => PlatformComm(MethodChannel(
       'com.my-app.package-name.general')); //todo change channel name here and on native side
@@ -31,6 +32,10 @@ class PlatformComm {
         return Future.error(MissingPluginException('No method found'));
       }
     });
+  }
+
+  void teardown() {
+    _methodChannel.setMethodCallHandler(null);
   }
 
   /// Invokes a platform method with or without parameters

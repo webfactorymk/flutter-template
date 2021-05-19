@@ -38,7 +38,7 @@ dependencies:
 
   # network
   http: ^0.13.1
-  chopper: ^4.0.0-nullsafety.1 # todo update to stable
+  chopper: ^4.0.0
   jwt_decoder: 2.0.1 # todo delete if JWT is not used
   connectivity: ^3.0.3
 
@@ -76,6 +76,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
   build_runner: any
   chopper_generator: ^4.0.0-nullsafety.1
   json_serializable: ^4.1.0
@@ -83,8 +85,10 @@ dev_dependencies:
   bloc_test: ^8.0.0
   mockito: ^5.0.5
 
-#dependency_overrides:
-#  logging: ^1.0.1
+dependency_overrides:
+  crypto: ^3.0.0    # todo delete when flutter_driver is updated and null-safe
+  build: ^2.0.0     # todo delete when flutter_driver is updated and null-safe
+  convert: ^3.0.0   # todo delete when flutter_driver is updated and null-safe
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
