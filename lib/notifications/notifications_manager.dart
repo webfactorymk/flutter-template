@@ -70,13 +70,7 @@ class NotificationsManager {
       }
     });
 
-    FirebaseMessaging.onBackgroundMessage((message) async {
-      if (userAuthorized) {
-        _onMessage(message);
-      } else {
-        Logger.w('NotificationsManager - Bg message missed. User unauthorized');
-      }
-    });
+    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
   }
 
   Future<void> disablePushNotifications() async {
@@ -173,4 +167,8 @@ class NotificationsManager {
   _onAppOpenedFromMessage(RemoteMessage message) {
     Logger.d('NotificationsManager - Opened from remote message');
   }
+}
+
+Future<void> backgroundMessageHandler(message) async {
+  Logger.w('NotificationsManager - Bg message missed. User unauthorized');
 }
