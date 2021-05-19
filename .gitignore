@@ -1,3 +1,8 @@
+# Google services config files for iOS and Android
+# todo delete for private repos
+**/google-services.json
+**/GoogleService-Info.plist
+
 # Miscellaneous
 *.class
 *.log
