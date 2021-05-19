@@ -14,4 +14,4 @@ void main() {
 
 // To run the tests, run the following command from the root of the project:
 //
-/// fvm flutter drive --target=test_driver/app.dart --no-sound-null-safety
+/// fvm flutter drive --target=test_driver/app.dart
