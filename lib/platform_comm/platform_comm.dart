@@ -43,6 +43,8 @@ class PlatformComm {
   /// The same goes for [deserializeResult]. Provide the conversion from
   /// raw dynamic data returned from the platform method to your type [R].
   ///
+  /// Use `Future<void>` when not expecting a result.
+  ///
   /// See [MethodChannel.invokeMethod].
   Future<R> invokeMethod<R, P>({
     required String method,
@@ -54,15 +56,6 @@ class PlatformComm {
           .invokeMethod(method,
               param != null ? (serializeParam?.call(param) ?? param) : [])
           .then((data) => deserializeResult?.call(data) ?? data);
-
-  /// Like invoke method, but it doesn't expect a result.
-  Future<void> invokeProcedure<P>({
-    required String method,
-    P? param,
-    Serialize<P>? serializeParam,
-  }) =>
-      _methodChannel.invokeMethod(
-          method, param != null ? (serializeParam?.call(param) ?? param) : []);
 
   /// Listens for the specified [method] to be invoked
   /// overwriting any previously registered listeners.
