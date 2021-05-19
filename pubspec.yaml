@@ -54,7 +54,7 @@ dependencies:
 
   # firebase
   firebase_crashlytics: ^2.0.0
-  firebase_messaging: ^9.1.3          # todo revisit
+  firebase_messaging: ^10.0.0          # todo revisit
   #dart_notification_center: ^1.0.0+1  # todo revisit (legacy)
 
   # platform
