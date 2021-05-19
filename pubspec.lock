@@ -133,7 +133,7 @@ packages:
       name: chopper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0-nullsafety.1"
+    version: "4.0.0"
   chopper_generator:
     dependency: "direct dev"
     description:

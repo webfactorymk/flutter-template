@@ -38,7 +38,7 @@ dependencies:
 
   # network
   http: ^0.13.1
-  chopper: ^4.0.0-nullsafety.1 # todo update to stable
+  chopper: ^4.0.0
   jwt_decoder: 2.0.1 # todo delete if JWT is not used
   connectivity: ^3.0.3
 
