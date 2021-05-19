@@ -20,7 +20,7 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
-# todo Before starting consider updating the dependencies
+# todo Before starting consider updating the dependencies - run Pub outdated
 dependencies:
   # flutter framework
   flutter:
@@ -48,19 +48,18 @@ dependencies:
   shared_preferences: ^2.0.5
 
   # architecture
-  get_it: ^6.0.0
+  get_it: ^7.1.3
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
 
   # firebase
   firebase_crashlytics: ^2.0.0
-  firebase_messaging: ^9.1.3          # todo revisit
-  #dart_notification_center: ^1.0.0+1  # todo revisit (legacy)
+  firebase_messaging: ^10.0.0
 
   # platform
   url_launcher: ^6.0.3
-  uni_links: ^0.4.0
-  permission_handler: ^6.1.1
+  uni_links: ^0.5.1
+  permission_handler: ^7.1.0
   package_info: ^2.0.0
   device_info: ^2.0.0
   path_provider: ^2.0.1
@@ -68,7 +67,7 @@ dependencies:
   # views
   webview_flutter: ^2.0.4
   modal_bottom_sheet: ^2.0.0
-  pull_to_refresh: 1.6.4-nullsafety.0 # todo update to stable
+  pull_to_refresh: 2.0.0
 
 dev_dependencies:
   flutter_test:
