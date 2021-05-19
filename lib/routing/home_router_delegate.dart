@@ -7,8 +7,8 @@ import 'package:flutter_template/routing/pages/loading_page.dart';
 
 import 'app_route_path.dart';
 import 'home_state.dart';
-import 'task_details_screen.dart';
-import 'task_list_screen.dart';
+import '../feature/home/task/ui/task_details_screen.dart';
+import '../feature/home/task/ui/task_list_screen.dart';
 
 class HomeRouterDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePath> {
