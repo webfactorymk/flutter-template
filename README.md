@@ -1,7 +1,9 @@
 # Flutter Template
 Flutter template project - A simple TODO list app 
 
-## Run Configurations
+## Getting Started
+
+### Run Configurations
 
 In addition to the [Flutter's build modes][flutter_build_modes] (debug, profile, release), 
 the project has 4 flavours/schemas for defining environments:
@@ -30,6 +32,14 @@ and [this blog post][blog_flavouring_flutter].
 [flavor_config.dart]: ./lib/config/flavor_config.dart
 [flutter_flavours_official]: https://flutter.dev/docs/deployment/flavors
 [blog_flavouring_flutter]: https://medium.com/@salvatoregiordanoo/flavoring-flutter-392aaa875f36
+
+### Resolve TODOs
+
+Go over the TODOs scattered around the project and resolve as much as possible. They will help you configure the project to your needs.
+
+In AndroidStudio you can view all TODOs in the bottom tab as shown in this picture:
+
+![TODOs bottom tab in AS](http://jubin.tech/assets/pic/20181023-1-todo-in-AS.png)
 
 
 # Data Management

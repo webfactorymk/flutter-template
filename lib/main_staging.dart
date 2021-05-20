@@ -6,7 +6,7 @@ import 'app.dart';
 import 'config/flavor_config.dart';
 import 'config/network_constants.dart';
 
-void main() async {
+Future<void> main() async {
   FlavorConfig.set(
     Flavor.STAGING,
     FlavorValues(
