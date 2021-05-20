@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/data/mock/mock_user_api_service.dart';
@@ -60,7 +61,11 @@ Future<void> setupGlobalDependencies() async {
   }
 
   // Firebase and Notifications
-  final NotificationsManager notificationsManager = NotificationsManager();
+  final androidInitialize = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final iosInitialize = IOSInitializationSettings();
+  final initializeSettings = InitializationSettings(android: androidInitialize,iOS: iosInitialize);
+
+  final NotificationsManager notificationsManager = NotificationsManager(initializeSettings);
   final firebaseUserHook = shouldConfigureFirebase()
       ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
       : StubUserEventHook<UserCredentials>();

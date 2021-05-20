@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/logger.dart';
@@ -13,13 +14,21 @@ const String fcmDeviceTokenKey = 'firebase-device-token';
 /// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
 class NotificationsManager {
   late final FirebaseMessaging _fcm;
+  late final FlutterLocalNotificationsPlugin flNotification;
+
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
 
   bool _setupStarted = false;
   bool userAuthorized = false;
 
-  NotificationsManager({
+  //TODO change this values before using them
+  static const String CHANNEL_ID = '12345';
+  static const String CHANNEL_NAME = 'channel name';
+  static const String CHANNEL_DESCRIPTION = 'channel description';
+
+  NotificationsManager(
+    InitializationSettings initializationSettings, {
     Storage<String>? fcmTokenStorage,
     Storage<String>? apnsTokenStorage,
   })  : _fcmTokenStorage = fcmTokenStorage ??
@@ -29,6 +38,8 @@ class NotificationsManager {
     if (shouldConfigureFirebase()) {
       _fcm = FirebaseMessaging.instance;
     }
+    flNotification = FlutterLocalNotificationsPlugin();
+    flNotification.initialize(initializationSettings);
   }
 
   bool get setupStarted => _setupStarted;
@@ -160,8 +171,21 @@ class NotificationsManager {
     }
   }
 
-  _onMessage(RemoteMessage message) {
-    Logger.d('NotificationsManager - New remote message}');
+  _onMessage(RemoteMessage message) async {
+      String notificationTitle = message.notification!.title!;
+      String notificationBody = message.notification!.body!;
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+        CHANNEL_ID,
+        CHANNEL_NAME,
+        CHANNEL_DESCRIPTION,
+        importance: Importance.max,
+        priority: Priority.high,
+      );
+      const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+      await flNotification.show(
+          0, notificationTitle, notificationBody, platformChannelSpecifics);
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
