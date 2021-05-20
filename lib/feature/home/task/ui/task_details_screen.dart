@@ -16,10 +16,12 @@ class TaskDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(task.title, style: Theme.of(context).textTheme.headline6),
-            Text(task.id, style: Theme.of(context).textTheme.subtitle1),
+            Text(_description(task), style: Theme.of(context).textTheme.subtitle1)
           ],
         ),
       ),
     );
   }
+
+  String _description(Task task) => task.description ?? '';
 }

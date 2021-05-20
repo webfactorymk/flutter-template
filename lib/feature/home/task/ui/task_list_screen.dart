@@ -17,24 +17,27 @@ class TaskListScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            height: 200,
+            height: 500,
             child: ListView(
               children: [
                 for (var task in tasks)
                   ListTile(
                     title: Text(task.title),
-                    subtitle: Text(task.id),
+                    subtitle: Text(_description(task)),
                     onTap: () => _onTapped(context, task),
                   )
               ],
             ),
           ),
-          ElevatedButton(
-            child: Text('Log out'),
-            onPressed: () => _onLogoutPressed(context),
-            style: ElevatedButton.styleFrom(
-              onPrimary: Colors.black,
-              primary: Colors.grey[300],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              child: Text('Log out'),
+              onPressed: () => _onLogoutPressed(context),
+              style: ElevatedButton.styleFrom(
+                onPrimary: Colors.black,
+                primary: Colors.grey[300],
+              ),
             ),
           ),
         ],
@@ -49,4 +52,6 @@ class TaskListScreen extends StatelessWidget {
   void _onTapped(BuildContext context, Task task) {
     Provider.of<HomeState>(context, listen: false).selectedTask = task;
   }
+
+  String _description(Task task) => task.description ?? '';
 }
