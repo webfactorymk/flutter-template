@@ -6,8 +6,8 @@ import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/util/subscription.dart';
 
 const String nativeLogs = 'nativeLogs';
-const String platformTestMethod = "platformTestMethod";
-const String platformTestMethod2 = "platformTestMethod2";
+const String platformTestMethod = 'platformTestMethod';
+const String platformTestMethod2 = 'platformTestMethod2';
 
 /// Platform methods specific for this app.
 extension AppPlatformMethods on PlatformComm {

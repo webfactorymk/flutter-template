@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_template/feature/auth/global_handler/global_auth_state.dart';
 
-abstract class SignUpState extends Equatable {
+abstract class SignUpState extends Equatable implements GlobalAuthState {
   @override
   List<Object> get props => [];
 }

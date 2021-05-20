@@ -69,8 +69,13 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   pull_to_refresh: 2.0.0
 
+  #provider
+  provider: ^5.0.0
+
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  flutter_driver:
     sdk: flutter
   build_runner: any
   chopper_generator: ^4.0.0-nullsafety.1
@@ -80,7 +85,7 @@ dev_dependencies:
   mockito: ^5.0.5
 
 #dependency_overrides:
-#  logging: ^1.0.1
+#  build: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
