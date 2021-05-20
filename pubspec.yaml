@@ -70,9 +70,6 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   pull_to_refresh: 2.0.0
 
-  #provider
-  provider: ^5.0.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
