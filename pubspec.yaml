@@ -76,7 +76,7 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   build_runner: any
-  chopper_generator: ^4.0.0-nullsafety.1
+  chopper_generator: ^4.0.0
   json_serializable: ^4.1.0
   flutter_email_sender: ^5.0.0
   bloc_test: ^8.0.0
