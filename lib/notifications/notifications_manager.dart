@@ -23,7 +23,7 @@ class NotificationsManager {
   bool userAuthorized = false;
 
   //TODO change this values before using them
-  static const String CHANNEL_ID = '12345';
+  static const String CHANNEL_ID = 'foreground';
   static const String CHANNEL_NAME = 'channel name';
   static const String CHANNEL_DESCRIPTION = 'channel description';
 
