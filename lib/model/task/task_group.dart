@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'task_group.g.dart';
 
@@ -15,12 +15,13 @@ class TaskGroup extends Equatable {
 
   const TaskGroup(this.id, this.name, this.taskIds);
 
-  factory TaskGroup.fromJson(Map<String, dynamic> json) => _$TaskGroupFromJson(json);
+  factory TaskGroup.fromJson(Map<String, dynamic> json) =>
+      _$TaskGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaskGroupToJson(this);
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, name, taskIds];
 
   @override
   String toString() {

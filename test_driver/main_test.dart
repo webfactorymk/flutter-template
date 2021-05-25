@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_template/config/flavor_config.dart';
+import 'package:flutter_template/config/network_constants.dart';
 import 'package:flutter_template/config/pre_app_config.dart';
-import 'package:flutter_template/feature/auth/global_handler/global_auth_block_provider.dart';
 
-import 'app.dart';
-import 'config/flavor_config.dart';
-import 'config/network_constants.dart';
+import 'platform_comm_test_widget.dart';
 
 Future<void> main() async {
   FlavorConfig.set(
@@ -16,5 +16,5 @@ Future<void> main() async {
 
   await preAppConfig();
 
-  runApp(globalAuthBlockProvider(child: App()));
+  runApp(PlatformCommTestWidget());
 }
