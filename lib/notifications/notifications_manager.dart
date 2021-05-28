@@ -82,6 +82,13 @@ class NotificationsManager {
     });
 
     FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+
+    //TODO change this behavior depending on your app requirements
+    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true
+    );
   }
 
   Future<void> disablePushNotifications() async {
@@ -171,7 +178,12 @@ class NotificationsManager {
     }
   }
 
+  /// Creates a local notification for Android only
+  /// On iOS the system shows the remote push notification by default
+  /// To change the iOS behavior see setForegroundNotificationPresentationOptions in setupPushNotifications
   _onMessage(RemoteMessage message) async {
+    if (Platform.isIOS) { return; }
+
       String notificationTitle = message.notification!.title!;
       String notificationBody = message.notification!.body!;
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
