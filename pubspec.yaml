@@ -70,6 +70,9 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   pull_to_refresh: 2.0.0
 
+  # notifications
+  flutter_local_notifications: ^5.0.0+4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
