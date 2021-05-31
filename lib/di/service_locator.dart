@@ -98,8 +98,7 @@ Future<void> setupGlobalDependencies() async {
     ..registerSingleton<NetworkUtils>(networkUtils);
 }
 
-//todo find a way to know when the app ends and call this
-void teardown() async {
+Future<void> teardown() async {
   try {
     await serviceLocator.get<UserManager>().teardown();
   } catch (exp) {}

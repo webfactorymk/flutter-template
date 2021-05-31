@@ -1,5 +1,4 @@
 import 'package:chopper/chopper.dart';
-import 'package:flutter_template/data/stub_storage.dart';
 import 'package:flutter_template/feature/force_update/force_update_handler.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_template/user/unauthorized_user_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:single_item_storage/storage.dart';
+import 'package:single_item_storage/stub_storage.dart';
 
 import 'authenticator/refresh_token_authenticator.dart';
 import 'converters/json_type_converter_provider.dart';

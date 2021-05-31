@@ -20,8 +20,7 @@ void initLogger() {
   Logger.logger = MultiLogger([
     ConsoleLogger.create().makeFiltered(noLogsInProductionOrTests()),
     FileLogger.instance().makeFiltered(noLogsInProductionOrTests()),
-    shouldConfigureFirebase()
-        ? FirebaseLogger.instance().makeFiltered(noLogsInTests())
-        : StubLogger(),
+    if (shouldConfigureFirebase())
+      FirebaseLogger.instance().makeFiltered(noLogsInTests()),
   ]);
 }
