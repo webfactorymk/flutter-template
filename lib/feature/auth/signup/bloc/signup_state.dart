@@ -1,21 +1,25 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_template/feature/auth/global_handler/global_auth_state.dart';
 
-abstract class SignUpState extends Equatable implements GlobalAuthState {
+abstract class SignupState extends Equatable {
   @override
   List<Object> get props => [];
+
+  @override
+  String toString() {
+    return this.runtimeType.toString();
+  }
 }
 
-class SignUpInitial extends SignUpState {}
+class AwaitUserInput extends SignupState {}
 
-class SignUpInProgress extends SignUpState {}
+class SignupInProgress extends SignupState {}
 
-class SignUpSuccess extends SignUpState {}
+class SignupSuccess extends SignupState {}
 
-class SignUpFailure extends SignUpState {
+class SignupFailure extends SignupState {
   final dynamic error;
 
-  SignUpFailure({this.error});
+  SignupFailure({this.error});
 
   @override
   String toString() {

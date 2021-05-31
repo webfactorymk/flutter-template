@@ -8,6 +8,10 @@ import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/util/updates_stream.dart';
 
+export 'package:flutter_template/model/task/task.dart';
+export 'package:flutter_template/model/task/task_group.dart';
+export 'package:flutter_template/model/task/task_status.dart';
+
 /// Implementation of [TasksDataSource] that uses both remote and cached data when available.
 /// Provides data updates stream for a (declarative) UI layer.
 ///

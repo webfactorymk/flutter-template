@@ -1,4 +1,27 @@
 {
+  "next": "Next",
+  "submit": "Submit",
+  "remove": "Remove",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "save": "Save",
+  "retry": "Retry",
+  "send": "Send",
+  "start": "Start",
+  "reset": "Reset",
+
+  "no_network": "You're offline",
+  "timeout": "Sorry, the network request timed out. Try again.",
+  "unauthorized": "Error: Unauthorized user",
+  "default_error": "Ops. Something went wrong.",
+  "session_expired": "Error: Session expired",
+  "error_title": "Error",
+
+  "update_alert_title": "App update required",
+  "update_alert_message_ios": "Please update the app to the latest version",
+  "update_alert_message_android": "Please update the app to the latest version",
+  "update_cta": "Update app",
+
   "task_list_title": "Tasks",
   "task_list_create_new": "Create new task",
   "task_list_no_tasks_message": "You have no tasks. Yay! Do nothing!",

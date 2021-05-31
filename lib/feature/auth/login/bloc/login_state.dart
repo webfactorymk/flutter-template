@@ -1,12 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_template/feature/auth/global_handler/global_auth_state.dart';
 
-abstract class LoginState extends Equatable implements GlobalAuthState {
+abstract class LoginState extends Equatable {
   @override
   List<Object> get props => [];
+
+  @override
+  String toString() {
+    return this.runtimeType.toString();
+  }
 }
 
-class LoginInitial extends LoginState {}
+class AwaitUserInput extends LoginState {}
 
 class LoginInProgress extends LoginState {}
 

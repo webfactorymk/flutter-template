@@ -4,11 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_template/app_routes.dart';
 import 'package:flutter_template/log/logger.dart';
 import 'package:flutter_template/network/util/http_exception_code.dart';
-import 'package:flutter_template/resources/string_key.dart';
-import 'package:flutter_template/resources/strings.dart';
+import 'package:flutter_template/resources/strings/string_key.dart';
+import 'package:flutter_template/resources/strings/strings.dart';
 import 'package:flutter_template/util/enum_util.dart';
 
 Future<bool?> showAlertDialog(
@@ -74,7 +73,6 @@ Future<void> showGenericErrorAlert(context, {@required dynamic error, bool popUn
     context,
     title: Strings.localizedString(context, StringKey.error_title),
     message: errorMessage,
-    settings: RouteSettings(name: Routes.alertError),
     popupActions: (dialogContext) => [
       FlatButton(
         child:
