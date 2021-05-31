@@ -1,6 +1,6 @@
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';
-import 'package:flutter_template/util/Either.dart';
+import 'package:flutter_template/util/either.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

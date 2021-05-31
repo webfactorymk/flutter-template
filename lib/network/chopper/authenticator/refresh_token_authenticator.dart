@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/authenticator.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 
 class RefreshTokenAuthenticator implements Authenticator {

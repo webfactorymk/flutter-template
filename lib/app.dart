@@ -2,28 +2,21 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/auth/global_handler/global_auth_cubit.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
-import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
-import 'package:flutter_template/resources/strings.dart';
-import 'package:flutter_template/routing/back_button_dispatcher.dart';
-import 'package:flutter_template/routing/global_router_delegate.dart';
-import 'package:flutter_template/routing/home_state.dart';
+import 'package:flutter_template/resources/strings/strings.dart';
+import 'package:flutter_template/resources/theme/app_theme.dart';
+import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
+import 'package:flutter_template/routing/app_router_delegate.dart';
 import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import 'feature/auth/login/bloc/login.dart';
-import 'feature/auth/signup/bloc/signup.dart';
-import 'routing/auth_state.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -34,7 +27,7 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-//todo replace state with flutter hooks
+//todo replace state with flutter hooks, if you want to
 
 class _AppState extends State<App> {
   String _buildVersion = '';
@@ -59,12 +52,12 @@ class _AppState extends State<App> {
           .get<PlatformComm>()
           .echoMessage('echo')
           .catchError((error) => 'Test platform method error: $error')
-          .then((backEcho) => Logger.d("Test message 'echo' - '$backEcho'"));
+          .then((backEcho) => Log.d("Test message 'echo' - '$backEcho'"));
       serviceLocator
           .get<PlatformComm>()
           .echoObject(TaskGroup('TG-id', 'Test group', List.of(['1', '2'])))
-          .then((backEcho) => Logger.d("Test message TaskGroup - '$backEcho'"))
-          .catchError((error) => Logger.e('Test platform method err.: $error'));
+          .then((backEcho) => Log.d("Test message TaskGroup - '$backEcho'"))
+          .catchError((error) => Log.e('Test platform method err.: $error'));
     }
   }
 
@@ -85,50 +78,21 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalAuthCubit authCubit =
-        GlobalAuthCubit(serviceLocator.get<UserManager>());
-    final LoginCubit loginCubit = LoginCubit(serviceLocator.get<UserManager>());
-    final SignUpCubit signUpCubit = SignUpCubit(
-        serviceLocator.get<UserApiService>(),
-        serviceLocator.get<UserManager>());
-
-    final AppRouterDelegate _routerDelegate = AppRouterDelegate();
-    final AppBackButtonDispatcher _backButtonDispatcher =
-        AppBackButtonDispatcher(_routerDelegate);
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    final themeChangeNotifier = ThemeChangeNotifier.systemTheme(context);
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthState(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => HomeState(),
-        ),
-      ],
-      child: MultiBlocProvider(
         providers: [
-          BlocProvider<GlobalAuthCubit>(create: (context) {
-            return authCubit;
-          }),
-          BlocProvider<LoginCubit>(create: (context) {
-            return loginCubit;
-          }),
-          BlocProvider<SignUpCubit>(create: (context) {
-            return signUpCubit;
-          }),
+          ChangeNotifierProvider<ThemeChangeNotifier>.value(
+              value: themeChangeNotifier),
         ],
         child: MaterialApp(
           navigatorKey: navigatorKey,
-          theme: ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            fontFamily: 'NotoSansJP',
-          ),
+          theme: themeLight(),
+          darkTheme: themeDark(),
+          themeMode: themeChangeNotifier.getThemeMode,
           localizationsDelegates: [
             RefreshLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -142,11 +106,11 @@ class _AppState extends State<App> {
             const Locale('mk'), // Macedonian
           ],
           home: Router(
-              routerDelegate: _routerDelegate,
-              backButtonDispatcher: _backButtonDispatcher),
-        ),
-      ),
-    );
+            routerDelegate:
+                AppRouterDelegate(serviceLocator.get<UserManager>()),
+            backButtonDispatcher: RootBackButtonDispatcher(),
+          ),
+        ));
   }
 
   void _insertOverlay(BuildContext context, buildVersion) {

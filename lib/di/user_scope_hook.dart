@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/di/user_scope.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -54,20 +54,20 @@ class UserScopeHook extends UserEventHook<UserCredentials> {
 /// Returns true if setup needs to proceed, or false if already setup.
 Future<bool> _pushUserScope(String userId) async {
   if (serviceLocator.currentScopeName == 'baseScope') {
-    Logger.d('Push userScope on top of baseScope');
+    Log.d('Push userScope on top of baseScope');
     serviceLocator.pushNewScope(scopeName: userScopeName);
   } else if (serviceLocator.currentScopeName == userScopeName) {
     final prevUserId =
         (await serviceLocator.get<UserManager>().getLoggedInUser())?.user.id;
     if (prevUserId == userId) {
-      Logger.d('Push userScope - The same user logins after session expired');
+      Log.d('Push userScope - The same user logins after session expired');
       return false;
     } else {
-      Logger.d('Push userScope - NEW user logins after session expired');
+      Log.d('Push userScope - NEW user logins after session expired');
       await serviceLocator.reset();
     }
   } else {
-    Logger.w('Push userScope - Un-popped scopes. Popping till $userScopeName]');
+    Log.w('Push userScope - Un-popped scopes. Popping till $userScopeName]');
     await serviceLocator.popScopesTill(userScopeName);
     await serviceLocator.reset();
   }
@@ -77,4 +77,4 @@ Future<bool> _pushUserScope(String userId) async {
 /// Pops the user scope leaving baseScope as the top-most scope in the stack.
 Future<void> _popUserScope() => serviceLocator
     .popScopesTill(userScopeName)
-    .whenComplete(() => Logger.d('Pop userScope'));
+    .whenComplete(() => Log.d('Pop userScope'));

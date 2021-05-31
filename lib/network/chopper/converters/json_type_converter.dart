@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/network/chopper/converters/map_converter.dart';
 
 /// [Converter] that converts JSON data to concrete types using
@@ -49,7 +49,7 @@ class JsonTypeConverter implements Converter {
     final typeConverter = _converterMap[type];
 
     if (typeConverter == null) {
-      Logger.w('JsonTypeConverter - No converter found for type: $type');
+      Log.w('JsonTypeConverter - No converter found for type: $type');
       return request;
     }
 
@@ -71,7 +71,7 @@ class JsonTypeConverter implements Converter {
     try {
       body = json.decode(body);
     } catch (e) {
-      Logger.w('JsonTypeConverter - Could not decode json body.'
+      Log.w('JsonTypeConverter - Could not decode json body.'
           ' Response type: ${BodyType.runtimeType}'
           ' Error: $e');
     }
@@ -79,7 +79,7 @@ class JsonTypeConverter implements Converter {
     final typeConverter = _converterMap[InnerType];
 
     if (typeConverter == null) {
-      Logger.w('JsonTypeConverter - No converter found for type: $InnerType');
+      Log.w('JsonTypeConverter - No converter found for type: $InnerType');
     } else {
       if (isTypeOf<BodyType, InnerType>()) {
         body = typeConverter.fromMap(body) as InnerType;

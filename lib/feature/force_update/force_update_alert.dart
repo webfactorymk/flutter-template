@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/resources/string_key.dart';
-import 'package:flutter_template/resources/strings.dart';
+import 'package:flutter_template/resources/strings/string_key.dart';
+import 'package:flutter_template/resources/strings/strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const APP_STORE_URL = 'app store url'; //todo add app store url in config file

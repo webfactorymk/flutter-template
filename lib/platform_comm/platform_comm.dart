@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/data/item_converter.dart';
 import 'package:flutter_template/platform_comm/platform_callback.dart';
 import 'package:flutter_template/util/subscription.dart';
@@ -24,7 +24,7 @@ class PlatformComm {
 
   PlatformComm(this._methodChannel) {
     _methodChannel.setMethodCallHandler((call) {
-      Logger.d('Platform callback: ${call.method} w/ args ${call.arguments}');
+      Log.d('Platform callback: ${call.method} w/ args ${call.arguments}');
       final callback = _platformCallbackMap[call.method];
       if (callback != null) {
         return Future.value(callback.call(call.arguments));

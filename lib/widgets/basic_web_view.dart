@@ -1,5 +1,5 @@
-import 'package:flutter_template/resources/text_styles.dart';
-import 'package:flutter_template/widgets/circular_progress_indicator.dart';
+import 'package:flutter_template/feature/loading/ui/circular_progress_indicator.dart';
+import 'package:flutter_template/resources/styles/text_styles.dart';
 import 'package:flutter_template/widgets/modal_sheet_presentation.dart';
 import 'package:flutter_template/widgets/transparent_appbar.dart';
 import 'package:flutter/foundation.dart';
@@ -77,7 +77,7 @@ class _BasicWebViewState extends State<BasicWebView> {
             Visibility(
               visible: isLoading,
               child: Center(
-                child: BasicCircularProgressIndicator(),
+                child: PlatformCircularProgressIndicator(),
               ),
             ),
           ],

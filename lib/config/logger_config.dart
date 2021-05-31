@@ -3,7 +3,7 @@ import 'package:flutter_template/log/console_logger.dart';
 import 'package:flutter_template/log/file_logger.dart';
 import 'package:flutter_template/log/filtered_logger.dart';
 import 'package:flutter_template/log/firebase_logger.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/log/multi_logger.dart';
 import 'package:flutter_template/log/stub_logger.dart';
 
@@ -17,11 +17,10 @@ import 'package:flutter_template/log/stub_logger.dart';
 /// todo tailor this setup to your needs
 ///
 void initLogger() {
-  Logger.logger = MultiLogger([
+  Log.logger = MultiLogger([
     ConsoleLogger.create().makeFiltered(noLogsInProductionOrTests()),
     FileLogger.instance().makeFiltered(noLogsInProductionOrTests()),
-    shouldConfigureFirebase()
-        ? FirebaseLogger.instance().makeFiltered(noLogsInTests())
-        : StubLogger(),
+    if (shouldConfigureFirebase())
+      FirebaseLogger.instance().makeFiltered(noLogsInTests()),
   ]);
 }

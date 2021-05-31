@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/config/pre_app_config.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 
 /// Logs blog events.
 ///
@@ -13,20 +13,20 @@ class BlocEventsLogger extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     if (event != null) {
-      Logger.d(event.toString());
+      Log.d(event.toString());
     }
     super.onEvent(bloc, event);
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    Logger.d(transition.toString());
+    Log.d(transition.toString());
     super.onTransition(bloc, transition);
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    Logger.e(error);
+    Log.e(error);
     super.onError(bloc, error, stackTrace);
   }
 }
