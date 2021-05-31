@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/l10n/localization_notifier.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
-import 'package:flutter_template/resources/strings/strings.dart';
 import 'package:flutter_template/resources/theme/app_theme.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:flutter_template/routing/app_router_delegate.dart';
@@ -16,7 +16,8 @@ import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -37,7 +38,7 @@ class _AppState extends State<App> {
 
     setState(() {
       _buildVersion =
-          'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
+      'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
     });
   }
 
@@ -87,45 +88,61 @@ class _AppState extends State<App> {
         providers: [
           ChangeNotifierProvider<ThemeChangeNotifier>.value(
               value: themeChangeNotifier),
-        ],
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          theme: themeLight(),
-          darkTheme: themeDark(),
-          themeMode: themeChangeNotifier.getThemeMode,
-          localizationsDelegates: [
-            RefreshLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            const LocalizedStringsDelegate(['en', 'mk'],
-                fallbackLocale: const Locale('en')),
-          ],
-          supportedLocales: [
-            const Locale('en'), // English
-            const Locale('mk'), // Macedonian
-          ],
-          home: Router(
-            routerDelegate:
-                AppRouterDelegate(serviceLocator.get<UserManager>()),
-            backButtonDispatcher: RootBackButtonDispatcher(),
+          ChangeNotifierProvider<LocalizationNotifier>(
+            create: (context) => LocalizationNotifier(),
           ),
+        ],
+        child: Consumer<LocalizationNotifier>(
+            builder: (context, localeObject, _) {
+              return MaterialApp(
+                navigatorKey: navigatorKey,
+                theme: themeLight(),
+                darkTheme: themeDark(),
+                themeMode: themeChangeNotifier.getThemeMode,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                locale: localeObject.locale,
+                supportedLocales: [
+                  const Locale('en'), // English
+                  const Locale('mk'), // Macedonian
+                ],
+                home: Router(
+                  routerDelegate:
+                  AppRouterDelegate(serviceLocator.get<UserManager>()),
+                  backButtonDispatcher: RootBackButtonDispatcher(),
+                ),
+              );
+            }
         ));
   }
 
   void _insertOverlay(BuildContext context, buildVersion) {
     Overlay.of(context)?.insert(
       OverlayEntry(builder: (context) {
-        var safePadding = MediaQuery.of(context).padding.bottom;
-        final size = MediaQuery.of(context).size;
+        var safePadding = MediaQuery
+            .of(context)
+            .padding
+            .bottom;
+        final size = MediaQuery
+            .of(context)
+            .size;
         final textSize = (TextPainter(
-                text: TextSpan(
-                    text: buildVersion,
-                    style: Theme.of(context).textTheme.caption),
-                maxLines: 1,
-                textScaleFactor: MediaQuery.of(context).textScaleFactor,
-                textDirection: TextDirection.ltr)
-              ..layout())
+            text: TextSpan(
+                text: buildVersion,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .caption),
+            maxLines: 1,
+            textScaleFactor: MediaQuery
+                .of(context)
+                .textScaleFactor,
+            textDirection: TextDirection.ltr)
+          ..layout())
             .size;
 
         return Positioned(
@@ -135,7 +152,10 @@ class _AppState extends State<App> {
           child: IgnorePointer(
             child: Text(
               buildVersion,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption,
             ),
           ),
         );
