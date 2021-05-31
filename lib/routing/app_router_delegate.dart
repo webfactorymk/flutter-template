@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/router/auth_router.dart';
 import 'package:flutter_template/feature/home/router/home_router.dart';
 import 'package:flutter_template/feature/loading/ui/loading_page.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
@@ -18,7 +18,7 @@ class AppRouterDelegate extends RouterDelegate
   StreamSubscription<UserCredentials?>? _userUpdatesSubscription;
 
   AppRouterDelegate(UserManager userManager) {
-    Logger.d('AppRouterDelegate - Subscribe to user updates');
+    Log.d('AppRouterDelegate - Subscribe to user updates');
     _userUpdatesSubscription = userManager.updatesSticky
         .distinct((prev, next) => isUserLoggedIn == next?.isLoggedIn())
         .listen((usrCredentials) => onUserAuthenticationUpdate(usrCredentials));
@@ -26,7 +26,7 @@ class AppRouterDelegate extends RouterDelegate
 
   @visibleForTesting
   void onUserAuthenticationUpdate(UserCredentials? usrCredentials) {
-    Logger.d('AppRouterDelegate - Credentials update: $usrCredentials');
+    Log.d('AppRouterDelegate - Credentials update: $usrCredentials');
     isUserLoggedIn = usrCredentials.isLoggedIn();
     notifyListeners();
   }
@@ -66,7 +66,7 @@ class AppRouterDelegate extends RouterDelegate
   }
 
   Future<void> teardown() async {
-    Logger.d('AppRouterDelegate - Unsubscribe from user updates');
+    Log.d('AppRouterDelegate - Unsubscribe from user updates');
     await _userUpdatesSubscription?.cancel();
   }
 }

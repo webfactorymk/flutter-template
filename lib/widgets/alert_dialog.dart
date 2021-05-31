@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/network/util/http_exception_code.dart';
 import 'package:flutter_template/resources/strings/string_key.dart';
 import 'package:flutter_template/resources/strings/strings.dart';
@@ -59,7 +59,7 @@ Future<void> showGenericErrorAlert(context, {@required dynamic error, bool popUn
   //   return Future(null);
   // }
 
-  Logger.d('Error dialog: $error');
+  Log.d('Error dialog: $error');
   var errorMessage = Strings.localizedString(context, StringKey.error_message);
   if (error != null && !kReleaseMode) {
     errorMessage = '\n' + error.toString();

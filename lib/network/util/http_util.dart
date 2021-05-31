@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 
@@ -61,7 +61,7 @@ String? parseErrorResponse(Response response) {
         : 'fieldErrors';
     return responseBody[errorType][0]['code'];
   } catch (exp) {
-    Logger.e('Error parsing error response - error: $exp; decoded body: $responseBody');
+    Log.e('Error parsing error response - error: $exp; decoded body: $responseBody');
     return null;
   }
 }

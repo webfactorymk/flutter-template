@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/util/updates_stream.dart';
 
 /// Monitors app lifecycle events.
@@ -22,7 +22,7 @@ class AppLifecycleObserver
   /// Global method to start monitoring application state.
   void activate() {
     if (_activated) {
-      Logger.w('Warning: AppLifecycleObserver is already activated.');
+      Log.w('Warning: AppLifecycleObserver is already activated.');
       return;
     }
     _activated = true;
@@ -32,7 +32,7 @@ class AppLifecycleObserver
   /// Global method to stop monitoring application state.
   void deactivate() {
     if (!_activated) {
-      Logger.w('Warning: AppLifecycleObserver is already deactivated.');
+      Log.w('Warning: AppLifecycleObserver is already deactivated.');
       return;
     }
     _activated = false;

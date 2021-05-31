@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/util/subscription.dart';
@@ -13,7 +13,7 @@ const String platformTestMethod2 = 'platformTestMethod2';
 extension AppPlatformMethods on PlatformComm {
   /// Listens for custom log messages from the platform side.
   Subscription listenToNativeLogs() => this.listenMethod<String>(
-      method: nativeLogs, callback: (logMessage) => Logger.d(logMessage));
+      method: nativeLogs, callback: (logMessage) => Log.d(logMessage));
 
   /// For testing only.
   Future<String> echoMessage(String echoMessage) =>

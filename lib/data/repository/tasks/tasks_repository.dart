@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_template/data/repository/tasks/tasks_data_source.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_event.dart';
 import 'package:flutter_template/model/task/task_group.dart';
@@ -34,7 +34,7 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
         userId = remote.userId,
         _remoteDataSource = remote,
         _cacheDataSource = cache {
-    Logger.d('TasksRepository - Init');
+    Log.d('TasksRepository - Init');
   }
 
   /// Returns a broadcast stream that tracks user's task groups.
@@ -48,7 +48,7 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
       updates.where((event) => event is TaskEvent).cast<TaskEvent>().distinct();
 
   Future<void> teardown() async {
-    Logger.d('TasksRepository - Teardown: Deleting local data');
+    Log.d('TasksRepository - Teardown: Deleting local data');
     await closeUpdatesStream();
     await _cacheDataSource.deleteAllData();
   }

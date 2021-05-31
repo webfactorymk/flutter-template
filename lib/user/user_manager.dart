@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -38,7 +38,7 @@ class UserManager with UpdatesStream<UserCredentials> {
     userEventHooks.forEach((hook) => hook.onUserUpdatesProvided(updatesSticky));
     _userStoreExternalUpdatesSubscription =
         observedStorage.updatesSticky.distinct().listen((userCredentials) {
-      Logger.d('UserManager - Info: User storage modified outside UserManager');
+      Log.d('UserManager - Info: User storage modified outside UserManager');
       addUpdate(userCredentials);
     });
   }
@@ -57,7 +57,7 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// to [updates] and [updatesSticky].
   @override
   void addUpdate(UserCredentials? event) {
-    Logger.d('UserManager - User update event: $event');
+    Log.d('UserManager - User update event: $event');
     super.addUpdate(event);
   }
 
@@ -73,10 +73,10 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// Logs-in the user and triggers an update to the user [updates] stream.
   /// If the user is already logged in, the user is returned with no additional action.
   Future<UserCredentials> login(String username, String password) async {
-    Logger.d('UserManager - Login in progress...');
+    Log.d('UserManager - Login in progress...');
 
     if (await isLoggedIn()) {
-      Logger.w('UserManager - Abort login: Already logged in!');
+      Log.w('UserManager - Abort login: Already logged in!');
       return _userStore.get().asNonNullable();
     }
 
@@ -85,13 +85,13 @@ class UserManager with UpdatesStream<UserCredentials> {
         authHeader: authHeaderValue(credentials.token));
     final userCredentials = UserCredentials(user, credentials);
 
-    Logger.d('UserManager - Login success: $userCredentials');
+    Log.d('UserManager - Login success: $userCredentials');
     await _userStore.save(userCredentials);
 
     for (var userEventHook in userEventHooks) {
       await userEventHook
           .postLogin(userCredentials)
-          .catchError((err) => Logger.e('UserManager - LoginHook error: $err'));
+          .catchError((err) => Log.e('UserManager - LoginHook error: $err'));
     }
 
     addUpdate(userCredentials);
@@ -102,21 +102,21 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// If the user is already logged out, the [Future] completes without doing anything.
   /// Todo: Mind to handle the error response.
   Future<void> logout() async {
-    Logger.d('UserManager - Logout in progress...');
+    Log.d('UserManager - Logout in progress...');
 
     if (!(await isLoggedIn())) {
-      Logger.w('UserManager - Abort logout: Already logged out!');
+      Log.w('UserManager - Abort logout: Already logged out!');
       return;
     }
 
     await _apiService.logout();
     await _userStore.delete();
-    Logger.d('UserManager - Logout success');
+    Log.d('UserManager - Logout success');
 
     for (var userEventHook in userEventHooks) {
       await userEventHook
           .postLogout()
-          .catchError((e) => Logger.e('UserManager - LogoutHook error: $e'));
+          .catchError((e) => Log.e('UserManager - LogoutHook error: $e'));
     }
 
     addUpdate(null);
@@ -124,10 +124,10 @@ class UserManager with UpdatesStream<UserCredentials> {
 
   /// Updates current user's credentials and triggers an update to [updates] stream.
   Future<UserCredentials> updateCredentials(Credentials? credentials) async {
-    Logger.d('UserManager - Updating credentials w/ new $credentials');
+    Log.d('UserManager - Updating credentials w/ new $credentials');
 
     if ((await _userStore.get())?.user == null) {
-      Logger.e('UserManager - Updating credentials error: User logged out!');
+      Log.e('UserManager - Updating credentials error: User logged out!');
       throw UnauthorizedUserException('Updating credentials on logged out usr');
     }
 
@@ -135,7 +135,7 @@ class UserManager with UpdatesStream<UserCredentials> {
     final UserCredentials newUser = UserCredentials(oldUser.user, credentials);
 
     await _userStore.save(newUser);
-    Logger.d('UserManager - Updating credentials success');
+    Log.d('UserManager - Updating credentials success');
 
     addUpdate(newUser);
     return newUser;
@@ -143,16 +143,16 @@ class UserManager with UpdatesStream<UserCredentials> {
 
   /// Updates current user's credentials and triggers an update to [updates] stream.
   Future<User> updateUser(User user) async {
-    Logger.d('UserManager - Updating user w/ new $user');
+    Log.d('UserManager - Updating user w/ new $user');
 
     if (!(await isLoggedIn())) {
-      Logger.e('UserManager - Updating user error: User logged out!');
+      Log.e('UserManager - Updating user error: User logged out!');
       await _userStore.delete();
       throw UnauthorizedUserException('Updating user on logged out usr');
     }
 
     await _apiService.updateUserProfile(user);
-    Logger.d('UserManager - Updating user success');
+    Log.d('UserManager - Updating user success');
 
     return refreshUser();
   }
@@ -160,10 +160,10 @@ class UserManager with UpdatesStream<UserCredentials> {
   /// Fetches a fresh copy of [User] and triggers an update to [updates] stream
   /// if there is a change.
   Future<User> refreshUser() async {
-    Logger.d('UserManager - Refreshing user profile...');
+    Log.d('UserManager - Refreshing user profile...');
 
     if (!(await isLoggedIn())) {
-      Logger.e('UserManager - Refreshing user error: User logged out!');
+      Log.e('UserManager - Refreshing user error: User logged out!');
       await _userStore.delete();
       throw UnauthorizedUserException('Refreshing a logged out user');
     }
@@ -180,7 +180,7 @@ class UserManager with UpdatesStream<UserCredentials> {
       await _userStore.save(newUserCredentials);
       addUpdate(newUserCredentials);
     } else {
-      Logger.d('UserManager - Getting profile. No changes.');
+      Log.d('UserManager - Getting profile. No changes.');
     }
 
     return newUser;
@@ -188,10 +188,10 @@ class UserManager with UpdatesStream<UserCredentials> {
 
   /// Deactivates the user's profile and triggers an update to [updates] stream.
   Future<void> deactivateUser() async {
-    Logger.d('UserManager - Deactivating user');
+    Log.d('UserManager - Deactivating user');
     await _apiService.deactivate();
     await _userStore.delete();
-    Logger.d('UserManager - Deactivating user success');
+    Log.d('UserManager - Deactivating user success');
     addUpdate(null);
   }
 

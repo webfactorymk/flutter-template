@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/data/data_not_found_exception.dart';
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_bloc.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/model/task/task_status.dart';
@@ -67,7 +67,7 @@ class TaskListView extends StatelessWidget {
     } else if (state is TasksLoadFailure) {
       return _errorWidget(state, strings);
     } else {
-      Logger.e(UnimplementedError('TaskListState not consumed: $state'));
+      Log.e(UnimplementedError('TaskListState not consumed: $state'));
       return _errorWidget(state, strings);
     }
   }

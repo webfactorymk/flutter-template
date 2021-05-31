@@ -4,7 +4,7 @@ import 'package:flutter_template/log/abstract_logger.dart';
 ///
 /// __Before use you must set logger implementation.__
 /// __See the setter for [logger].__
-abstract class Logger {
+abstract class Log {
   static AbstractLogger? _logger;
 
   static set logger(AbstractLogger value) => _logger = value;
@@ -17,4 +17,4 @@ abstract class Logger {
 }
 
 /// Convenience error function to use w/ [Future]s.
-void onErrorLog(error) => Logger.e(error);
+void onErrorLog(error) => Log.e(error);

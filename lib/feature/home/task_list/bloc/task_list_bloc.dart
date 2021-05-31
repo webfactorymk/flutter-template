@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 
 import 'task_list_event.dart';
 import 'task_list_state.dart';
@@ -19,7 +19,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   @override
   Stream<TaskListState> mapEventToState(TaskListEvent event) async* {
     if (event is LoadTasks) {
-      Logger.d('TasksCubit - Load all tasks');
+      Log.d('TasksCubit - Load all tasks');
       yield TasksLoadInProgress();
       try {
         final tasks = await _tasksRepository.getAllTasksGrouped();

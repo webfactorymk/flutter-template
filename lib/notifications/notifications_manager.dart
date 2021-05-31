@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
 import 'package:single_item_storage/storage.dart';
 
@@ -35,7 +35,7 @@ class NotificationsManager {
 
   setupPushNotifications() async {
     if (_setupStarted) {
-      Logger.d('NotificationsManager - Setup: Aborting, already completed.');
+      Log.d('NotificationsManager - Setup: Aborting, already completed.');
     }
     _setupStarted = true;
 
@@ -50,7 +50,7 @@ class NotificationsManager {
     _onFCMTokenReceived(fcmToken);
 
     _fcm.onTokenRefresh.listen((token) {
-      Logger.d('NotificationsManager - FCM Token refresh');
+      Log.d('NotificationsManager - FCM Token refresh');
       _onFCMTokenReceived(token);
     });
 
@@ -58,7 +58,7 @@ class NotificationsManager {
       if (userAuthorized) {
         _onMessage(message);
       } else {
-        Logger.w('NotificationsManager - Message missed. User unauthorized');
+        Log.w('NotificationsManager - Message missed. User unauthorized');
       }
     });
 
@@ -66,7 +66,7 @@ class NotificationsManager {
       if (userAuthorized) {
         _onAppOpenedFromMessage(message);
       } else {
-        Logger.w('NotificationsManager - App not opened. User unauthorized');
+        Log.w('NotificationsManager - App not opened. User unauthorized');
       }
     });
 
@@ -74,7 +74,7 @@ class NotificationsManager {
       if (userAuthorized) {
         _onMessage(message);
       } else {
-        Logger.w('NotificationsManager - Bg message missed. User unauthorized');
+        Log.w('NotificationsManager - Bg message missed. User unauthorized');
       }
     });
   }
@@ -110,12 +110,12 @@ class NotificationsManager {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      Logger.d('NotificationsManager - User granted permission');
+      Log.d('NotificationsManager - User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      Logger.d('NotificationsManager - User granted provisional permission');
+      Log.d('NotificationsManager - User granted provisional permission');
     } else {
-      Logger.w(
+      Log.w(
           'NotificationsManager - User declined or not accepted permission');
     }
 
@@ -147,7 +147,7 @@ class NotificationsManager {
   }
 
   Future<void> _onAPNSTokenReceived(String? token) async {
-    Logger.d('APNS Token $token');
+    Log.d('APNS Token $token');
 
     final storedToken = await _apnsTokenStorage.get();
 
@@ -157,7 +157,7 @@ class NotificationsManager {
   }
 
   Future<void> _onFCMTokenReceived(String? token) async {
-    Logger.d('NotificationsManager - FCM Token $token');
+    Log.d('NotificationsManager - FCM Token $token');
 
     final storedToken = await _fcmTokenStorage.get();
 
@@ -167,10 +167,10 @@ class NotificationsManager {
   }
 
   _onMessage(RemoteMessage message) {
-    Logger.d('NotificationsManager - New remote message}');
+    Log.d('NotificationsManager - New remote message}');
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
-    Logger.d('NotificationsManager - Opened from remote message');
+    Log.d('NotificationsManager - Opened from remote message');
   }
 }

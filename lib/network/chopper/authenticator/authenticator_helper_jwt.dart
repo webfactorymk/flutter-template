@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_template/config/network_constants.dart';
-import 'package:flutter_template/log/logger.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -51,9 +51,9 @@ class AuthenticatorHelperJwt {
     Credentials? credentials,
     String? Function(dynamic error)? onError,
   }) {
-    Logger.d('Authenticator (manual) - Manual token check');
+    Log.d('Authenticator (manual) - Manual token check');
     return _lock.synchronized<String?>(() async {
-      Logger.d('Authenticator (manual) - lock');
+      Log.d('Authenticator (manual) - lock');
 
       // Get current token
       final UserCredentials? loggedInUser = await _userStore.get();
@@ -62,37 +62,37 @@ class AuthenticatorHelperJwt {
 
       // Throw if a token does not exist
       if (currentToken == null) {
-        Logger.e('Authenticator (manual) - Token does not exist');
+        Log.e('Authenticator (manual) - Token does not exist');
         throw Exception('Token does not exist');
       }
 
       // Check if token is expired
       bool isTokenExpired = JwtDecoder.isExpired(currentToken);
       if (isTokenExpired) {
-        Logger.d('Authenticator (manual) - Token expired');
+        Log.d('Authenticator (manual) - Token expired');
 
         // Check if refresh token is expired
         _ensureRefreshTokenNotExpired(currentUser?.refreshToken);
 
         // Refresh the token
-        Logger.d('Authenticator (manual) - Refreshing token...');
+        Log.d('Authenticator (manual) - Refreshing token...');
         final newCredentials = await _refreshToken(currentUser!.refreshToken);
 
         // Token refresh success. Save new token, update interceptor.
-        Logger.d('Authenticator (manual) - Updating old token');
+        Log.d('Authenticator (manual) - Updating old token');
         await _userStore.save(loggedInUser!.copy(cred: newCredentials));
 
         return newCredentials.token;
       } else {
-        Logger.d('Authenticator (manual) - Token is not expired');
+        Log.d('Authenticator (manual) - Token is not expired');
         return currentToken;
       }
     }, timeout: Duration(seconds: 30)).catchError((e) => onError!.call(e),
         test: (error) {
-      Logger.e('Authenticator (manual) - Exception thrown: $error');
+      Log.e('Authenticator (manual) - Exception thrown: $error');
       return onError != null;
     }).whenComplete(() {
-      Logger.d('Authenticator (manual) - lock released');
+      Log.d('Authenticator (manual) - lock released');
     });
   }
 
@@ -104,7 +104,7 @@ class AuthenticatorHelperJwt {
     if (response.statusCode != 401) {
       return null;
     }
-    Logger.d('Authenticator (response) - '
+    Log.d('Authenticator (response) - '
         'Handling 401 unauthorized request: ${request.url}');
 
     // Check current token
@@ -118,7 +118,7 @@ class AuthenticatorHelperJwt {
 
     final Request? newRequestMaybe = await _lock.synchronized<Request?>(
       () async {
-        Logger.d('Authenticator (response) - lock');
+        Log.d('Authenticator (response) - lock');
 
         // Check if a newer token exists than our current one
         final UserCredentials? loggedInUser = await _userStore.get();
@@ -126,11 +126,11 @@ class AuthenticatorHelperJwt {
         final String? tokenCurrent = currentUser?.token;
 
         if (tokenCurrent == null) {
-          Logger.e('Authenticator (response) - User logged out!');
+          Log.e('Authenticator (response) - User logged out!');
           throw UnauthorizedUserException('User logged out!');
         }
         if (tokenCurrent != null && tokenCurrent != tokenUsed) {
-          Logger.d('Authenticator (response) - Refreshed token exists'
+          Log.d('Authenticator (response) - Refreshed token exists'
               '\nnewToken: $tokenCurrent'
               '\nusedToken: $tokenUsed');
           return applyHeader(request, authHeaderKey, tokenCurrent,
@@ -141,24 +141,24 @@ class AuthenticatorHelperJwt {
         _ensureRefreshTokenNotExpired(currentUser?.refreshToken);
 
         // Refresh the token
-        Logger.d('Authenticator (response) - Refreshing token...');
+        Log.d('Authenticator (response) - Refreshing token...');
         final newCredentials = await _refreshToken(currentUser!.refreshToken);
 
         // Token refresh success. Save new token, update interceptor.
-        Logger.d('Authenticator (response) - Token refresh success; Saving...');
+        Log.d('Authenticator (response) - Token refresh success; Saving...');
         await _userStore.save(loggedInUser!.copy(cred: newCredentials));
 
-        Logger.d('Authenticator (response) - releasing lock');
+        Log.d('Authenticator (response) - releasing lock');
 
         return applyHeader(request, authHeaderKey, newCredentials.token,
             override: true);
       },
       timeout: Duration(seconds: 30),
     ).catchError((_) {}, test: (error) {
-      Logger.e('Authenticator (response) - Exception thrown: $error');
+      Log.e('Authenticator (response) - Exception thrown: $error');
       return false;
     }); //lock end
-    Logger.d('Authenticator (response) - lock released');
+    Log.d('Authenticator (response) - lock released');
     return newRequestMaybe;
   }
 
@@ -170,24 +170,24 @@ class AuthenticatorHelperJwt {
 
     // Check if any used token is valid
     if (tokenUsed != null && !JwtDecoder.isExpired(tokenUsed)) {
-      Logger.d('Authenticator (request) - Token is valid');
+      Log.d('Authenticator (request) - Token is valid');
       return request;
     }
 
     final Request newRequestMaybe = await _lock.synchronized(
       () async {
-        Logger.d('Authenticator (request) - lock');
+        Log.d('Authenticator (request) - lock');
 
         // Apply token to the request, if not expired
         final UserCredentials? loggedInUser = await _userStore.get();
         final Credentials? currentUser = loggedInUser?.credentials;
         final String? tokenCurrent = currentUser?.token;
         if (tokenCurrent == null) {
-          Logger.d('Authenticator (request) - Request w/o token: $request');
+          Log.d('Authenticator (request) - Request w/o token: $request');
           return request;
         }
         if (!JwtDecoder.isExpired(tokenCurrent)) {
-          Logger.d('Authenticator (request) - Applying token'
+          Log.d('Authenticator (request) - Applying token'
               '\nnewToken: $tokenCurrent'
               '\nusedToken: $tokenUsed');
           return applyHeader(
@@ -202,14 +202,14 @@ class AuthenticatorHelperJwt {
         _ensureRefreshTokenNotExpired(currentUser?.refreshToken);
 
         // Refresh the token
-        Logger.d('Authenticator (request) - Refreshing token...');
+        Log.d('Authenticator (request) - Refreshing token...');
         final newCredentials = await _refreshToken(currentUser!.refreshToken);
 
-        Logger.d('Authenticator (request) - Token refresh success');
+        Log.d('Authenticator (request) - Token refresh success');
         await _userStore.save(loggedInUser!.copy(cred: newCredentials));
 
-        Logger.d('Authenticator (request) - Swapping old token');
-        Logger.d('Authenticator (request) - releasing lock');
+        Log.d('Authenticator (request) - Swapping old token');
+        Log.d('Authenticator (request) - releasing lock');
 
         return applyHeader(
           request,
@@ -220,18 +220,18 @@ class AuthenticatorHelperJwt {
       },
       timeout: Duration(seconds: TIMEOUT),
     ).catchError((_) {}, test: (error) {
-      Logger.e('Authenticator (request) - Exception thrown: $error');
+      Log.e('Authenticator (request) - Exception thrown: $error');
       return false;
     });
 
-    Logger.d('Authenticator (request) - lock released');
+    Log.d('Authenticator (request) - lock released');
     return newRequestMaybe;
   }
 
   void _ensureRefreshTokenNotExpired(RefreshToken? refreshToken) {
     final int now = DateTime.now().millisecondsSinceEpoch;
     if (refreshToken == null || refreshToken.expiresAt < now) {
-      Logger.d('Authenticator (n/a) - Refresh token is expired!');
+      Log.d('Authenticator (n/a) - Refresh token is expired!');
       throw UnauthorizedUserException('Refresh token expired! '
           '(token expiry time: ${refreshToken?.expiresAt}, '
           '(now: $now)');
@@ -247,7 +247,7 @@ class AuthenticatorHelperJwt {
       test: (error) {
         // Errors getting result, even negative, will be propagated.
         // This is to prevent unnecessarily logging out the user (app offline, etc.)
-        Logger.e('Authenticator (n/a) - Refresh token failed: $error');
+        Log.e('Authenticator (n/a) - Refresh token failed: $error');
         return error is UnauthorizedUserException ||
             (error is HttpExceptionCode &&
                 (error.statusCode ?? 0) >= 400 &&
@@ -257,7 +257,7 @@ class AuthenticatorHelperJwt {
 
     // Token refresh refused
     if (newCredentials == null) {
-      Logger.e('Authenticator (n/a) - Unsuccessful token refresh');
+      Log.e('Authenticator (n/a) - Unsuccessful token refresh');
       throw UnauthorizedUserException('Refresh token refused');
     }
 
