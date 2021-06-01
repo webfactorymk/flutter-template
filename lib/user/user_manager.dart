@@ -4,8 +4,8 @@ import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
-import 'package:flutter_template/network/util/http_util.dart';
 import 'package:flutter_template/network/user_api_service.dart';
+import 'package:flutter_template/network/util/http_util.dart';
 import 'package:flutter_template/user/unauthorized_user_exception.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/util/nullable_util.dart';
@@ -100,7 +100,6 @@ class UserManager with UpdatesStream<UserCredentials> {
 
   /// Logs-out the user and triggers an update to the user [updates] stream.
   /// If the user is already logged out, the [Future] completes without doing anything.
-  /// Todo: Mind to handle the error response.
   Future<void> logout() async {
     Log.d('UserManager - Logout in progress...');
 
@@ -109,7 +108,10 @@ class UserManager with UpdatesStream<UserCredentials> {
       return;
     }
 
-    await _apiService.logout();
+    await _apiService
+        .logout()
+        .catchError((e) => Log.e('UserManager - Logout error: $e'));
+
     await _userStore.delete();
     Log.d('UserManager - Logout success');
 
