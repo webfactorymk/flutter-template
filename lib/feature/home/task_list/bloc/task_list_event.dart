@@ -4,7 +4,6 @@ import 'package:flutter_template/model/task/task.dart';
 
 @immutable
 abstract class TaskListEvent extends Equatable {
-
   @override
   List<Object> get props => [];
 
@@ -30,3 +29,6 @@ class TaskReopened extends TaskListEvent {
 
   TaskReopened(this.task);
 }
+
+/// Triggers a logout event.
+class Logout extends TaskListEvent {}

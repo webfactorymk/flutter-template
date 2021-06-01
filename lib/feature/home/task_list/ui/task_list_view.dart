@@ -10,6 +10,7 @@ import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/resources/colors/color_palette.dart';
 import 'package:flutter_template/resources/strings/string_key.dart';
 import 'package:flutter_template/resources/strings/strings.dart';
+import 'package:flutter_template/resources/styles/text_styles.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,23 @@ class TaskListView extends StatelessWidget {
           title: Text(strings.get(StringKey.task_list_title)),
         ),
         body: _getBodyForState(context, state, strings),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(color: ColorPalette.primary),
+                child: Text('Drawer Header', style: kWhiteTextStyle),
+              ),
+              ListTile(
+                title: Text('Logout'),
+                onTap: () async {
+                  BlocProvider.of<TaskListBloc>(context).add(Logout());
+                },
+              ),
+            ],
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             //TODO go to create new task screen
@@ -92,7 +110,8 @@ class TaskListView extends StatelessWidget {
           } else if (item is Task) {
             return _TaskListItem(
               task: item,
-              onClick: (task) => context.read<HomeRouterDelegate>()
+              onClick: (task) => context
+                  .read<HomeRouterDelegate>()
                   .setTaskDetailNavState(task),
               onStatusChange: (task, isDone) => taskListBloc
                   .add(isDone ? TaskCompleted(task) : TaskReopened(task)),
