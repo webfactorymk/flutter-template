@@ -50,7 +50,7 @@
 		AE3554C6867F7E629B3A18B2 /* Pods-Runner.debug-production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-production.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-production.xcconfig"; sourceTree = "<group>"; };
 		B954E68F26652486007D6BF2 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		B954E690266524A4007D6BF2 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
-		B954E69926652E72007D6BF2 /* Pods-Runner.debug-dev.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-dev.xcconfig"; sourceTree = "<group>"; };
+		B954E69926652E72007D6BF2 /* Target Support Files/Pods-Runner/Pods-Runner.debug-dev.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-dev.xcconfig"; sourceTree = "<group>"; };
 		B9B02AF7263AEFC10072BCF5 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		B9B4FCF0264A8A5600EE496C /* PlatformCommunication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformCommunication.swift; sourceTree = "<group>"; };
 		B9B4FCF2264A8ACC00EE496C /* PlatformConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformConstants.swift; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 		33B5E9B1CB1066BF4EEA8167 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B954E69926652E72007D6BF2 /* Pods-Runner.debug-dev.xcconfig */,
+				B954E69926652E72007D6BF2 /* Target Support Files/Pods-Runner/Pods-Runner.debug-dev.xcconfig */,
 				E1793063FF45A9E17E149A73 /* Pods-Runner.debug-staging.xcconfig */,
 				AE3554C6867F7E629B3A18B2 /* Pods-Runner.debug-production.xcconfig */,
 				9D64239614F6420985F4E1C6 /* Pods-Runner.release-dev.xcconfig */,
