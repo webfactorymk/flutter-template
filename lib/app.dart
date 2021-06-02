@@ -31,6 +31,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   String _buildVersion = '';
+  late AppRouterDelegate _appRouterDelegate;
 
   Future<void> _getBuildVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -44,7 +45,9 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+    //todo await post_app_config() ?
     serviceLocator.get<AppLifecycleObserver>().activate();
+    _appRouterDelegate = AppRouterDelegate(serviceLocator.get<UserManager>());
 
     if (!FlavorConfig.isProduction()) {
       _getBuildVersion();
@@ -106,8 +109,7 @@ class _AppState extends State<App> {
             const Locale('mk'), // Macedonian
           ],
           home: Router(
-            routerDelegate:
-                AppRouterDelegate(serviceLocator.get<UserManager>()),
+            routerDelegate: _appRouterDelegate,
             backButtonDispatcher: RootBackButtonDispatcher(),
           ),
         ));
