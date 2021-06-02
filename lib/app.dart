@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/l10n/l10n.dart';
 import 'package:flutter_template/l10n/localization_notifier.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
@@ -111,10 +112,7 @@ class _AppState extends State<App> {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 locale: localeObject.locale,
-                supportedLocales: [
-                  const Locale('en'), // English
-                  const Locale('mk'), // Macedonian
-                ],
+                supportedLocales: L10n.all,
                 home: Router(
                   routerDelegate: _appRouterDelegate,
                   backButtonDispatcher: RootBackButtonDispatcher(),
