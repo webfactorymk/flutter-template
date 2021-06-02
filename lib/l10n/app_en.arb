@@ -1,4 +1,9 @@
 {
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "Newborn programmer greeting"
+  },
+
   "next": "Next",
   "submit": "Submit",
   "remove": "Remove",

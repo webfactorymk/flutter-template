@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/network/util/http_exception_code.dart';
-import 'package:flutter_template/resources/strings/string_key.dart';
-import 'package:flutter_template/resources/strings/strings.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/util/enum_util.dart';
 
 Future<bool?> showAlertDialog(
@@ -60,23 +59,21 @@ Future<void> showGenericErrorAlert(context, {@required dynamic error, bool popUn
   // }
 
   Log.d('Error dialog: $error');
-  var errorMessage = Strings.localizedString(context, StringKey.error_message);
+  var errorMessage = AppLocalizations.of(context)!.error_title;
   if (error != null && !kReleaseMode) {
     errorMessage = '\n' + error.toString();
   }
   if (error is HttpExceptionCode) {
-    var errorKey = enumFromString(StringKey.values, error.errorResponse);
-    errorMessage = Strings.localizedString(
-        context, errorKey != null ? errorKey : StringKey.default_error);
+    errorMessage = AppLocalizations.of(context)!.default_error;
   }
   return showAlertDialog(
     context,
-    title: Strings.localizedString(context, StringKey.error_title),
+    title: AppLocalizations.of(context)!.error_title,
     message: errorMessage,
     popupActions: (dialogContext) => [
       FlatButton(
         child:
-            Text((Strings.localizedString(dialogContext, StringKey.ok)).toUpperCase()),
+            Text(AppLocalizations.of(context)!.ok.toUpperCase()),
         onPressed: () {
           if (popUntilFirst) {
             Navigator.popUntil(dialogContext, (route) => route.isFirst);

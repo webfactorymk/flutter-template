@@ -5,10 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/l10n/l10n.dart';
+import 'package:flutter_template/l10n/localization_notifier.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
-import 'package:flutter_template/resources/strings/strings.dart';
 import 'package:flutter_template/resources/theme/app_theme.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:flutter_template/routing/app_router_delegate.dart';
@@ -16,7 +17,7 @@ import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -85,34 +86,38 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    final themeChangeNotifier = ThemeChangeNotifier.systemTheme(context);
+
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ThemeChangeNotifier>.value(
-              value: themeChangeNotifier),
-        ],
-        child: MaterialApp(
+      providers: [
+        ChangeNotifierProvider<ThemeChangeNotifier>(
+          create: (context) => ThemeChangeNotifier.systemTheme(context),
+        ),
+        ChangeNotifierProvider<LocalizationNotifier>(
+          create: (context) => LocalizationNotifier(),
+        ),
+      ],
+      child: Consumer2<LocalizationNotifier, ThemeChangeNotifier>(
+          builder: (context, localeObject, themeObject, _) {
+        return MaterialApp(
           navigatorKey: navigatorKey,
           theme: themeLight(),
           darkTheme: themeDark(),
-          themeMode: themeChangeNotifier.getThemeMode,
+          themeMode: themeObject.getThemeMode,
           localizationsDelegates: [
-            RefreshLocalizations.delegate,
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
-            const LocalizedStringsDelegate(['en', 'mk'],
-                fallbackLocale: const Locale('en')),
           ],
-          supportedLocales: [
-            const Locale('en'), // English
-            const Locale('mk'), // Macedonian
-          ],
+          locale: localeObject.locale,
+          supportedLocales: L10n.all,
           home: Router(
             routerDelegate: _appRouterDelegate,
             backButtonDispatcher: RootBackButtonDispatcher(),
           ),
-        ));
+        );
+      }),
+    );
   }
 
   void _insertOverlay(BuildContext context, buildVersion) {

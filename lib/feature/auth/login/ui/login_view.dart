@@ -3,7 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
+import 'package:flutter_template/l10n/l10n.dart';
+import 'package:flutter_template/l10n/localization_notifier.dart';
+import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends StatelessWidget {
   final bool sessionExpiredRedirect;
@@ -15,7 +19,26 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          PopupMenuButton<String>(
+              onSelected: (item) => onSelected(context, item),
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Text('English'),
+                      value: 'en',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Macedonian'),
+                      value: 'mk',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Toggle Theme'),
+                      value: 'theme',
+                    ),
+                  ])
+        ],
+      ),
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (listenerContext, state) {},
         builder: (context, state) {
@@ -28,6 +51,13 @@ class LoginView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      AppLocalizations.of(context)!.helloWorld,
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontSize: 24,
+                      ),
+                    ),
                     Text('Login Page'),
                     SizedBox(height: 10),
                     TextFormField(
@@ -77,5 +107,15 @@ class LoginView extends StatelessWidget {
 
   void _onSignUpPressed(BuildContext context) {
     context.read<AuthRouterDelegate>().setSignupNavState();
+  }
+
+  onSelected(BuildContext context, String item) {
+    if(item == 'theme'){
+      final themeNotifier = Provider.of<ThemeChangeNotifier>(context, listen: false);
+      themeNotifier.toggleTheme();
+    }else{
+      final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
+      localizationNotifier.setLocale(L10n.getLocale(item));
+    }
   }
 }
