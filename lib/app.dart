@@ -19,7 +19,6 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
@@ -40,7 +39,7 @@ class _AppState extends State<App> {
 
     setState(() {
       _buildVersion =
-      'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
+          'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
     });
   }
 
@@ -50,8 +49,6 @@ class _AppState extends State<App> {
     //todo await post_app_config() ?
     serviceLocator.get<AppLifecycleObserver>().activate();
     _appRouterDelegate = AppRouterDelegate(serviceLocator.get<UserManager>());
-
-
 
     if (!FlavorConfig.isProduction()) {
       _getBuildVersion();
@@ -89,62 +86,53 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    final themeChangeNotifier = ThemeChangeNotifier.systemTheme(context);
+
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ThemeChangeNotifier>.value(
-              value: themeChangeNotifier),
-          ChangeNotifierProvider<LocalizationNotifier>(
-            create: (context) => LocalizationNotifier(),
+      providers: [
+        ChangeNotifierProvider<ThemeChangeNotifier>(
+          create: (context) => ThemeChangeNotifier.systemTheme(context),
+        ),
+        ChangeNotifierProvider<LocalizationNotifier>(
+          create: (context) => LocalizationNotifier(),
+        ),
+      ],
+      child: Consumer2<LocalizationNotifier, ThemeChangeNotifier>(
+          builder: (context, localeObject, themeObject, _) {
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          theme: themeLight(),
+          darkTheme: themeDark(),
+          themeMode: themeObject.getThemeMode,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          locale: localeObject.locale,
+          supportedLocales: L10n.all,
+          home: Router(
+            routerDelegate: _appRouterDelegate,
+            backButtonDispatcher: RootBackButtonDispatcher(),
           ),
-        ],
-        child: Consumer<LocalizationNotifier>(
-            builder: (context, localeObject, _) {
-              return MaterialApp(
-                navigatorKey: navigatorKey,
-                theme: themeLight(),
-                darkTheme: themeDark(),
-                themeMode: themeChangeNotifier.getThemeMode,
-                localizationsDelegates: [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                locale: localeObject.locale,
-                supportedLocales: L10n.all,
-                home: Router(
-                  routerDelegate: _appRouterDelegate,
-                  backButtonDispatcher: RootBackButtonDispatcher(),
-                ),
-              );
-            }
-        ));
+        );
+      }),
+    );
   }
 
   void _insertOverlay(BuildContext context, buildVersion) {
     Overlay.of(context)?.insert(
       OverlayEntry(builder: (context) {
-        var safePadding = MediaQuery
-            .of(context)
-            .padding
-            .bottom;
-        final size = MediaQuery
-            .of(context)
-            .size;
+        var safePadding = MediaQuery.of(context).padding.bottom;
+        final size = MediaQuery.of(context).size;
         final textSize = (TextPainter(
-            text: TextSpan(
-                text: buildVersion,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .caption),
-            maxLines: 1,
-            textScaleFactor: MediaQuery
-                .of(context)
-                .textScaleFactor,
-            textDirection: TextDirection.ltr)
-          ..layout())
+                text: TextSpan(
+                    text: buildVersion,
+                    style: Theme.of(context).textTheme.caption),
+                maxLines: 1,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor,
+                textDirection: TextDirection.ltr)
+              ..layout())
             .size;
 
         return Positioned(
@@ -154,10 +142,7 @@ class _AppState extends State<App> {
           child: IgnorePointer(
             child: Text(
               buildVersion,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .caption,
+              style: Theme.of(context).textTheme.caption,
             ),
           ),
         );
