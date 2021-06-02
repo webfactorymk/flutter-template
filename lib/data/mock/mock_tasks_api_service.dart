@@ -8,44 +8,40 @@ import 'tasks_dummy_data.dart';
 
 class MockTasksApiService implements TasksApiService {
   @override
-  Future<void> completeTask(String id) {
-    // TODO: implement completeTask
-    throw UnimplementedError();
-  }
+  Future<void> completeTask(String id) => Future.value();
 
   @override
-  Future<Task> createTask(CreateTask createTask) {
-    // TODO: implement createTask
-    throw UnimplementedError();
-  }
+  Future<void> reopenTask(String id) => Future.value();
 
   @override
-  Future<TaskGroup> createTaskGroup(CreateTaskGroup ctg) {
-    // TODO: implement createTaskGroup
-    throw UnimplementedError();
-  }
+  Future<Task> createTask(CreateTask createTask) => Future.value(Task(
+        id: DateTime.now().toString(),
+        title: createTask.title,
+        description: createTask.description,
+        status: createTask.taskStatus,
+      ));
 
   @override
-  Future<void> deleteAllTaskGroups() {
-    // TODO: implement deleteAllTaskGroups
-    throw UnimplementedError();
-  }
+  Future<TaskGroup> createTaskGroup(CreateTaskGroup ctg) =>
+      Future.value(TaskGroup(
+        DateTime.now().toString(),
+        ctg.name,
+        ctg.taskIds,
+      ));
 
   @override
-  Future<void> deleteAllTasks() {
-    // TODO: implement deleteAllTasks
-    throw UnimplementedError();
-  }
+  Future<void> deleteAllTaskGroups() => Future.value();
+
+  @override
+  Future<void> deleteAllTasks() => Future.value();
 
   @override
   Future<Task> getTask(String taskId) {
-    // TODO: implement getTask
     throw UnimplementedError();
   }
 
   @override
   Future<TaskGroup> getTaskGroup(String id) {
-    // TODO: implement getTaskGroup
     throw UnimplementedError();
   }
 
@@ -56,12 +52,11 @@ class MockTasksApiService implements TasksApiService {
 
   @override
   Future<List<Task>> getTasks(String taskGroupId) async {
-    return DUMMY_TASKS;
-  }
-
-  @override
-  Future<void> reopenTask(String id) {
-    // TODO: implement reopenTask
-    throw UnimplementedError();
+    final taskIdsFromGroup = DUMMY_TASK_GROUPS
+        .firstWhere((taskGroup) => taskGroup.id == taskGroupId)
+        .taskIds;
+    return DUMMY_TASKS
+        .where((task) => taskIdsFromGroup.contains(task.id))
+        .toList();
   }
 }

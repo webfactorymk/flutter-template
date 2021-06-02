@@ -24,6 +24,7 @@ class TaskListView extends StatelessWidget {
       // do stuff here based on TasksCubit's state
       if (state is TaskOpFailure) {
         //todo display an error dialog here on top of the presented UI
+        Log.e('TaskOpFailure: ${state.error}');
       }
     }, builder: (context, state) {
       // return widget here based on BlocA's state, this should be a pure fn

@@ -32,12 +32,14 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     } else if (event is TaskCompleted) {
       try {
         await _tasksRepository.completeTask(event.task.id);
+        add(LoadTasks());
       } catch (error) {
         yield TaskOpFailure(state, event.task, error);
       }
     } else if (event is TaskReopened) {
       try {
         await _tasksRepository.reopenTask(event.task.id);
+        add(LoadTasks());
       } catch (error) {
         yield TaskOpFailure(state, event.task, error);
       }

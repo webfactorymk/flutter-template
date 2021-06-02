@@ -30,7 +30,7 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
   TasksRepository({
     required TasksDataSource remote,
     required TasksDataSource cache,
-  })   : assert(remote.userId == cache.userId),
+  })  : assert(remote.userId == cache.userId),
         userId = remote.userId,
         _remoteDataSource = remote,
         _cacheDataSource = cache {
@@ -96,7 +96,15 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
   Future<Map<TaskGroup, List<Task>>> getAllTasksGrouped() => _cacheDataSource
           .getAllTasksGrouped()
           .catchError((error) => _remoteDataSource.getAllTasksGrouped())
-          .then((mappedTasks) {
+          .then((mappedTasks) async {
+        for (var taskGroup in mappedTasks.keys) {
+          await _cacheDataSource.createTaskGroup(taskGroup);
+        }
+        for (var task in mappedTasks.values.expand((element) => element)) {
+          await _cacheDataSource.createTask(task);
+        }
+        return mappedTasks;
+      }).then((mappedTasks) {
         addUpdate(List.of(mappedTasks.keys));
         addUpdate(TasksUpdateEvent(
             affectedTasks: mappedTasks.values.fold<List<Task>>(
