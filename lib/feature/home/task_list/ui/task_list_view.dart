@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/data/data_not_found_exception.dart';
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_bloc.dart';
@@ -8,8 +9,6 @@ import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/resources/colors/color_palette.dart';
-import 'package:flutter_template/resources/strings/string_key.dart';
-import 'package:flutter_template/resources/strings/strings.dart';
 import 'package:flutter_template/resources/styles/text_styles.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +16,6 @@ import 'package:provider/provider.dart';
 class TaskListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final strings = Strings.of(context)!;
-
     return BlocConsumer<TaskListBloc, TaskListState>(
         listener: (context, state) {
       // do stuff here based on TasksCubit's state
@@ -30,9 +27,9 @@ class TaskListView extends StatelessWidget {
       // return widget here based on BlocA's state, this should be a pure fn
       return Scaffold(
         appBar: AppBar(
-          title: Text(strings.get(StringKey.task_list_title)),
+          title: Text(AppLocalizations.of(context)!.task_list_title),
         ),
-        body: _getBodyForState(context, state, strings),
+        body: _getBodyForState(context, state),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -55,7 +52,7 @@ class TaskListView extends StatelessWidget {
             //TODO go to create new task screen
             context.read<ThemeChangeNotifier>().toggleTheme();
           },
-          tooltip: strings.get(StringKey.task_list_create_new),
+          tooltip: AppLocalizations.of(context)!.task_list_create_new,
           child: Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -63,14 +60,13 @@ class TaskListView extends StatelessWidget {
     });
   }
 
-  Widget _getBodyForState(
-      BuildContext context, TaskListState state, Strings strings) {
+  Widget _getBodyForState(BuildContext context, TaskListState state) {
     if (state is TasksLoadInProgress) {
       return _loadingWidget();
     } else if (state is TasksLoadSuccess) {
       final Map<TaskGroup, List<Task>> tasksGrouped = state.tasksGrouped;
       if (tasksGrouped.isEmpty) {
-        return _emptyListWidget(strings);
+        return _emptyListWidget(context);
       } else {
         return _taskListWidget(
           context,
@@ -82,12 +78,12 @@ class TaskListView extends StatelessWidget {
         );
       }
     } else if (state is TaskOpFailure) {
-      return _getBodyForState(context, state.prevState, strings);
+      return _getBodyForState(context, state.prevState);
     } else if (state is TasksLoadFailure) {
-      return _errorWidget(state, strings);
+      return _errorWidget(state, context);
     } else {
       Log.e(UnimplementedError('TaskListState not consumed: $state'));
-      return _errorWidget(state, strings);
+      return _errorWidget(state, context);
     }
   }
 
@@ -127,17 +123,17 @@ class TaskListView extends StatelessWidget {
     return Center(child: CircularProgressIndicator());
   }
 
-  Widget _emptyListWidget(Strings strings) {
+  Widget _emptyListWidget(BuildContext context) {
     return Center(
-        child: Text(strings.get(StringKey.task_list_no_tasks_message)));
+        child: Text(AppLocalizations.of(context)!.task_list_no_tasks_message));
   }
 
-  Widget _errorWidget(var state, Strings strings) {
+  Widget _errorWidget(var state, BuildContext context) {
     String message;
     if (state is TasksLoadFailure && state.error is DataNotFoundException) {
-      message = strings.get(StringKey.task_list_error_loading_tasks);
+      message = AppLocalizations.of(context)!.task_list_error_loading_tasks;
     } else {
-      message = strings.get(StringKey.task_list_error_general);
+      message = AppLocalizations.of(context)!.task_list_error_general;
     }
     return Center(child: Text(message));
   }
