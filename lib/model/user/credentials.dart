@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/model/user/refresh_token.dart';
+import 'package:flutter_template/util/string_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -12,7 +13,11 @@ class Credentials extends Equatable {
   final String token;
   final RefreshToken refreshToken;
 
-  Credentials(this.token, this.refreshToken);
+  @JsonKey(ignore: true)
+  final String _displayToken;
+
+  Credentials(this.token, this.refreshToken)
+      : _displayToken = token.shortenForPrint();
 
   factory Credentials.fromJson(Map<String, dynamic> json) =>
       _$CredentialsFromJson(json);
@@ -29,6 +34,6 @@ class Credentials extends Equatable {
 
   @override
   String toString() {
-    return 'Credentials{token: $token, refreshToken: $refreshToken}';
+    return 'Credentials{token: $_displayToken, refreshToken: $refreshToken}';
   }
 }

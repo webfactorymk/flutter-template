@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_template/util/string_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'refresh_token.g.dart';
@@ -10,7 +11,11 @@ class RefreshToken extends Equatable {
   final String token;
   final int expiresAt;
 
-  RefreshToken(this.token, this.expiresAt);
+  @JsonKey(ignore: true)
+  final String _displayToken;
+
+  RefreshToken(this.token, this.expiresAt)
+      : _displayToken = token.shortenForPrint();
 
   factory RefreshToken.fromJson(Map<String, dynamic> map) =>
       _$RefreshTokenFromJson(map);
@@ -19,7 +24,7 @@ class RefreshToken extends Equatable {
 
   @override
   String toString() {
-    return 'RefreshToken{token: $token, expiresAt: $expiresAt}';
+    return 'RefreshToken{token: $_displayToken, expiresAt: $expiresAt}';
   }
 
   @override
