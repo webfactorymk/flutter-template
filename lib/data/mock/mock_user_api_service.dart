@@ -9,10 +9,11 @@ const String mockToken =
     '2I3Ec-v3l0mzVV8Rg_RijsR50do';
 
 class MockUserApiService implements UserApiService {
-  Future<void> signUp(User user) => Future.value();
+  Future<void> signUp(User user) => Future.delayed(Duration(seconds: 2));
 
-  Future<Credentials> login(String username, String password) =>
-      Future.value(Credentials(
+  Future<Credentials> login(String username, String password) => Future.delayed(
+      Duration(seconds: 2),
+      () => Credentials(
           mockToken,
           RefreshToken(
               mockToken,

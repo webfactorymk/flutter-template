@@ -8,10 +8,10 @@ import 'tasks_dummy_data.dart';
 
 class MockTasksApiService implements TasksApiService {
   @override
-  Future<void> completeTask(String id) => Future.value();
+  Future<void> completeTask(String id) => Future.delayed(Duration(seconds: 1));
 
   @override
-  Future<void> reopenTask(String id) => Future.value();
+  Future<void> reopenTask(String id) => Future.delayed(Duration(seconds: 1));
 
   @override
   Future<Task> createTask(CreateTask createTask) => Future.value(Task(
