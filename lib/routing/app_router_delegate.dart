@@ -65,7 +65,9 @@ class AppRouterDelegate extends RouterDelegate
     /* no-op */
   }
 
-  Future<void> teardown() async {
+  @override
+  void dispose() async {
+    super.dispose();
     Log.d('AppRouterDelegate - Unsubscribe from user updates');
     await _userUpdatesSubscription?.cancel();
   }
