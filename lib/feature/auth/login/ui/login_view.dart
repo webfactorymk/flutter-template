@@ -43,7 +43,7 @@ class LoginView extends StatelessWidget {
         listener: (listenerContext, state) {},
         builder: (context, state) {
           if (state is LoginInProgress || state is LoginSuccess) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else {
             return Padding(
               padding: const EdgeInsets.all(16.0),
