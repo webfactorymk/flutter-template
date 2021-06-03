@@ -14,13 +14,9 @@ class SignupView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: BlocConsumer<SignupCubit, SignupState>(
-        listener: (listenerContext, state) {
-          if (state is SignupSuccess) {
-            context.read<AuthRouterDelegate>().setLoginNavState();
-          }
-        },
+        listener: (listenerContext, state) {},
         builder: (context, state) {
-          if (state is SignupInProgress) {
+          if (state is SignupInProgress || state is SignupSuccess) {
             return CircularProgressIndicator();
           } else {
             return Padding(

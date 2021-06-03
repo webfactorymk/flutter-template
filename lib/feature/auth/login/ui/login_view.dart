@@ -42,7 +42,7 @@ class LoginView extends StatelessWidget {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (listenerContext, state) {},
         builder: (context, state) {
-          if (state is LoginInProgress) {
+          if (state is LoginInProgress || state is LoginSuccess) {
             return CircularProgressIndicator();
           } else {
             return Padding(
