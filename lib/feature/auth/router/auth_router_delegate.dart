@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
 import 'package:flutter_template/feature/auth/signup/ui/signup_page.dart';
-import 'package:provider/provider.dart';
 
 class AuthRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -25,19 +24,13 @@ class AuthRouterDelegate extends RouterDelegate
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AuthRouterDelegate>.value(
-      value: this,
-      child: Navigator(
-          key: navigatorKey,
-          pages: [
-            LoginPage(),
-            if (authNavState is SignupNavState) SignupPage()
-          ],
-          onPopPage: (route, result) {
-            authNavState = AuthNavState.login();
-            return route.didPop(result);
-          }),
-    );
+    return Navigator(
+        key: navigatorKey,
+        pages: [LoginPage(), if (authNavState is SignupNavState) SignupPage()],
+        onPopPage: (route, result) {
+          authNavState = AuthNavState.login();
+          return route.didPop(result);
+        });
   }
 
   @override

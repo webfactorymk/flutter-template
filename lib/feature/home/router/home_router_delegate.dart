@@ -4,7 +4,6 @@ import 'package:flutter_template/feature/home/router/home_nav_state.dart';
 import 'package:flutter_template/feature/home/task_detail/ui/task_detail_page.dart';
 import 'package:flutter_template/feature/home/task_list/ui/task_list_page.dart';
 import 'package:flutter_template/model/task/task.dart';
-import 'package:provider/provider.dart';
 
 class HomeRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -21,20 +20,17 @@ class HomeRouterDelegate extends RouterDelegate
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<HomeRouterDelegate>.value(
-      value: this,
-      child: Navigator(
-          key: navigatorKey,
-          pages: [
-            TaskListPage(),
-            if (homeNavState is TaskDetailNavState)
-              TaskDetailPage(task: (homeNavState as TaskDetailNavState).task)
-          ],
-          onPopPage: (route, result) {
-            homeNavState = HomeNavState.taskList();
-            return route.didPop(result);
-          }),
-    );
+    return Navigator(
+        key: navigatorKey,
+        pages: [
+          TaskListPage(),
+          if (homeNavState is TaskDetailNavState)
+            TaskDetailPage(task: (homeNavState as TaskDetailNavState).task)
+        ],
+        onPopPage: (route, result) {
+          homeNavState = HomeNavState.taskList();
+          return route.didPop(result);
+        });
   }
 
   @override

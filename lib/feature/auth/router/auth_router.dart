@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
+import 'package:provider/provider.dart';
 
 /// Nested router that hosts all auth screens and manages navigation among them.
 class AuthRouter extends StatefulWidget {
@@ -24,9 +25,11 @@ class _AuthRouterState extends State<AuthRouter> {
         ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!)
           ..takePriority();
 
-    return Router(
-      routerDelegate: _authRouterDelegate,
-      backButtonDispatcher: childBackButtonDispatcher,
-    );
+    return ChangeNotifierProvider<AuthRouterDelegate>.value(
+        value: _authRouterDelegate,
+        child: Router(
+          routerDelegate: _authRouterDelegate,
+          backButtonDispatcher: childBackButtonDispatcher,
+        ));
   }
 }
