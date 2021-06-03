@@ -3,21 +3,8 @@ import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:provider/provider.dart';
 
 /// Nested router that hosts all task screens and manages navigation among them.
-class HomeRouter extends StatefulWidget {
+class HomeRouter extends StatelessWidget {
   const HomeRouter({Key? key}) : super(key: key);
-
-  @override
-  _HomeRouterState createState() => _HomeRouterState();
-}
-
-class _HomeRouterState extends State<HomeRouter> {
-  late HomeRouterDelegate _homeRouterDelegate;
-
-  @override
-  void initState() {
-    super.initState();
-    _homeRouterDelegate = HomeRouterDelegate();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +12,13 @@ class _HomeRouterState extends State<HomeRouter> {
         ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!)
           ..takePriority();
 
-    return ChangeNotifierProvider<HomeRouterDelegate>.value(
-        value: _homeRouterDelegate,
-        child: Router(
-          routerDelegate: _homeRouterDelegate,
-          backButtonDispatcher: childBackButtonDispatcher,
-        ));
+    return ChangeNotifierProvider<HomeRouterDelegate>(
+      create: (_) => HomeRouterDelegate(),
+      child: Consumer<HomeRouterDelegate>(
+          builder: (context, homeRouterDelegate, child) => Router(
+                routerDelegate: homeRouterDelegate,
+                backButtonDispatcher: childBackButtonDispatcher,
+              )),
+    );
   }
 }
