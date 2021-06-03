@@ -35,7 +35,6 @@ class AuthRouterDelegate extends RouterDelegate
           ],
           onPopPage: (route, result) {
             authNavState = AuthNavState.login();
-            notifyListeners();
             return route.didPop(result);
           }),
     );

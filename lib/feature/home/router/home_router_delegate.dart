@@ -32,7 +32,6 @@ class HomeRouterDelegate extends RouterDelegate
           ],
           onPopPage: (route, result) {
             homeNavState = HomeNavState.taskList();
-            notifyListeners();
             return route.didPop(result);
           }),
     );
