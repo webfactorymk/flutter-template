@@ -6,11 +6,12 @@ import 'package:flutter_template/feature/auth/signup/ui/signup_page.dart';
 
 class AuthRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey;
 
   AuthNavState authNavState;
 
-  AuthRouterDelegate([this.authNavState = const AuthNavState.login()]);
+  AuthRouterDelegate(this.navigatorKey,
+      [this.authNavState = const AuthNavState.login()]);
 
   void setLoginNavState() {
     authNavState = AuthNavState.login();

@@ -7,11 +7,12 @@ import 'package:flutter_template/model/task/task.dart';
 
 class HomeRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey;
 
-  HomeNavState homeNavState;
+  HomeRouterDelegate(this.navigatorKey,
+      [this.homeNavState = const HomeNavState.taskList()]);
 
-  HomeRouterDelegate([this.homeNavState = const HomeNavState.taskList()]);
+  HomeNavState homeNavState = HomeNavState.taskList();
 
   void setTaskDetailNavState(Task selectedTask) {
     homeNavState = HomeNavState.taskDetail(selectedTask);

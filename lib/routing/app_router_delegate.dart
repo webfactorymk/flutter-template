@@ -12,12 +12,14 @@ import 'package:flutter_template/user/user_manager.dart';
 /// Root rooter of this application
 class AppRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
+  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NavigatorState> authNavigatorKey;
+  final GlobalKey<NavigatorState> homeNavigatorKey;
   bool? isUserLoggedIn;
   StreamSubscription<UserCredentials?>? _userUpdatesSubscription;
 
-  AppRouterDelegate(UserManager userManager) {
+  AppRouterDelegate(this.navigatorKey, this.authNavigatorKey,
+      this.homeNavigatorKey, UserManager userManager) {
     Log.d('AppRouterDelegate - Subscribe to user updates');
     _userUpdatesSubscription = userManager.updatesSticky
         .distinct((prev, next) => isUserLoggedIn == next?.isLoggedIn())
@@ -47,14 +49,14 @@ class AppRouterDelegate extends RouterDelegate
       return [
         MaterialPage(
           key: ValueKey('HomeRouterPage'),
-          child: HomeRouter(),
+          child: HomeRouter(homeNavigatorKey),
         )
       ];
     } else {
       return [
         MaterialPage(
           key: ValueKey('AuthRouterPage'),
-          child: AuthRouter(),
+          child: AuthRouter(authNavigatorKey),
         )
       ];
     }
