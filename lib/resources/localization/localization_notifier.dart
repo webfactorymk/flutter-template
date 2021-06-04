@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/localization/l10n.dart';
+import 'package:flutter_template/resources/localization/l10n.dart';
 
 class LocalizationNotifier extends ChangeNotifier {
   Locale _locale = L10n.getLocale('en');
