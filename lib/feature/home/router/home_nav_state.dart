@@ -10,6 +10,8 @@ abstract class HomeNavState extends Equatable {
 
   const factory HomeNavState.taskDetail(Task task) = TaskDetailNavState;
 
+  const factory HomeNavState.settings() = SettingsNavState;
+
   @override
   List<Object?> get props => [];
 
@@ -29,4 +31,9 @@ class TaskDetailNavState extends HomeNavState {
   final Task task;
 
   const TaskDetailNavState(this.task) : super._();
+}
+
+@immutable
+class SettingsNavState extends HomeNavState {
+  const SettingsNavState() : super._();
 }
