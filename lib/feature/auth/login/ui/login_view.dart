@@ -5,7 +5,6 @@ import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/l10n/l10n.dart';
 import 'package:flutter_template/l10n/localization_notifier.dart';
-import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -31,10 +30,6 @@ class LoginView extends StatelessWidget {
                     PopupMenuItem(
                       child: Text('Macedonian'),
                       value: 'mk',
-                    ),
-                    PopupMenuItem(
-                      child: Text('Toggle Theme'),
-                      value: 'theme',
                     ),
                   ])
         ],
@@ -110,12 +105,7 @@ class LoginView extends StatelessWidget {
   }
 
   onSelected(BuildContext context, String item) {
-    if(item == 'theme'){
-      final themeNotifier = Provider.of<ThemeChangeNotifier>(context, listen: false);
-      themeNotifier.toggleTheme();
-    }else{
       final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
       localizationNotifier.setLocale(L10n.getLocale(item));
-    }
   }
 }
