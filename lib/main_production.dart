@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/config/pre_app_config.dart';
+import 'package:flutter_template/util/preferences.dart';
 
 import 'app.dart';
 import 'config/flavor_config.dart';
@@ -15,5 +16,5 @@ Future<void> main() async {
 
   await preAppConfig();
 
-  runApp(App());
+  runApp(App(await getStoredLanguage()));
 }
