@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/l10n/l10n.dart';
-import 'package:flutter_template/l10n/localization_notifier.dart';
+import 'package:flutter_template/resources/localization/l10n.dart';
+import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

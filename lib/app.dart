@@ -2,14 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/l10n/l10n.dart';
-import 'package:flutter_template/l10n/localization_notifier.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
+import 'package:flutter_template/resources/localization/l10n.dart';
+import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:flutter_template/resources/theme/app_theme.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:flutter_template/routing/app_router_delegate.dart';
@@ -17,9 +18,10 @@ import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+final authNavigatorKey = GlobalKey<NavigatorState>();
+final homeNavigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
   App({Key? key}) : super(key: key);
@@ -48,7 +50,8 @@ class _AppState extends State<App> {
     super.initState();
     //todo await post_app_config() ?
     serviceLocator.get<AppLifecycleObserver>().activate();
-    _appRouterDelegate = AppRouterDelegate(serviceLocator.get<UserManager>());
+    _appRouterDelegate = AppRouterDelegate(navigatorKey, authNavigatorKey,
+        homeNavigatorKey, serviceLocator.get<UserManager>());
 
     if (!FlavorConfig.isProduction()) {
       _getBuildVersion();
@@ -95,11 +98,13 @@ class _AppState extends State<App> {
         ChangeNotifierProvider<LocalizationNotifier>(
           create: (context) => LocalizationNotifier(),
         ),
+        ChangeNotifierProvider<AppRouterDelegate>(
+          create: (context) => _appRouterDelegate,
+        ),
       ],
       child: Consumer2<LocalizationNotifier, ThemeChangeNotifier>(
           builder: (context, localeObject, themeObject, _) {
         return MaterialApp(
-          navigatorKey: navigatorKey,
           theme: themeLight(),
           darkTheme: themeDark(),
           themeMode: themeObject.getThemeMode,

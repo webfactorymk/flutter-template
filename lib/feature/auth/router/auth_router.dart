@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 
 /// Nested router that hosts all auth screens and manages navigation among them.
 class AuthRouter extends StatelessWidget {
-  const AuthRouter({Key? key}) : super(key: key);
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const AuthRouter(this.navigatorKey, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class AuthRouter extends StatelessWidget {
           ..takePriority();
 
     return ChangeNotifierProvider<AuthRouterDelegate>(
-        create: (_) => AuthRouterDelegate(),
+        create: (_) => AuthRouterDelegate(navigatorKey),
         child: Consumer<AuthRouterDelegate>(
             builder: (context, authRouterDelegate, child) => Router(
                   routerDelegate: authRouterDelegate,
