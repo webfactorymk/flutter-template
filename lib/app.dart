@@ -24,7 +24,9 @@ final authNavigatorKey = GlobalKey<NavigatorState>();
 final homeNavigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
-  App({Key? key}) : super(key: key);
+  final String storedLanguageCode;
+
+  App(this.storedLanguageCode, {Key? key}) : super(key: key);
 
   @override
   _AppState createState() => _AppState();
@@ -35,6 +37,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   String _buildVersion = '';
   late AppRouterDelegate _appRouterDelegate;
+  late final localizationNotifier;
 
   Future<void> _getBuildVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -66,6 +69,8 @@ class _AppState extends State<App> {
           .then((backEcho) => Log.d("Test message TaskGroup - '$backEcho'"))
           .catchError((error) => Log.e('Test platform method err.: $error'));
     }
+
+    localizationNotifier = LocalizationNotifier(widget.storedLanguageCode);
   }
 
   @override
@@ -96,7 +101,7 @@ class _AppState extends State<App> {
           create: (context) => ThemeChangeNotifier.systemTheme(context),
         ),
         ChangeNotifierProvider<LocalizationNotifier>(
-          create: (context) => LocalizationNotifier(),
+          create: (context) => localizationNotifier,
         ),
         ChangeNotifierProvider<AppRouterDelegate>(
           create: (context) => _appRouterDelegate,
