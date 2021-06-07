@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
-import 'package:flutter_template/resources/localization/l10n.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -106,6 +105,6 @@ class LoginView extends StatelessWidget {
 
   onSelected(BuildContext context, String item) {
       final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
-      localizationNotifier.setLocale(L10n.getLocale(item));
+      localizationNotifier.setLocale(item);
   }
 }
