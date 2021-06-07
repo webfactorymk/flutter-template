@@ -32,6 +32,28 @@ void main() {
       expect(actualEither, isNot(isA<Error>()));
       expect((actualEither as Success).value, expectedTask);
     });
+
+    test('Either.expose, success', () async {
+      // arrange
+      late Exception actualException;
+      Exception expectedException = Exception('Throw me');
+      Exception notThrownException = FormatException();
+      final Either<Exception, Task> actualEither =
+          Either.build(() => expectedTask);
+
+      // act
+      try {
+        actualEither.expose((error) => throw notThrownException,
+            (success) => throw expectedException);
+      } on Exception catch (e) {
+        actualException = e;
+      }
+
+      // assert
+      expect(actualException, equals(expectedException));
+      expect(actualException, isNot(equals(notThrownException)));
+      expect(actualEither.isSuccess, true);
+    });
   });
 
   group('Error', () {
@@ -61,6 +83,27 @@ void main() {
       expect(actualEither, isA<Error>());
       expect(actualEither, isNot(isA<Success>()));
       expect((actualEither as Error).error, expectedException);
+    });
+
+    test('Either.expose, error', () async {
+      // arrange
+      Exception notThrownException = FormatException();
+      late Exception actualException;
+      final Either<Exception, Task> actualEither =
+          Either.build(() => throw expectedException);
+
+      // act
+      try {
+        actualEither.expose(
+            (error) => throw error, (success) => throw notThrownException);
+      } on Exception catch (e) {
+        actualException = e;
+      }
+
+      // assert
+      expect(actualException, equals(expectedException));
+      expect(actualException, isNot(equals(notThrownException)));
+      expect(actualEither.isSuccess, false);
     });
   });
 }
