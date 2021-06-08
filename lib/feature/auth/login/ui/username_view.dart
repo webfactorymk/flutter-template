@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/resources/localization/l10n.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LoginView extends StatelessWidget {
+class UsernameView extends StatelessWidget {
   final bool sessionExpiredRedirect;
   final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
-  LoginView({Key? key, this.sessionExpiredRedirect = false}) : super(key: key);
+  UsernameView({Key? key, this.sessionExpiredRedirect = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,9 @@ class LoginView extends StatelessWidget {
         ],
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
-        listener: (listenerContext, state) {},
+        listener: (listenerContext, state) {
+          if (state is AwaitPasswordInput) {}
+        },
         builder: (context, state) {
           if (state is LoginInProgress || state is LoginSuccess) {
             return Center(child: CircularProgressIndicator());
@@ -69,18 +71,9 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextFormField(
-                      controller: _passwordController,
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(15),
-                        hintText: "Password",
-                      ),
-                    ),
-                    SizedBox(height: 10),
                     ElevatedButton(
-                      child: Text('Login'),
-                      onPressed: () => _onLoginPressed(context),
+                      child: Text('Next'),
+                      onPressed: () => _onNextPressed(context),
                     ),
                     ElevatedButton(
                       child: Text('Sign up'),
@@ -100,9 +93,9 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  void _onLoginPressed(BuildContext context) {
+  void _onNextPressed(BuildContext context) {
     BlocProvider.of<LoginCubit>(context)
-        .onUserLogin(_userNameController.text, _passwordController.text);
+        .onUsernameEntered(_userNameController.text);
   }
 
   void _onSignUpPressed(BuildContext context) {
@@ -110,11 +103,13 @@ class LoginView extends StatelessWidget {
   }
 
   onSelected(BuildContext context, String item) {
-    if(item == 'theme'){
-      final themeNotifier = Provider.of<ThemeChangeNotifier>(context, listen: false);
+    if (item == 'theme') {
+      final themeNotifier =
+          Provider.of<ThemeChangeNotifier>(context, listen: false);
       themeNotifier.toggleTheme();
-    }else{
-      final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
+    } else {
+      final localizationNotifier =
+          Provider.of<LocalizationNotifier>(context, listen: false);
       localizationNotifier.setLocale(L10n.getLocale(item));
     }
   }
