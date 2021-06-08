@@ -117,8 +117,6 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
       final localizationNotifier =
           Provider.of<LocalizationNotifier>(context, listen: false);
       localizationNotifier.setLocale(currentLanguage);
-
-      saveCurrentLanguage(currentLanguage);
     }
   }
 }

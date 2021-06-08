@@ -24,20 +24,20 @@ class ThemeChangeNotifier extends ChangeNotifier {
 
   void setDarkTheme() {
     _isDarkTheme = true;
-    saveIsDarkThemePreferred(_isDarkTheme);
+    setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
 
   void setLightTheme() {
     _isDarkTheme = false;
-    saveIsDarkThemePreferred(_isDarkTheme);
+    setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
 
   /// Toggles the current theme value. Returns `true` if dark is the new theme.
   bool toggleTheme() {
     _isDarkTheme = !_isDarkTheme;
-    saveIsDarkThemePreferred(_isDarkTheme);
+    setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
     return _isDarkTheme;
   }

@@ -12,13 +12,13 @@ class LocalizationNotifier extends ChangeNotifier {
 
   void setLocale(String languageCode) {
     _locale = L10n.getLocale(languageCode);
-    saveCurrentLanguage(_locale.languageCode);
+    setCurrentLanguage(_locale.languageCode);
     notifyListeners();
   }
 
   void clearLocale() {
     _locale = L10n.getLocale('en');
-    saveCurrentLanguage(_locale.languageCode);
+    setCurrentLanguage(_locale.languageCode);
     notifyListeners();
   }
 }
