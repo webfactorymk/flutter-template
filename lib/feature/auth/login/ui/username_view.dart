@@ -41,7 +41,9 @@ class UsernameView extends StatelessWidget {
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (listenerContext, state) {
-          if (state is AwaitPasswordInput) {}
+          if (state is AwaitPasswordInput) {
+            context.read<AuthRouterDelegate>().setLoginPasswordNavState();
+          }
         },
         builder: (context, state) {
           if (state is LoginInProgress || state is LoginSuccess) {
