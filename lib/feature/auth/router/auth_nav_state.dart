@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 abstract class AuthNavState extends Equatable {
   const AuthNavState._();
 
-  const factory AuthNavState.login() = LoginNavState;
+  const factory AuthNavState.loginUsername() = LoginUsernameNavState;
+
+  const factory AuthNavState.loginPassword() = LoginUsernameNavState;
 
   const factory AuthNavState.signup() = SignupNavState;
 
@@ -19,8 +21,13 @@ abstract class AuthNavState extends Equatable {
 }
 
 @immutable
-class LoginNavState extends AuthNavState {
-  const LoginNavState() : super._();
+class LoginUsernameNavState extends AuthNavState {
+  const LoginUsernameNavState() : super._();
+}
+
+@immutable
+class LoginPasswordNavState extends AuthNavState {
+  const LoginPasswordNavState() : super._();
 }
 
 @immutable
