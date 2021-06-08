@@ -106,7 +106,7 @@ class LoginView extends StatelessWidget {
   }
 
   void _onSignUpPressed(BuildContext context) {
-    context.read<AuthRouterDelegate>().setSignupNavState();
+    context.read<AuthRouterDelegate>().setSignupUsernameNavState();
   }
 
   onSelected(BuildContext context, String item) {
