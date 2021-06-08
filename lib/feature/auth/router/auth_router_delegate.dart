@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
-import 'package:flutter_template/feature/auth/signup/ui/signup_page.dart';
+import 'package:flutter_template/feature/auth/signup/ui/username_page.dart';
 
 class AuthRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -11,20 +11,20 @@ class AuthRouterDelegate extends RouterDelegate
   AuthNavState authNavState;
 
   AuthRouterDelegate(this.navigatorKey,
-      [this.authNavState = const AuthNavState.loginUsername()]);
+      [this.authNavState = const AuthNavState.login()]);
 
-  void setLoginUsernameNavState() {
-    authNavState = AuthNavState.loginUsername();
+  void setLoginNavState() {
+    authNavState = AuthNavState.login();
     notifyListeners();
   }
 
-  void setLoginPasswordNavState() {
-    authNavState = AuthNavState.loginPassword();
+  void setSignupUsernameNavState() {
+    authNavState = AuthNavState.signupUsername();
     notifyListeners();
   }
 
-  void setSignupNavState() {
-    authNavState = AuthNavState.signup();
+  void setSignupPasswordNavState() {
+    authNavState = AuthNavState.signupPassword();
     notifyListeners();
   }
 
@@ -32,9 +32,12 @@ class AuthRouterDelegate extends RouterDelegate
   Widget build(BuildContext context) {
     return Navigator(
         key: navigatorKey,
-        pages: [LoginPage(), if (authNavState is SignupNavState) SignupPage()],
+        pages: [
+          LoginPage(),
+          if (authNavState is SignupUsernameNavState) UsernamePage()
+        ],
         onPopPage: (route, result) {
-          authNavState = AuthNavState.loginUsername();
+          authNavState = AuthNavState.login();
           return route.didPop(result);
         });
   }
