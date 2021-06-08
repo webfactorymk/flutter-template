@@ -9,12 +9,7 @@ export 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final UserManager userManager;
 
-  LoginCubit(this.userManager) : super(AwaitUsernameInput());
-
-  Future<void> onUsernameEntered(String username) async {
-    Log.d('LoginCubit - Username entered: username $username');
-    emit(AwaitPasswordInput());
-  }
+  LoginCubit(this.userManager) : super(AwaitUserInput());
 
   Future<void> onUserLogin(String username, String password) async {
     Log.d('LoginCubit - User login: username $username');

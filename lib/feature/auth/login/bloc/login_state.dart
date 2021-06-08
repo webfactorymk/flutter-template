@@ -10,9 +10,7 @@ abstract class LoginState extends Equatable {
   }
 }
 
-class AwaitUsernameInput extends LoginState {}
-
-class AwaitPasswordInput extends LoginState {}
+class AwaitUserInput extends LoginState {}
 
 class LoginInProgress extends LoginState {}
 

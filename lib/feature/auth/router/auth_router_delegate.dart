@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/feature/auth/login/ui/username_page.dart';
+import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
 import 'package:flutter_template/feature/auth/signup/ui/signup_page.dart';
 
@@ -32,7 +32,7 @@ class AuthRouterDelegate extends RouterDelegate
   Widget build(BuildContext context) {
     return Navigator(
         key: navigatorKey,
-        pages: [UsernamePage(), if (authNavState is SignupNavState) SignupPage()],
+        pages: [LoginPage(), if (authNavState is SignupNavState) SignupPage()],
         onPopPage: (route, result) {
           authNavState = AuthNavState.loginUsername();
           return route.didPop(result);

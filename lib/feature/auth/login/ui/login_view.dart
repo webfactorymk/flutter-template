@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/resources/localization/l10n.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends StatelessWidget {
   final bool sessionExpiredRedirect;
@@ -40,11 +40,7 @@ class LoginView extends StatelessWidget {
         ],
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
-        listener: (listenerContext, state) {
-          if (state is AwaitPasswordInput) {
-            context.read<AuthRouterDelegate>().setLoginPasswordNavState();
-          }
-        },
+        listener: (listenerContext, state) {},
         builder: (context, state) {
           if (state is LoginInProgress || state is LoginSuccess) {
             return Center(child: CircularProgressIndicator());
