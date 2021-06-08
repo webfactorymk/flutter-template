@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/resources/localization/l10n.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class UsernameView extends StatelessWidget {
+class LoginView extends StatelessWidget {
   final bool sessionExpiredRedirect;
   final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  UsernameView({Key? key, this.sessionExpiredRedirect = false})
-      : super(key: key);
+  LoginView({Key? key, this.sessionExpiredRedirect = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +73,18 @@ class UsernameView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
+                    TextFormField(
+                      controller: _passwordController,
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(15),
+                        hintText: "Password",
+                      ),
+                    ),
+                    SizedBox(height: 10),
                     ElevatedButton(
-                      child: Text('Next'),
-                      onPressed: () => _onNextPressed(context),
+                      child: Text('Login'),
+                      onPressed: () => _onLoginPressed(context),
                     ),
                     ElevatedButton(
                       child: Text('Sign up'),
@@ -95,9 +104,9 @@ class UsernameView extends StatelessWidget {
     );
   }
 
-  void _onNextPressed(BuildContext context) {
+  void _onLoginPressed(BuildContext context) {
     BlocProvider.of<LoginCubit>(context)
-        .onUsernameEntered(_userNameController.text);
+        .onUserLogin(_userNameController.text, _passwordController.text);
   }
 
   void _onSignUpPressed(BuildContext context) {
