@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/resources/localization/l10n.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
-import 'package:flutter_template/util/preferences.dart';
 import 'package:provider/provider.dart';
 
 import 'settings_language_icon_widget.dart';
@@ -116,7 +115,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
 
       final localizationNotifier =
           Provider.of<LocalizationNotifier>(context, listen: false);
-      localizationNotifier.setLocale(currentLanguage);
+      await localizationNotifier.setLocale(currentLanguage);
     }
   }
 }

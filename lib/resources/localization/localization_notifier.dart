@@ -4,21 +4,22 @@ import 'package:flutter_template/util/preferences.dart';
 
 class LocalizationNotifier extends ChangeNotifier {
   late Locale _locale;
+
   Locale get locale => _locale;
 
   LocalizationNotifier(String storedLanguageCode) {
     _locale = L10n.getLocale(storedLanguageCode);
   }
 
-  void setLocale(String languageCode) {
+  Future<void> setLocale(String languageCode) async {
     _locale = L10n.getLocale(languageCode);
-    setCurrentLanguage(_locale.languageCode);
+    await setCurrentLanguage(_locale.languageCode);
     notifyListeners();
   }
 
-  void clearLocale() {
+  Future<void> clearLocale() async {
     _locale = L10n.getLocale('en');
-    setCurrentLanguage(_locale.languageCode);
+    await setCurrentLanguage(_locale.languageCode);
     notifyListeners();
   }
 }

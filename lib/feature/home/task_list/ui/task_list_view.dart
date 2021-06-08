@@ -55,9 +55,9 @@ class TaskListView extends StatelessWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             //TODO go to create new task screen
-            context.read<ThemeChangeNotifier>().toggleTheme();
+            await context.read<ThemeChangeNotifier>().toggleTheme();
           },
           tooltip: AppLocalizations.of(context)!.task_list_create_new,
           child: Icon(Icons.add),

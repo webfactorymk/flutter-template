@@ -22,22 +22,22 @@ class ThemeChangeNotifier extends ChangeNotifier {
 
   ThemeMode get getThemeMode => isDarkTheme ? ThemeMode.dark : ThemeMode.light;
 
-  void setDarkTheme() {
+  Future<void> setDarkTheme() async {
     _isDarkTheme = true;
-    setIsDarkThemePreferred(_isDarkTheme);
+    await setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
 
-  void setLightTheme() {
+  Future<void> setLightTheme() async {
     _isDarkTheme = false;
-    setIsDarkThemePreferred(_isDarkTheme);
+    await setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
 
   /// Toggles the current theme value. Returns `true` if dark is the new theme.
-  bool toggleTheme() {
+  Future<bool> toggleTheme() async {
     _isDarkTheme = !_isDarkTheme;
-    setIsDarkThemePreferred(_isDarkTheme);
+    await setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
     return _isDarkTheme;
   }

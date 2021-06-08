@@ -61,12 +61,12 @@ class _SettingsThemeSwitchState extends State<SettingsThemeSwitch> {
     }
   }
 
-  toggleBrightness(BuildContext context, bool val) {
+  toggleBrightness(BuildContext context, bool val) async {
     setState(() {
       isDarkTheme = val;
-      final themeNotifier =
-          Provider.of<ThemeChangeNotifier>(context, listen: false);
-      themeNotifier.toggleTheme();
     });
+    final themeNotifier =
+        Provider.of<ThemeChangeNotifier>(context, listen: false);
+    await themeNotifier.toggleTheme();
   }
 }

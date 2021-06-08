@@ -103,8 +103,8 @@ class LoginView extends StatelessWidget {
     context.read<AuthRouterDelegate>().setSignupNavState();
   }
 
-  onSelected(BuildContext context, String item) {
+  onSelected(BuildContext context, String item) async {
       final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
-      localizationNotifier.setLocale(item);
+      await localizationNotifier.setLocale(item);
   }
 }

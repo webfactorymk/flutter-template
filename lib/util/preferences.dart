@@ -6,7 +6,7 @@ import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
 const String preferredLocalizationKey = 'preferred-language';
 const String preferredThemeMode = 'preferred-theme-mode';
 
-void setCurrentLanguage(String currentLanguage) async {
+Future<void> setCurrentLanguage(String currentLanguage) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   SharedPrefsStorage<String> storage = SharedPrefsStorage<String>.primitive(
       itemKey: preferredLocalizationKey, sharedPreferences: prefs);
@@ -25,7 +25,7 @@ Future<String> getStoredLanguage() async {
       : storedLanguageCode;
 }
 
-void setIsDarkThemePreferred(bool isDarkThemePreferred) async {
+Future<void> setIsDarkThemePreferred(bool isDarkThemePreferred) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   SharedPrefsStorage<bool> storage = SharedPrefsStorage<bool>.primitive(
       itemKey: preferredThemeMode, sharedPreferences: prefs);
