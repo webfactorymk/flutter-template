@@ -16,5 +16,8 @@ Future<void> main() async {
 
   await preAppConfig();
 
-  runApp(App(await getStoredLanguage()));
+  runApp(App(
+    storedLanguageCode: await getStoredLanguage(),
+    themeChangeNotifier: await getPreferredTheme(),
+  ));
 }
