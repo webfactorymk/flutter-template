@@ -5,13 +5,19 @@ import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 import 'signup_state.dart';
+
 export 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
   final UserApiService apiService;
   final UserManager userManager;
 
-  SignupCubit(this.apiService, this.userManager) : super(AwaitUserInput());
+  SignupCubit(this.apiService, this.userManager) : super(AwaitUsernameInput());
+
+  Future<void> onUsernameEntered(String username) async {
+    Log.d('SignUpCubit - User sign up: username $username');
+    emit(AwaitPasswordInput());
+  }
 
   Future<void> onUserSignup(String email, String password) async {
     Log.d('SignUpCubit - User sign up: email $email');
