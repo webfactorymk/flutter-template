@@ -24,12 +24,14 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   Future<void> onPasswordEntered(String password) async {
-    Log.d('SignUpCubit - User sign up: username $_username');
+    Log.d('SignUpCubit - User sign up: username $password');
     _password = password;
   }
 
   Future<void> onUserSignup() async {
     Log.d('SignUpCubit - User sign up: username $_username');
+    Log.d('SignUpCubit - User sign up: password $_password');
+
     emit(SignupInProgress());
     final User user = User(id: "id", email: _username!);
 
