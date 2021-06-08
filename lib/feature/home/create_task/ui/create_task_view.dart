@@ -25,6 +25,12 @@ class _CreateTaskViewState extends State<CreateTaskView> {
           title: Text('Create Task'),
           centerTitle: true,
           leading: Container(),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+          ],
         ),
         body: BlocConsumer<CreateTaskBloc, CreateTaskState>(
             listener: (listenerContext, state) {
