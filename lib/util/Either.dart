@@ -4,8 +4,10 @@ typedef O ValueToPass<O>();
 ///
 /// Use [Either] to wrap your return type when there is a chance to receive [Exception]
 /// instead of the expected value
-class Either<E extends Exception, O> {
-  Either();
+abstract class Either<E extends Exception, O> {
+  Either(this.isSuccess);
+
+  final bool isSuccess;
 
   factory Either.success(O value) {
     return Success<E, O>(value);
@@ -22,18 +24,30 @@ class Either<E extends Exception, O> {
       return Error<E, O>(e);
     }
   }
+
+  void expose(Function(Exception error) onError, Function(O success) onSuccess);
 }
 
 /// Success contains the value expected
 class Success<E extends Exception, O> extends Either<E, O> {
   final O value;
 
-  Success(this.value) : super();
+  Success(this.value) : super(true);
+
+  @override
+  expose(Function(Exception error) onError, Function(O success) onSuccess) {
+    onSuccess(value);
+  }
 }
 
 /// Error contains the thrown [Exception]
 class Error<E extends Exception, O> extends Either<E, O> {
   final Exception error;
 
-  Error(this.error) : super();
+  Error(this.error) : super(false);
+
+  @override
+  expose(Function(Exception error) onError, Function(O success) onSuccess) {
+    onError(error);
+  }
 }
