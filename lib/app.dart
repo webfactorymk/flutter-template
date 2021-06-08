@@ -25,8 +25,10 @@ final homeNavigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
   final String storedLanguageCode;
+  final ThemeChangeNotifier themeChangeNotifier;
 
-  App(this.storedLanguageCode, {Key? key}) : super(key: key);
+  App({Key? key, required this.storedLanguageCode, required this.themeChangeNotifier})
+      : super(key: key);
 
   @override
   _AppState createState() => _AppState();
@@ -98,7 +100,7 @@ class _AppState extends State<App> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeChangeNotifier>(
-          create: (context) => ThemeChangeNotifier.systemTheme(context),
+          create: (context) => widget.themeChangeNotifier,
         ),
         ChangeNotifierProvider<LocalizationNotifier>(
           create: (context) => localizationNotifier,
