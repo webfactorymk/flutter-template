@@ -4,6 +4,7 @@ import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/logger_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/di/service_locator.dart' as serviceLocatorConf;
+import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
 import 'package:flutter_template/log/bloc_events_logger.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
@@ -18,4 +19,5 @@ Future<void> preAppConfig() async {
   initLogger();
   await serviceLocatorConf.setupGlobalDependencies();
   await serviceLocator.get<UserManager>().init();
+  await serviceLocator.get<Preferences>().init();
 }
