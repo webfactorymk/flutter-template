@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/feature/home/create_task/bloc/create_task_bloc.dart';
-import 'package:flutter_template/feature/home/create_task/bloc/create_task_event.dart';
 import 'package:flutter_template/feature/home/create_task/bloc/create_task_state.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';
@@ -32,7 +31,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
             ),
           ],
         ),
-        body: BlocConsumer<CreateTaskBloc, CreateTaskState>(
+        body: BlocConsumer<CreateTaskCubit, CreateTaskState>(
             listener: (listenerContext, state) {
           if (state is CreateTaskSuccess) {
             Navigator.of(context).pop();
@@ -87,13 +86,12 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   _onCreatePressed(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      BlocProvider.of<CreateTaskBloc>(context).add(CreateTask(
-          task: Task(
+      BlocProvider.of<CreateTaskCubit>(context).onCreateTask(Task(
         id: 'id',
         title: _taskNameController.text,
         description: _taskDescriptionController.text,
         status: TaskStatus.notDone,
-      )));
+      ));
     }
   }
 }

@@ -12,8 +12,8 @@ abstract class CreateTaskState extends Equatable {
   }
 }
 
-/// The initial state for task creation
-class CreateTaskInitial extends CreateTaskState {}
+/// The initial state / awaiting user input
+class AwaitUserInput extends CreateTaskState {}
 
 /// The task is being created
 class CreateTaskInProgress extends CreateTaskState {}

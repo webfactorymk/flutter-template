@@ -2,25 +2,21 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/log/log.dart';
 
-import 'create_task_event.dart';
 import 'create_task_state.dart';
 
-class CreateTaskBloc extends Bloc<CreateTaskEvent, CreateTaskState> {
+class CreateTaskCubit extends Cubit<CreateTaskState> {
   final TasksRepository _tasksRepository;
 
-  CreateTaskBloc(this._tasksRepository) : super(CreateTaskInitial());
+  CreateTaskCubit(this._tasksRepository) : super(AwaitUserInput());
 
-  @override
-  Stream<CreateTaskState> mapEventToState(CreateTaskEvent event) async* {
-    if (event is CreateTask) {
-      Log.d('CreateTaskBloc - Create Task');
-      yield CreateTaskInProgress();
-      try {
-        await _tasksRepository.createTask(event.task);
-        yield CreateTaskSuccess();
-      } catch (exp) {
-        emit(CreateTaskFailure(error: exp));
-      }
+  Future<void> onCreateTask(Task task) async {
+    Log.d('CreateTaskBloc - Create Task');
+    emit(CreateTaskInProgress());
+    try {
+      await _tasksRepository.createTask(task);
+      emit(CreateTaskSuccess());
+    } catch (exp) {
+      emit(CreateTaskFailure(error: exp));
     }
   }
 }

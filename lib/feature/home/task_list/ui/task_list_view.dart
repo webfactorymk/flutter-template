@@ -146,9 +146,9 @@ class TaskListView extends StatelessWidget {
     showCupertinoModalBottomSheet(
         context: context,
         builder: (context) {
-          return BlocProvider<CreateTaskBloc>(
+          return BlocProvider<CreateTaskCubit>(
             create: (BuildContext context) =>
-                CreateTaskBloc(serviceLocator.get<TasksRepository>()),
+                CreateTaskCubit(serviceLocator.get<TasksRepository>()),
             child: CreateTaskView(),
           );
         });
