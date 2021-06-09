@@ -43,7 +43,14 @@ class TaskListView extends StatelessWidget {
                 child: Text('Drawer Header', style: kWhiteTextStyle),
               ),
               ListTile(
-                title: Text('Logout'),
+                title: Text(AppLocalizations.of(context)!.settings),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  context.read<HomeRouterDelegate>().setIsSettingsShownState(true);
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.logout),
                 onTap: () async {
                   BlocProvider.of<TaskListBloc>(context).add(Logout());
                 },

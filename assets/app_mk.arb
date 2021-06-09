@@ -12,6 +12,8 @@
   "start": "Почни",
   "reset": "Ресетирај",
 
+  "logout": "Одјави се",
+
   "no_network": "Немате интернет конекција",
   "timeout": "Извниете, времето за конекција истече. Пробај повторно.",
   "unauthorized": "Грешка: Не најавен корисник",
@@ -28,5 +30,11 @@
   "task_list_create_new": "Креирај нова задача",
   "task_list_no_tasks_message": "Нема задачи. Супер, не прави ништо!",
   "task_list_error_loading_tasks": "Грешка при вчитување задачи.",
-  "task_list_error_general": "Се случи грешка."
+  "task_list_error_general": "Се случи грешка.",
+
+  "theme": "Тема",
+  "dark_theme": "Темна тема",
+  "settings": "Поставувања",
+  "language": "Јазик"
+
 }

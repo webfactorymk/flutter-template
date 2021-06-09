@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/feature/settings/preferences_helper.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -35,6 +36,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   String _buildVersion = '';
   late AppRouterDelegate _appRouterDelegate;
+  late final localizationNotifier;
 
   Future<void> _getBuildVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -66,6 +68,8 @@ class _AppState extends State<App> {
           .then((backEcho) => Log.d("Test message TaskGroup - '$backEcho'"))
           .catchError((error) => Log.e('Test platform method err.: $error'));
     }
+
+    localizationNotifier = LocalizationNotifier(serviceLocator.get<PreferencesHelper>().languagePreferred);
   }
 
   @override
@@ -93,10 +97,10 @@ class _AppState extends State<App> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeChangeNotifier>(
-          create: (context) => ThemeChangeNotifier.systemTheme(context),
+          create: (context) => serviceLocator.get<PreferencesHelper>().themePreferred,
         ),
         ChangeNotifierProvider<LocalizationNotifier>(
-          create: (context) => LocalizationNotifier(),
+          create: (context) => localizationNotifier,
         ),
         ChangeNotifierProvider<AppRouterDelegate>(
           create: (context) => _appRouterDelegate,
