@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
-import 'package:flutter_template/feature/auth/signup/ui/password_page.dart';
-import 'package:flutter_template/feature/auth/signup/ui/username_page.dart';
+import 'package:flutter_template/feature/auth/signup/ui/password/password_page.dart';
+import 'package:flutter_template/feature/auth/signup/ui/username/username_page.dart';
 
 class AuthRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
