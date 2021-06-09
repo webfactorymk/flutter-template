@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
 import 'package:flutter_template/feature/settings/ui/widget/settings_language_widget.dart';
 import 'package:flutter_template/feature/settings/ui/widget/settings_theme_switch_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_template/util/preferences.dart';
 
+import 'package:flutter_template/di/service_locator.dart';
 import 'widget/settings_header_widget.dart';
 
 class SettingsView extends StatelessWidget {
@@ -19,16 +20,9 @@ class SettingsView extends StatelessWidget {
           SettingsThemeSwitch(),
           Container(color: Colors.grey, height: 1),
           SettingsHeader(header: AppLocalizations.of(context)!.language),
-          FutureBuilder(
-              future: getStoredLanguage(),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.hasData) {
-                  return SettingsLanguageWidget(
-                      selectedLanguage: snapshot.data!);
-                } else {
-                  return Center();
-                }
-              })
+          SettingsLanguageWidget(
+              selectedLanguage:
+                  serviceLocator.get<Preferences>().languagePreferred)
         ],
       ),
     );
