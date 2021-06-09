@@ -14,12 +14,14 @@ class MockTasksApiService implements TasksApiService {
   Future<void> reopenTask(String id) => Future.delayed(Duration(seconds: 1));
 
   @override
-  Future<Task> createTask(CreateTask createTask) => Future.value(Task(
-        id: DateTime.now().toString(),
-        title: createTask.title,
-        description: createTask.description,
-        status: createTask.taskStatus,
-      ));
+  Future<Task> createTask(CreateTask createTask) => Future.delayed(
+      Duration(seconds: 1),
+      () => Task(
+            id: DateTime.now().toString(),
+            title: createTask.title,
+            description: createTask.description,
+            status: createTask.taskStatus,
+          ));
 
   @override
   Future<TaskGroup> createTaskGroup(CreateTaskGroup ctg) =>

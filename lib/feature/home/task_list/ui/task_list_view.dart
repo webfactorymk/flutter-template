@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/data/data_not_found_exception.dart';
+import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
+import 'package:flutter_template/di/service_locator.dart';
+import 'package:flutter_template/feature/home/create_task/bloc/create_task_cubit.dart';
+import 'package:flutter_template/feature/home/create_task/ui/create_task_view.dart';
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_bloc.dart';
 import 'package:flutter_template/log/log.dart';
@@ -10,7 +14,7 @@ import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/resources/colors/color_palette.dart';
 import 'package:flutter_template/resources/styles/text_styles.dart';
-import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class TaskListView extends StatelessWidget {
@@ -55,9 +59,9 @@ class TaskListView extends StatelessWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () async {
+          onPressed: () {
             //TODO go to create new task screen
-            await context.read<ThemeChangeNotifier>().toggleTheme();
+            _openCreateTask(context);
           },
           tooltip: AppLocalizations.of(context)!.task_list_create_new,
           child: Icon(Icons.add),
@@ -143,6 +147,18 @@ class TaskListView extends StatelessWidget {
       message = AppLocalizations.of(context)!.task_list_error_general;
     }
     return Center(child: Text(message));
+  }
+
+  void _openCreateTask(BuildContext context) {
+    showCupertinoModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BlocProvider<CreateTaskCubit>(
+            create: (BuildContext context) =>
+                CreateTaskCubit(serviceLocator.get<TasksRepository>()),
+            child: CreateTaskView(),
+          );
+        });
   }
 }
 
