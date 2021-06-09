@@ -15,21 +15,21 @@ class AuthRouterDelegate extends RouterDelegate
   ListQueue<AuthNavState> authNavStates = ListQueue();
 
   AuthRouterDelegate(this.navigatorKey) {
-    authNavStates.addState(AuthNavState.login());
+    authNavStates.addUniqueElement(AuthNavState.login());
   }
 
   void setLoginNavState() {
-    authNavStates.addState(AuthNavState.login());
+    authNavStates.addUniqueElement(AuthNavState.login());
     notifyListeners();
   }
 
   void setSignupUsernameNavState() {
-    authNavStates.addState(AuthNavState.signupUsername());
+    authNavStates.addUniqueElement(AuthNavState.signupUsername());
     notifyListeners();
   }
 
   void setSignupPasswordNavState() {
-    authNavStates.addState(AuthNavState.signupPassword());
+    authNavStates.addUniqueElement(AuthNavState.signupPassword());
     notifyListeners();
   }
 

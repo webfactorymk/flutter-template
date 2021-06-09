@@ -21,7 +21,7 @@ extension FirstWhereOrElseExtension<E> on Iterable<E> {
 }
 
 extension ContainsRuntimeType on ListQueue<Object?> {
-  void addState(Object? element) {
+  void addUniqueElement(Object? element) {
     if (!containsRuntimeType(element)) {
       add(element);
     }
