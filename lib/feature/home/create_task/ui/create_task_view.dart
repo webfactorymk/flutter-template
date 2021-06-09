@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template/feature/home/create_task/bloc/create_task_bloc.dart';
+import 'package:flutter_template/feature/home/create_task/bloc/create_task_cubit.dart';
 import 'package:flutter_template/feature/home/create_task/bloc/create_task_state.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';

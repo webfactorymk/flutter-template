@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/data/data_not_found_exception.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/home/create_task/bloc/create_task_bloc.dart';
+import 'package:flutter_template/feature/home/create_task/bloc/create_task_cubit.dart';
 import 'package:flutter_template/feature/home/create_task/ui/create_task_view.dart';
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_bloc.dart';
