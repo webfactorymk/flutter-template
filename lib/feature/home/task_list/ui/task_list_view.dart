@@ -42,7 +42,7 @@ class TaskListView extends StatelessWidget {
                 title: Text(AppLocalizations.of(context)!.settings),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  context.read<HomeRouterDelegate>().setSettingsNavState();
+                  context.read<HomeRouterDelegate>().setIsSettingsShownState(true);
                 },
               ),
               ListTile(

@@ -14,14 +14,15 @@ class HomeRouterDelegate extends RouterDelegate
       [this.homeNavState = const HomeNavState.taskList()]);
 
   HomeNavState homeNavState = HomeNavState.taskList();
+  bool isSettingsShownState = false;
 
   void setTaskDetailNavState(Task selectedTask) {
     homeNavState = HomeNavState.taskDetail(selectedTask);
     notifyListeners();
   }
 
-  void setSettingsNavState() {
-    homeNavState = HomeNavState.settings();
+  void setIsSettingsShownState(bool isShown){
+    isSettingsShownState = isShown;
     notifyListeners();
   }
 
@@ -33,9 +34,10 @@ class HomeRouterDelegate extends RouterDelegate
           TaskListPage(),
           if (homeNavState is TaskDetailNavState)
             TaskDetailPage(task: (homeNavState as TaskDetailNavState).task),
-          if (homeNavState is SettingsNavState) SettingsPage()
+          if (isSettingsShownState) SettingsPage()
         ],
         onPopPage: (route, result) {
+          if(isSettingsShownState) isSettingsShownState = false;
           homeNavState = HomeNavState.taskList();
           return route.didPop(result);
         });
