@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/signup/bloc/signup_cubit.dart';
 
 class PasswordView extends StatelessWidget {
   final bool sessionExpiredRedirect;
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   PasswordView({Key? key, this.sessionExpiredRedirect = false})
       : super(key: key);
@@ -17,9 +17,9 @@ class PasswordView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: BlocConsumer<SignupCubit, SignupState>(
-        listener: (listenerContext, state) { },
+        listener: (listenerContext, state) {},
         builder: (context, state) {
-          if (state is LoginInProgress || state is LoginSuccess) {
+          if (state is SignupInProgress || state is SignupSuccess) {
             return Center(child: CircularProgressIndicator());
           } else {
             return Padding(
@@ -56,5 +56,6 @@ class PasswordView extends StatelessWidget {
   _onSignUpPressed(BuildContext context) {
     BlocProvider.of<SignupCubit>(context)
         .onPasswordEntered(_passwordController.text);
+    BlocProvider.of<SignupCubit>(context).onUserSignup();
   }
 }

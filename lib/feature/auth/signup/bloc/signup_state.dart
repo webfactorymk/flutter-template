@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 abstract class SignupState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => [Object()];
 
   @override
   String toString() {

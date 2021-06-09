@@ -1,31 +1,35 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
 import 'package:flutter_template/feature/auth/signup/ui/password/password_page.dart';
 import 'package:flutter_template/feature/auth/signup/ui/username/username_page.dart';
+import 'package:flutter_template/util/collections_util.dart';
 
 class AuthRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  AuthNavState authNavState;
+  ListQueue<AuthNavState> authNavStates = ListQueue();
 
-  AuthRouterDelegate(this.navigatorKey,
-      [this.authNavState = const AuthNavState.login()]);
+  AuthRouterDelegate(this.navigatorKey) {
+    authNavStates.addState(AuthNavState.login());
+  }
 
   void setLoginNavState() {
-    authNavState = AuthNavState.login();
+    authNavStates.addState(AuthNavState.login());
     notifyListeners();
   }
 
   void setSignupUsernameNavState() {
-    authNavState = AuthNavState.signupUsername();
+    authNavStates.addState(AuthNavState.signupUsername());
     notifyListeners();
   }
 
   void setSignupPasswordNavState() {
-    authNavState = AuthNavState.signupPassword();
+    authNavStates.addState(AuthNavState.signupPassword());
     notifyListeners();
   }
 
@@ -35,11 +39,13 @@ class AuthRouterDelegate extends RouterDelegate
         key: navigatorKey,
         pages: [
           LoginPage(),
-          if (authNavState is SignupUsernameNavState) UsernamePage(),
-          if (authNavState is SignupPasswordNavState) PasswordPage(),
+          if (authNavStates.contains(AuthNavState.signupUsername()))
+            UsernamePage(),
+          if (authNavStates.contains(AuthNavState.signupPassword()))
+            PasswordPage(),
         ],
         onPopPage: (route, result) {
-          authNavState = AuthNavState.login();
+          authNavStates.removeLast();
           return route.didPop(result);
         });
   }
