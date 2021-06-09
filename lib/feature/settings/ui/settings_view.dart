@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
+import 'package:flutter_template/feature/settings/preferences_helper.dart';
 import 'package:flutter_template/feature/settings/ui/widget/settings_language_widget.dart';
 import 'package:flutter_template/feature/settings/ui/widget/settings_theme_switch_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,7 +22,7 @@ class SettingsView extends StatelessWidget {
           SettingsHeader(header: AppLocalizations.of(context)!.language),
           SettingsLanguageWidget(
               selectedLanguage:
-                  serviceLocator.get<Preferences>().languagePreferred)
+                  serviceLocator.get<PreferencesHelper>().languagePreferred)
         ],
       ),
     );

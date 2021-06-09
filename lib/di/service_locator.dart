@@ -6,7 +6,7 @@ import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/data/mock/mock_tasks_api_service.dart';
 import 'package:flutter_template/data/mock/mock_user_api_service.dart';
 import 'package:flutter_template/di/user_scope_hook.dart';
-import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
+import 'package:flutter_template/feature/settings/preferences_helper.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/chopper/http_api_service_provider.dart';
@@ -28,6 +28,10 @@ import 'package:single_item_storage/observed_storage.dart';
 import 'package:single_item_storage/storage.dart';
 
 final GetIt serviceLocator = GetIt.asNewInstance();
+
+// Storage constants
+const String preferredLocalizationKey = 'preferred-language';
+const String preferredThemeModeKey = 'preferred-theme-mode';
 
 /// Sets up the app global (baseScope) component's dependencies.
 ///
@@ -95,11 +99,7 @@ Future<void> setupGlobalDependencies() async {
   final AppLifecycleObserver appLifecycleObserver = AppLifecycleObserver();
 
   // Preferences
-  final Preferences preferences = Preferences();
-
-  // Storage
-  const String preferredLocalizationKey = 'preferred-language';
-  const String preferredThemeMode = 'preferred-theme-mode';
+  final PreferencesHelper preferences = PreferencesHelper();
 
   serviceLocator
     ..registerSingleton<NotificationsManager>(notificationsManager)
@@ -113,10 +113,14 @@ Future<void> setupGlobalDependencies() async {
     ..registerSingleton<PlatformComm>(platformComm)
     ..registerSingleton<NetworkUtils>(networkUtils)
     ..registerSingleton(preferences)
-    ..registerLazySingleton<SharedPrefsStorage<String>>(() =>
-        SharedPrefsStorage<String>.primitive(itemKey: preferredLocalizationKey))
-    ..registerLazySingleton<SharedPrefsStorage<bool>>(
-        () => SharedPrefsStorage<bool>.primitive(itemKey: preferredThemeMode));
+    ..registerLazySingleton<Storage<String>>(
+        () => SharedPrefsStorage<String>.primitive(
+            itemKey: preferredLocalizationKey),
+        instanceName: preferredLocalizationKey)
+    ..registerLazySingleton<Storage<bool>>(
+        () =>
+            SharedPrefsStorage<bool>.primitive(itemKey: preferredThemeModeKey),
+        instanceName: preferredThemeModeKey);
 }
 
 Future<void> teardown() async {

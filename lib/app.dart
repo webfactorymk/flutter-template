@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
+import 'package:flutter_template/feature/settings/preferences_helper.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -69,7 +69,7 @@ class _AppState extends State<App> {
           .catchError((error) => Log.e('Test platform method err.: $error'));
     }
 
-    localizationNotifier = LocalizationNotifier(serviceLocator.get<Preferences>().languagePreferred);
+    localizationNotifier = LocalizationNotifier(serviceLocator.get<PreferencesHelper>().languagePreferred);
   }
 
   @override
@@ -97,7 +97,7 @@ class _AppState extends State<App> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeChangeNotifier>(
-          create: (context) => serviceLocator.get<Preferences>().themePreferred,
+          create: (context) => serviceLocator.get<PreferencesHelper>().themePreferred,
         ),
         ChangeNotifierProvider<LocalizationNotifier>(
           create: (context) => localizationNotifier,

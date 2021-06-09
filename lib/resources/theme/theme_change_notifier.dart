@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/di/service_locator.dart';
-import 'package:flutter_template/feature/settings/preferences_util/preferences.dart';
+import 'package:flutter_template/feature/settings/preferences_helper.dart';
 
 class ThemeChangeNotifier extends ChangeNotifier {
   bool _isDarkTheme;
@@ -26,7 +26,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
   Future<void> setDarkTheme() async {
     _isDarkTheme = true;
     await serviceLocator
-        .get<Preferences>()
+        .get<PreferencesHelper>()
         .setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
@@ -34,7 +34,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
   Future<void> setLightTheme() async {
     _isDarkTheme = false;
     await serviceLocator
-        .get<Preferences>()
+        .get<PreferencesHelper>()
         .setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
   }
@@ -43,7 +43,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
   Future<bool> toggleTheme() async {
     _isDarkTheme = !_isDarkTheme;
     await serviceLocator
-        .get<Preferences>()
+        .get<PreferencesHelper>()
         .setIsDarkThemePreferred(_isDarkTheme);
     notifyListeners();
     return _isDarkTheme;
