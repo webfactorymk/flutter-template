@@ -3,6 +3,7 @@ import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 import 'login_state.dart';
+
 export 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {

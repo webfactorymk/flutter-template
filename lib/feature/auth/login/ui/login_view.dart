@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/feature/auth/login/bloc/login_cubit.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/resources/localization/localization_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends StatelessWidget {
   final bool sessionExpiredRedirect;
@@ -100,11 +100,11 @@ class LoginView extends StatelessWidget {
   }
 
   void _onSignUpPressed(BuildContext context) {
-    context.read<AuthRouterDelegate>().setSignupNavState();
+    context.read<AuthRouterDelegate>().setSignupUsernameNavState();
   }
 
   onSelected(BuildContext context, String item) async {
-      final localizationNotifier = Provider.of<LocalizationNotifier>(context, listen: false);
-      await localizationNotifier.setLocale(item);
+    final localizationNotifier = context.read<LocalizationNotifier>();
+    await localizationNotifier.setLocale(item);
   }
 }

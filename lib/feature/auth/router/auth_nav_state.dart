@@ -7,7 +7,9 @@ abstract class AuthNavState extends Equatable {
 
   const factory AuthNavState.login() = LoginNavState;
 
-  const factory AuthNavState.signup() = SignupNavState;
+  const factory AuthNavState.signupUsername() = SignupUsernameNavState;
+
+  const factory AuthNavState.signupPassword() = SignupPasswordNavState;
 
   @override
   List<Object?> get props => [];
@@ -24,6 +26,11 @@ class LoginNavState extends AuthNavState {
 }
 
 @immutable
-class SignupNavState extends AuthNavState {
-  const SignupNavState() : super._();
+class SignupUsernameNavState extends AuthNavState {
+  const SignupUsernameNavState() : super._();
+}
+
+@immutable
+class SignupPasswordNavState extends AuthNavState {
+  const SignupPasswordNavState() : super._();
 }
