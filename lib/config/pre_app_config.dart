@@ -7,7 +7,6 @@ import 'package:flutter_template/di/service_locator.dart' as serviceLocatorConf;
 import 'package:flutter_template/feature/settings/preferences_helper.dart';
 import 'package:flutter_template/log/bloc_events_logger.dart';
 import 'package:flutter_template/user/user_manager.dart';
-import 'package:flutter_template/util/app_lifecycle_observer.dart';
 
 /// Configuration that needs to be done before the Flutter app starts goes here.
 ///
