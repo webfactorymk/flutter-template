@@ -10,9 +10,19 @@ abstract class SignupState extends Equatable {
   }
 }
 
-class AwaitUsernameInput extends SignupState {}
+abstract class AwaitUserInput extends SignupState {
+  final String username;
 
-class AwaitPasswordInput extends SignupState {}
+  AwaitUserInput(this.username);
+}
+
+class AwaitUsernameInput extends AwaitUserInput {
+  AwaitUsernameInput(String username) : super(username);
+}
+
+class AwaitPasswordInput extends AwaitUserInput {
+  AwaitPasswordInput(String username) : super(username);
+}
 
 class SignupInProgress extends SignupState {}
 

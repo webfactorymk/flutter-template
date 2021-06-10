@@ -21,6 +21,7 @@ class UsernameView extends StatelessWidget {
           if (state is SignupInProgress || state is SignupSuccess) {
             return CircularProgressIndicator();
           } else {
+            _usernameController.text = (state as AwaitUserInput).username;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(

@@ -15,12 +15,13 @@ class SignupCubit extends Cubit<SignupState> {
   String? _username;
   String? _password;
 
-  SignupCubit(this.apiService, this.userManager) : super(AwaitUsernameInput());
+  SignupCubit(this.apiService, this.userManager)
+      : super(AwaitUsernameInput(''));
 
   Future<void> onUsernameEntered(String username) async {
     Log.d('SignUpCubit - User sign up: username $username');
     _username = username;
-    emit(AwaitPasswordInput());
+    emit(AwaitPasswordInput(username));
   }
 
   Future<void> onPasswordEntered(String password) async {
