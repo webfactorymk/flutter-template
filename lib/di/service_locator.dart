@@ -33,6 +33,9 @@ final GetIt serviceLocator = GetIt.asNewInstance();
 const String preferredLocalizationKey = 'preferred-language';
 const String preferredThemeModeKey = 'preferred-theme-mode';
 
+// Build Version
+const String buildVersionKey = 'build-version-key';
+
 /// Sets up the app global (baseScope) component's dependencies.
 ///
 /// This method is called before the app launches, suspending any further
@@ -101,6 +104,11 @@ Future<void> setupGlobalDependencies() async {
   // Preferences
   final PreferencesHelper preferences = PreferencesHelper();
 
+  // Build version
+  final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  final String buildVersion =
+      'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
+
   serviceLocator
     ..registerSingleton<NotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
@@ -112,7 +120,8 @@ Future<void> setupGlobalDependencies() async {
     ..registerSingleton<AppLifecycleObserver>(appLifecycleObserver)
     ..registerSingleton<PlatformComm>(platformComm)
     ..registerSingleton<NetworkUtils>(networkUtils)
-    ..registerSingleton(preferences)
+    ..registerSingleton<PreferencesHelper>(preferences)
+    ..registerSingleton<String>(buildVersion, instanceName: buildVersionKey)
     ..registerLazySingleton<Storage<String>>(
         () => SharedPrefsStorage<String>.primitive(
             itemKey: preferredLocalizationKey),
