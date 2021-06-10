@@ -7,6 +7,7 @@ import 'package:flutter_template/feature/home/router/home_router.dart';
 import 'package:flutter_template/feature/loading/ui/loading_page.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
+import 'package:flutter_template/routing/no_animation_transition_delegate.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 /// Root rooter of this application
@@ -36,6 +37,7 @@ class AppRouterDelegate extends RouterDelegate
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      transitionDelegate: NoAnimationTransitionDelegate(),
       key: navigatorKey,
       pages: _getPages(),
       onPopPage: (route, result) => route.didPop(result),
@@ -74,3 +76,4 @@ class AppRouterDelegate extends RouterDelegate
     await _userUpdatesSubscription?.cancel();
   }
 }
+
