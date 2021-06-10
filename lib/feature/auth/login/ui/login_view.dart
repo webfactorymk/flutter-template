@@ -111,12 +111,10 @@ class LoginView extends StatelessWidget {
 
   onSelected(BuildContext context, String item) {
     if (item == 'theme') {
-      final themeNotifier =
-          Provider.of<ThemeChangeNotifier>(context, listen: false);
+      final themeNotifier = context.read<ThemeChangeNotifier>();
       themeNotifier.toggleTheme();
     } else {
-      final localizationNotifier =
-          Provider.of<LocalizationNotifier>(context, listen: false);
+      final localizationNotifier = context.read<LocalizationNotifier>();
       localizationNotifier.setLocale(L10n.getLocale(item));
     }
   }
