@@ -45,12 +45,11 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
         Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
           child: InkWell(
-            onTap: () =>
-                setUpSelectedLanguage(context, L10n.all[0].languageCode),
+            onTap: () => setUpSelectedLanguage(context, EN.languageCode),
             child: IgnorePointer(
               child: Row(
                 children: [
-                  SettingsLanguageIcon(languageCode: L10n.all[0].languageCode),
+                  SettingsLanguageIcon(languageCode: EN.languageCode),
                   Expanded(
                     child: Text(
                       'English',
@@ -61,7 +60,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
                     activeColor: Theme.of(context).brightness == Brightness.dark
                         ? Theme.of(context).accentColor
                         : Theme.of(context).primaryColorDark,
-                    value: L10n.all[0].languageCode,
+                    value: EN.languageCode,
                     groupValue: selectedLanguage,
                     onChanged: (value) =>
                         setState(() => selectedLanguage = value!),
@@ -74,12 +73,11 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
         Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 2.0, 0.0, 0.0),
           child: InkWell(
-            onTap: () =>
-                setUpSelectedLanguage(context, L10n.all[1].languageCode),
+            onTap: () => setUpSelectedLanguage(context, MK.languageCode),
             child: IgnorePointer(
               child: Row(
                 children: [
-                  SettingsLanguageIcon(languageCode: L10n.all[1].languageCode),
+                  SettingsLanguageIcon(languageCode: MK.languageCode),
                   Expanded(
                     child: Text(
                       'Macedonian',
@@ -90,7 +88,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
                     activeColor: Theme.of(context).brightness == Brightness.dark
                         ? Theme.of(context).accentColor
                         : Theme.of(context).primaryColorDark,
-                    value: L10n.all[1].languageCode,
+                    value: MK.languageCode,
                     groupValue: selectedLanguage,
                     onChanged: (value) =>
                         setState(() => selectedLanguage = value!),
@@ -106,7 +104,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
 
   void setUpSelectedLanguage(
       BuildContext context, String? currentLanguage) async {
-    if (currentLanguage == null) currentLanguage = L10n.all[0].languageCode;
+    if (currentLanguage == null) currentLanguage = EN.languageCode;
 
     if (selectedLanguage != currentLanguage) {
       setState(() {

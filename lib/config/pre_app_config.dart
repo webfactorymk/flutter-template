@@ -21,6 +21,4 @@ Future<void> preAppConfig() async {
   await serviceLocatorConf.setupGlobalDependencies();
   await serviceLocator.get<UserManager>().init();
   await serviceLocator.get<PreferencesHelper>().init();
-
-  serviceLocator.get<AppLifecycleObserver>().activate();
 }

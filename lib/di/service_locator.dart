@@ -105,7 +105,6 @@ Future<void> setupGlobalDependencies() async {
   final PreferencesHelper preferences = PreferencesHelper();
 
   // Build version
-  // If similar data is needed, we can always wrap it to be in one object, for now it is not necessary
   final PackageInfo packageInfo = await PackageInfo.fromPlatform();
   final String buildVersion =
       'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
