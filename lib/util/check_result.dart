@@ -4,6 +4,8 @@
 /// Example:
 ///     immutableObject.changeStatus(); // WRONG, the result is missed
 ///     final changedObject = immutableObject.changeStatus(); // CORRECT
+///
+/// See https://github.com/dart-lang/linter/issues/697
 class CheckResult {
   const CheckResult();
 }
