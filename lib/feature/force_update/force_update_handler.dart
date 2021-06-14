@@ -7,8 +7,8 @@ class ForceUpdateHandler {
   ForceUpdateHandler();
 
   void onForceUpdateEvent() {
-    if (navigatorKey.currentContext != null) {
-      showForceUpdateAlert(navigatorKey.currentContext!);
+    if (rootNavigatorKey.currentContext != null) {
+      showForceUpdateAlert(rootNavigatorKey.currentContext!);
     }
   }
 }

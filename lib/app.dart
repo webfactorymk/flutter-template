@@ -16,7 +16,7 @@ import 'package:flutter_template/routing/app_router_delegate.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 final authNavigatorKey = GlobalKey<NavigatorState>();
 final homeNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -36,7 +36,7 @@ class _AppState extends State<App> {
     super.initState();
     serviceLocator.get<AppLifecycleObserver>().activate();
     _appRouterDelegate = AppRouterDelegate(
-      navigatorKey,
+      rootNavigatorKey,
       authNavigatorKey,
       homeNavigatorKey,
       serviceLocator.get<UserManager>(),
