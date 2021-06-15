@@ -415,6 +415,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_secure_storage:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -801,6 +808,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  single_item_secure_storage:
+    dependency: "direct main"
+    description:
+      name: single_item_secure_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   single_item_shared_prefs:
     dependency: "direct main"
     description:

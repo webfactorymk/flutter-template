@@ -22,6 +22,7 @@ import 'package:flutter_template/user/user_manager.dart';
 import 'package:flutter_template/util/app_lifecycle_observer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info/package_info.dart';
+import 'package:single_item_secure_storage/single_item_secure_storage.dart';
 import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
 import 'package:single_item_storage/cached_storage.dart';
 import 'package:single_item_storage/observed_storage.dart';
@@ -44,7 +45,7 @@ const String buildVersionKey = 'build-version-key';
 Future<void> setupGlobalDependencies() async {
   // Data
   final ObservedStorage<UserCredentials> userStorage =
-      ObservedStorage<UserCredentials>(CachedStorage(SharedPrefsStorage(
+      ObservedStorage<UserCredentials>(CachedStorage(SecureStorage(
     itemKey: 'model.user.user-credentials',
     fromMap: (map) => UserCredentials.fromJson(map),
     toMap: (user) => user.toJson(),
