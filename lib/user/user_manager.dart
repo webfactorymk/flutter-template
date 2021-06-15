@@ -23,6 +23,10 @@ import 'package:single_item_storage/storage.dart';
 /// - Provide update hooks to more easily register to [updatesSticky].
 ///
 /// To obtain an instance use `serviceLocator.get<UserManager>()`
+///
+/// To obtain an instance of the user storage (for breaking circular dependencies
+/// for example) use `serviceLocator.get<Storage<UserCredentials>>()`. This will
+/// notify the user manager of any changes you make.
 class UserManager with UpdatesStream<UserCredentials> {
   final UserApiService _apiService;
   final Storage<UserCredentials> _userStore;
