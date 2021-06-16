@@ -3,6 +3,10 @@ Flutter template project - A simple TODO list app
 
 ## Getting Started
 
+### Documentation
+
+[Head to the Wiki page for project documentation.](https://github.com/webfactorymk/flutter-template/wiki)
+
 ### Run Configurations
 
 In addition to the [Flutter's build modes][flutter_build_modes] (debug, profile, release), 
