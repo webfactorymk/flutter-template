@@ -9,7 +9,6 @@ import 'package:flutter_template/platform_comm/platform_comm.dart';
 /// To minimize the app loading time keep this setup fast and simple.
 void postAppConfig() {
   _testPlatformCommunication();
-
 }
 
 void _testPlatformCommunication(){

@@ -48,9 +48,9 @@ class _AppState extends State<App> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    postAppConfig();
     if (!FlavorConfig.isProduction()) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        postAppConfig();
         debugOverlay(context);
       });
     }
