@@ -3,12 +3,20 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 
 class ColorPalette {
-  static const Color accent = const Color(0xFF2ED3C6);
 
-  static const Color primaryDark = const Color(0xFF0D141C);
-  static const Color primary = const Color(0xFF13326D);
-  static const Color primaryLight = const Color(0x8C0D141C);
-  static const Color primaryDisabled = const Color(0x3313326D);
+  // Light Theme
+  static const Color primaryL = const Color(0xFF6200EE);
+  static const Color primaryDarkL = const Color(0xFF3700B3);
+  static const Color primaryLightL = const Color(0xFF9E47FF);
+  static const Color primaryDisabledL = const Color(0x336200EE);
+  static const Color accentL = const Color(0xFF03DAC6);
+
+  // Dark Theme
+  static const Color primaryD = const Color(0xFF121212);
+  static const Color primaryDarkD = const Color(0xFF000000);
+  static const Color primaryLightD = const Color(0xFF383838);
+  static const Color primaryDisabledD = const Color(0x33121212);
+  static const Color accentD = const Color(0xFFbb86fc);
 
   static const Color backgroundLightGreen = const Color(0xFFE2F0F1);
   static const Color backgroundLightGray = const Color(0xFFF5F5F5);
