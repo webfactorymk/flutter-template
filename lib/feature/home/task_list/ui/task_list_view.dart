@@ -39,14 +39,16 @@ class TaskListView extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                decoration: BoxDecoration(color: ColorPalette.primary),
+                decoration: BoxDecoration(color: ColorPalette.primaryL),
                 child: Text('Drawer Header', style: kWhiteTextStyle),
               ),
               ListTile(
                 title: Text(AppLocalizations.of(context)!.settings),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  context.read<HomeRouterDelegate>().setIsSettingsShownState(true);
+                  context
+                      .read<HomeRouterDelegate>()
+                      .setIsSettingsShownState(true);
                 },
               ),
               ListTile(
@@ -180,15 +182,17 @@ class _TaskListItem extends StatelessWidget {
     return Ink(
       color: themeData.cardColor,
       child: ListTile(
+        leading: Checkbox(
+            checkColor: ColorPalette.black,
+            activeColor: Theme.of(context).accentColor,
+            value: task.status == TaskStatus.done,
+            onChanged: (newState) => onStatusChange(task, newState!)),
         title: task.status == TaskStatus.done
             ? Text(task.title,
                 style: TextStyle(
                     decoration: TextDecoration.lineThrough,
                     color: ColorPalette.textGray))
             : Text(task.title),
-        trailing: Checkbox(
-            value: task.status == TaskStatus.done,
-            onChanged: (newState) => onStatusChange(task, newState!)),
         onTap: () => onClick(task),
       ),
     );
