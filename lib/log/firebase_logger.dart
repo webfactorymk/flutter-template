@@ -1,4 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_template/log/abstract_logger.dart';
 
 /// Logger that outputs messages to firebase console to be added to a crash report.
@@ -16,5 +17,6 @@ class FirebaseLogger implements AbstractLogger {
   void w(String message) => _crashlytics.log('(W) $message');
 
   @override
-  void e(Object error) => _crashlytics.log('(E) ${error.toString()}');
+  void e(Object error) =>
+      _crashlytics.recordFlutterError(FlutterErrorDetails(exception: error));
 }
