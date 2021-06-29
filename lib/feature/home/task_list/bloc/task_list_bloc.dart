@@ -43,6 +43,15 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       } catch (error) {
         yield TaskOpFailure(state, event.task, error);
       }
+    } else if(event is TasksReordered){
+      yield TasksLoadInProgress();
+      Map<TaskGroup, List<Task>> tasks = await _tasksRepository.getAllTasksGrouped();
+
+      final oldTask = tasks[event.key]?.removeAt(event.oldIndex);
+      tasks[event.key]?.insert(event.newIndex, oldTask!);
+
+      final newTasks = Map<TaskGroup, List<Task>>.from(tasks);
+      yield TasksLoadSuccess(newTasks);
     } else if (event is Logout) {
       await _userManager.logout();
     }

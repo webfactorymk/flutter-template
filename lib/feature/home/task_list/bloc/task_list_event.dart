@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/model/task/task.dart';
+import 'package:flutter_template/model/task/task_group.dart';
 
 @immutable
 abstract class TaskListEvent extends Equatable {
@@ -28,6 +29,15 @@ class TaskReopened extends TaskListEvent {
   final Task task;
 
   TaskReopened(this.task);
+}
+
+/// Requests for reordering the tasks.
+class TasksReordered extends TaskListEvent {
+  final TaskGroup key;
+  final int oldIndex;
+  final int newIndex;
+
+  TasksReordered(this.key, this.oldIndex, this.newIndex);
 }
 
 /// Triggers a logout event.
