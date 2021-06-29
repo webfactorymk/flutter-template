@@ -81,13 +81,15 @@ class TaskListView extends StatelessWidget {
       if (tasksGrouped.isEmpty) {
         return _emptyListWidget(context);
       } else {
-        return _taskListWidget(
-          context,
-          tasksGrouped.keys
-              .expand((taskGroup) => []
-                ..add(taskGroup)
-                ..addAll(tasksGrouped[taskGroup]!))
-              .toList(),
+        return Column(
+          children: <Widget>[
+            Expanded(
+              child: _taskListWidget(
+                context,
+                tasksGrouped,
+              ),
+            ),
+          ],
         );
       }
     } else if (state is TaskOpFailure) {
@@ -100,36 +102,25 @@ class TaskListView extends StatelessWidget {
     }
   }
 
-  Widget _taskListWidget(BuildContext context, List<dynamic> flattenedItems) {
-    final taskListBloc = BlocProvider.of<TaskListBloc>(context);
-    return ListView.builder(
-        itemCount: flattenedItems.length,
-        padding: EdgeInsets.only(bottom: 56),
-        itemBuilder: (context, index) {
-          var item = flattenedItems[index];
-          if (item is TaskGroup) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: ListTile(
-                  title: Text(item.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(fontSize: 15))),
-            );
-          } else if (item is Task) {
-            return _TaskListItem(
-              task: item,
-              onClick: (task) => context
-                  .read<HomeRouterDelegate>()
-                  .setTaskDetailNavState(task),
-              onStatusChange: (task, isDone) => taskListBloc
-                  .add(isDone ? TaskCompleted(task) : TaskReopened(task)),
-            );
-          } else {
-            throw Exception('Unrecognised item type.');
-          }
-        });
+  Widget _taskListWidget(
+      BuildContext context, Map<TaskGroup, List<Task>> tasksGrouped) {
+    return Scrollbar(
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Container(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? ColorPalette.primaryLightD
+              : ColorPalette.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              for (TaskGroup key in tasksGrouped.keys)
+                getItem(key, tasksGrouped[key]!, context)
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _loadingWidget() {
@@ -162,6 +153,50 @@ class TaskListView extends StatelessWidget {
           );
         });
   }
+
+  ReorderableListView getItem(
+      TaskGroup key, List<Task> tasks, BuildContext context) {
+    final taskListBloc = BlocProvider.of<TaskListBloc>(context);
+
+    return ReorderableListView(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        header: SizedBox(
+          height: 50,
+          child: Container(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? ColorPalette.primaryDisabledD
+                : ColorPalette.backgroundGray,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0),
+                child: Text(
+                  key.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        children: <Widget>[
+          for (Task task in tasks)
+            _TaskListItem(
+              key: ValueKey(key.id + task.id),
+              task: task,
+              onClick: (task) => context
+                  .read<HomeRouterDelegate>()
+                  .setTaskDetailNavState(task),
+              onStatusChange: (task, isDone) => taskListBloc
+                  .add(isDone ? TaskCompleted(task) : TaskReopened(task)),
+            ),
+        ],
+        onReorder: (oldIndex, newIndex) {
+          taskListBloc.add(TasksReordered(key, oldIndex, newIndex));
+        });
+  }
 }
 
 class _TaskListItem extends StatelessWidget {
@@ -187,6 +222,7 @@ class _TaskListItem extends StatelessWidget {
             activeColor: Theme.of(context).accentColor,
             value: task.status == TaskStatus.done,
             onChanged: (newState) => onStatusChange(task, newState!)),
+        trailing: Icon(Icons.reorder),
         title: task.status == TaskStatus.done
             ? Text(task.title,
                 style: TextStyle(
