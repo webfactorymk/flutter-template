@@ -43,15 +43,17 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       } catch (error) {
         yield TaskOpFailure(state, event.task, error);
       }
-    } else if(event is TasksReordered){
+    } else if (event is TasksReordered) {
       yield TasksLoadInProgress();
-      Map<TaskGroup, List<Task>> tasks = await _tasksRepository.getAllTasksGrouped();
+      List<String> reorderedList = List.from(event.key.taskIds);
+      String reorderedValue = reorderedList.removeAt(event.oldIndex);
+      reorderedList.insert(event.newIndex, reorderedValue);
 
-      final oldTask = tasks[event.key]?.removeAt(event.oldIndex);
-      tasks[event.key]?.insert(event.newIndex, oldTask!);
+      await _tasksRepository.updateTaskGroup(event.key, reorderedList);
 
-      final newTasks = Map<TaskGroup, List<Task>>.from(tasks);
-      yield TasksLoadSuccess(newTasks);
+      Map<TaskGroup, List<Task>> orderedTasks =
+          await _tasksRepository.getAllTasksGrouped();
+      yield TasksLoadSuccess(orderedTasks);
     } else if (event is Logout) {
       await _userManager.logout();
     }
