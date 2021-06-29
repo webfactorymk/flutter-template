@@ -38,6 +38,9 @@ abstract class TasksDataSource {
   /// Creates a new [TaskGroup]. [TaskGroup.id] is overwritten by server.
   Future<TaskGroup> createTaskGroup(TaskGroup createTaskGroup);
 
+  /// Updates taskIds in given task group.
+  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList);
+
   /// Deletes all task groups.
   Future<void> deleteAllTaskGroups();
 

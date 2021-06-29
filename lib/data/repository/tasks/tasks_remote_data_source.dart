@@ -63,4 +63,10 @@ class TasksRemoteDataSource implements TasksDataSource {
   Future<void> deleteAllData() {
     throw UnsupportedError('Only cached data can be cleared');
   }
+
+  @override
+  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
+    // TODO: implement updateTaskGroup
+    throw UnimplementedError();
+  }
 }

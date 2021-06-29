@@ -134,4 +134,9 @@ class TasksCacheDataSource implements TasksDataSource {
         _tasks?.clear();
         _taskGroups?.clear();
       });
+
+  @override
+  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
+    return Future.microtask(() => _taskGroups![key.id] = _taskGroups![key.id]!.copyWithTaskIds(orderedTaskList));
+  }
 }

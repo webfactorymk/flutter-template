@@ -138,4 +138,10 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
 
   @override
   Future<void> deleteAllData() => _cacheDataSource.deleteAllData();
+
+
+  @override
+  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
+    return _cacheDataSource.updateTaskGroup(key, orderedTaskList);
+  }
 }
