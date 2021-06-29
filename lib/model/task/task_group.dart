@@ -20,6 +20,10 @@ class TaskGroup extends Equatable {
 
   Map<String, dynamic> toJson() => _$TaskGroupToJson(this);
 
+  TaskGroup copyWithTaskIds(List<String> newTaskIds) {
+    return TaskGroup(this.id, this.name, newTaskIds);
+  }
+
   @override
   List<Object?> get props => [id, name, taskIds];
 
