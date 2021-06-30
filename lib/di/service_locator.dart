@@ -49,6 +49,7 @@ Future<void> setupGlobalDependencies() async {
     itemKey: 'model.user.user-credentials',
     fromMap: (map) => UserCredentials.fromJson(map),
     toMap: (user) => user.toJson(),
+    iosOptions: IOSOptions(accessibility: IOSAccessibility.first_unlock),
   )));
 
   // Network

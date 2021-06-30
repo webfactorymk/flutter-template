@@ -45,7 +45,7 @@ dependencies:
 
   # data
   single_item_storage: ^1.0.4
-  single_item_secure_storage: ^0.0.1
+  single_item_secure_storage: ^0.0.3
   single_item_shared_prefs: ^0.0.3
   shared_preferences: ^2.0.5
 

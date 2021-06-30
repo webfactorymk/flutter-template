@@ -814,7 +814,7 @@ packages:
       name: single_item_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+1"
+    version: "0.0.3"
   single_item_shared_prefs:
     dependency: "direct main"
     description:
