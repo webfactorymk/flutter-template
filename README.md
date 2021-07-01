@@ -1,5 +1,10 @@
 # Flutter Template
-Flutter template project - A simple TODO list app 
+Flutter template project - A simple TODO list app. This template provides simple UI and scalable project setup and structure that goes beyond the simple counter example. 
+
+It's configured with [BLoC] for state management, [Chopper] for networking, [Navigation 2.0], [GetIt] as service locator, UserManager, Repository Pattern, Logger, and util and convenience methods. 
+
+[Navigation 2.0]: https://medium.com/flutter/learning-flutters-new-navigation-and-routing-system-7c9068155ade
+
 
 ## Getting Started
 
@@ -115,9 +120,10 @@ See `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdat
 
 # Dependency Management
 
-Dependencies are managed in the [`service_locator.dart`][service_locator] file. This sample uses [GetIt](https://pub.dev/packages/get_it), a lightweight service locator.
+Dependencies are managed in the [`service_locator.dart`][service_locator] file. This sample uses [GetIt], a lightweight service locator.
 
 [service_locator]: ./lib/service_locator.dart
+[GetIt]: https://pub.dev/packages/get_it
 
 
 # Tests
