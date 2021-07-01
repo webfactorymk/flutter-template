@@ -75,6 +75,14 @@ class _$ChopperTasksApiService extends ChopperTasksApiService {
   }
 
   @override
+  Future<Response<TaskGroup>> updateTaskGroup(TaskGroup tg) {
+    final $url = '/task-groups/update';
+    final $body = tg;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<TaskGroup, TaskGroup>($request);
+  }
+
+  @override
   Future<Response<dynamic>> deleteAllTasks() {
     final $url = '/tasks';
     final $request = Request('DELETE', $url, client.baseUrl);

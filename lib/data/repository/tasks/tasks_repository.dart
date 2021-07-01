@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_data_source.dart';
+import 'package:flutter_template/feature/home/task_list/bloc/task_list_state.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_event.dart';
@@ -139,9 +141,13 @@ class TasksRepository with UpdatesStream<dynamic> implements TasksDataSource {
   @override
   Future<void> deleteAllData() => _cacheDataSource.deleteAllData();
 
-
   @override
-  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
-    return _cacheDataSource.updateTaskGroup(key, orderedTaskList);
-  }
+  Future<TaskGroup> updateTaskGroup(final TaskGroup taskGroup) =>
+      _remoteDataSource
+          .updateTaskGroup(taskGroup)
+          .then((_) => _cacheDataSource.updateTaskGroup(taskGroup))
+          .then((taskGroup) async {
+        addUpdate(new TasksLoadSuccess(await getAllTasksGrouped()));
+        return taskGroup;
+      });
 }

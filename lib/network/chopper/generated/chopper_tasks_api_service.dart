@@ -45,6 +45,10 @@ abstract class ChopperTasksApiService extends ChopperService {
   @Post(path: '/task-groups')
   Future<Response<TaskGroup>> createTaskGroup(@Body() CreateTaskGroup ctg);
 
+  /// Update a [TaskGroup].
+  @Post(path: '/task-groups/update')
+  Future<Response<TaskGroup>> updateTaskGroup(@Body() TaskGroup tg);
+
   /// Deletes all tasks.
   @Delete(path: '/tasks')
   Future<Response> deleteAllTasks();

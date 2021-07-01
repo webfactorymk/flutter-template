@@ -136,7 +136,8 @@ class TasksCacheDataSource implements TasksDataSource {
       });
 
   @override
-  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
-    return Future.microtask(() => _taskGroups![key.id] = _taskGroups![key.id]!.copyWithTaskIds(orderedTaskList));
+  Future<TaskGroup> updateTaskGroup(final TaskGroup taskGroup) {
+    return Future.microtask(
+        () => (_taskGroups ?? const {})[taskGroup.id] = taskGroup);
   }
 }

@@ -65,8 +65,6 @@ class TasksRemoteDataSource implements TasksDataSource {
   }
 
   @override
-  Future<void> updateTaskGroup(TaskGroup key, List<String> orderedTaskList) {
-    // TODO: implement updateTaskGroup
-    throw UnimplementedError();
-  }
+  Future<TaskGroup> updateTaskGroup(final TaskGroup taskGroup) =>
+      _apiService.updateTaskGroup(taskGroup);
 }

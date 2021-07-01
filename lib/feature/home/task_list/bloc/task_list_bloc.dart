@@ -49,7 +49,8 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       String reorderedValue = reorderedList.removeAt(event.oldIndex);
       reorderedList.insert(event.newIndex, reorderedValue);
 
-      await _tasksRepository.updateTaskGroup(event.key, reorderedList);
+      await _tasksRepository
+          .updateTaskGroup(event.key.copy(newTaskIds: reorderedList));
 
       Map<TaskGroup, List<Task>> orderedTasks =
           await _tasksRepository.getAllTasksGrouped();

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_template/model/task/api/create_task.dart';
 import 'package:flutter_template/model/task/api/create_task_group.dart';
 import 'package:flutter_template/model/task/task.dart';
@@ -8,10 +9,12 @@ import 'tasks_dummy_data.dart';
 
 class MockTasksApiService implements TasksApiService {
   @override
-  Future<void> completeTask(String id) => Future.delayed(Duration(milliseconds: 100));
+  Future<void> completeTask(String id) =>
+      Future.delayed(Duration(milliseconds: 100));
 
   @override
-  Future<void> reopenTask(String id) => Future.delayed(Duration(milliseconds: 100));
+  Future<void> reopenTask(String id) =>
+      Future.delayed(Duration(milliseconds: 100));
 
   @override
   Future<Task> createTask(CreateTask createTask) => Future.delayed(
@@ -61,4 +64,8 @@ class MockTasksApiService implements TasksApiService {
         .where((task) => taskIdsFromGroup.contains(task.id))
         .toList();
   }
+
+  @override
+  Future<TaskGroup> updateTaskGroup(TaskGroup taskGroup) =>
+      Future.value(taskGroup);
 }
