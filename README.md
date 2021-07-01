@@ -3,16 +3,14 @@ Flutter template project - A simple TODO list app. This template provides simple
 
 It's configured with [BLoC] for state management, [Chopper] for networking, [Navigation 2.0], [GetIt] as service locator, UserManager, Repository Pattern, Logger, and util and convenience methods. 
 
-<div style="margin:auto; width:50%;">
-  
-| ![Light theme][light_theme] | ![DarkTheme][dark_theme] |
-|:---------------------------:|:------------------------:|
-| Light theme                 | Dark theme               |
-  
+<br />
+<div>
+  &emsp;&emsp;&emsp;
+  <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/light_theme.jpg" alt="Light theme" width="320">
+  &emsp;&emsp;&emsp;&emsp;
+  <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/dark_theme.jpg" alt="Dark theme" width="320">  
 </div>
-
-[light_theme]: diagrams/light_theme.jpg "Light theme"
-[dark_theme]: diagrams/dark_theme.jpg "Dark theme"
+<br />
 
 [Navigation 2.0]: https://medium.com/flutter/learning-flutters-new-navigation-and-routing-system-7c9068155ade
 
