@@ -134,4 +134,10 @@ class TasksCacheDataSource implements TasksDataSource {
         _tasks?.clear();
         _taskGroups?.clear();
       });
+
+  @override
+  Future<TaskGroup> updateTaskGroup(final TaskGroup taskGroup) {
+    return Future.microtask(
+        () => (_taskGroups ?? const {})[taskGroup.id] = taskGroup);
+  }
 }

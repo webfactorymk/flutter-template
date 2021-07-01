@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 
 /// Main entry point for accessing and manipulating tasks data.
 abstract class TasksDataSource {
-
   abstract final String userId;
 
   /// Get all task groups for the logged in user.
@@ -37,6 +37,9 @@ abstract class TasksDataSource {
 
   /// Creates a new [TaskGroup]. [TaskGroup.id] is overwritten by server.
   Future<TaskGroup> createTaskGroup(TaskGroup createTaskGroup);
+
+  /// Updates taskIds in given task group.
+  Future<TaskGroup> updateTaskGroup(final TaskGroup taskGroup);
 
   /// Deletes all task groups.
   Future<void> deleteAllTaskGroups();

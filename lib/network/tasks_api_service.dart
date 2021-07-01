@@ -41,6 +41,9 @@ class TasksApiService {
   Future<TaskGroup> createTaskGroup(CreateTaskGroup ctg) =>
       _chopper.createTaskGroup(ctg).toType();
 
+  Future<TaskGroup> updateTaskGroup(TaskGroup taskGroup) =>
+      _chopper.updateTaskGroup(taskGroup).toType();
+
   /// Deletes all tasks.
   Future<void> deleteAllTasks() => _chopper.deleteAllTasks().toType();
 

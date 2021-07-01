@@ -23,7 +23,7 @@ const kMediumErrorTextStyle = TextStyle(
 
 const kPrimaryLightSmallTextStyle = TextStyle(
   fontSize: 13.0,
-  color: ColorPalette.primaryLight,
+  color: ColorPalette.primaryLightL,
 );
 
 const kWhiteSmallBoldTextStyle = TextStyle(
@@ -34,30 +34,30 @@ const kWhiteSmallBoldTextStyle = TextStyle(
 
 const kDescriptionTextStyle = TextStyle(
   fontSize: 13.0,
-  color: ColorPalette.primaryDark,
+  color: ColorPalette.primaryDarkL,
 );
 
 const kPrimarySmallTextStyle = TextStyle(
   fontSize: 13.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
   fontWeight: FontWeight.bold,
 );
 
 const kAccentBoldSmallTextStyle = TextStyle(
   fontSize: 13.0,
-  color: ColorPalette.accent,
+  color: ColorPalette.accentL,
   fontWeight: FontWeight.bold,
 );
 
 const kAccentBoldTextStyle = TextStyle(
   fontSize: 14.0,
-  color: ColorPalette.accent,
+  color: ColorPalette.accentL,
   fontWeight: FontWeight.bold,
 );
 
 const kAccentTextStyle = TextStyle(
   fontSize: 14.0,
-  color: ColorPalette.accent,
+  color: ColorPalette.accentL,
 );
 
 const kBlackSmallTextStyle = TextStyle(
@@ -73,7 +73,7 @@ const kBlackBoldSmallTextStyle = TextStyle(
 
 const kPrimaryDarkBoldTextStyle = TextStyle(
   fontSize: 15.0,
-  color: ColorPalette.primaryDark,
+  color: ColorPalette.primaryDarkL,
   fontWeight: FontWeight.bold,
 );
 
@@ -84,12 +84,12 @@ const kPrimaryWhiteTextStyle = TextStyle(
 
 const kPrimaryDarkTextStyle = TextStyle(
   fontSize: 15.0,
-  color: ColorPalette.primaryDark,
+  color: ColorPalette.primaryDarkL,
 );
 
 const kInputFieldTextStyle = TextStyle(
   fontSize: 15.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
   fontWeight: FontWeight.bold,
 );
 
@@ -106,18 +106,18 @@ const kMediumWhiteButtonTextStyle = TextStyle(
 
 const kPrimaryTextStyle = TextStyle(
   fontSize: 16.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
 );
 
 const kPrimaryBoldTextStyle = TextStyle(
   fontSize: 16.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
   fontWeight: FontWeight.bold,
 );
 
 const kMediumAccentTextStyle = TextStyle(
   fontSize: 16.0,
-  color: ColorPalette.accent,
+  color: ColorPalette.accentL,
 );
 
 const kBlackTextStyle = TextStyle(
@@ -153,7 +153,7 @@ const kBlackBoldNameTextStyle = TextStyle(
 
 const kPrimaryDarkHeadingTextStyle = TextStyle(
   fontSize: 20.0,
-  color: ColorPalette.primaryDark,
+  color: ColorPalette.primaryDarkL,
   fontWeight: FontWeight.bold,
 );
 
@@ -177,7 +177,7 @@ const kBlackBoldHeadingTextStyle = TextStyle(
 
 const kAccentButtonTextStyle = TextStyle(
   fontSize: 20.0,
-  color: ColorPalette.accent,
+  color: ColorPalette.accentL,
   fontWeight: FontWeight.bold,
 );
 
@@ -195,12 +195,12 @@ const kWhiteBoldNameTextStyle = TextStyle(
 
 const kPrimaryLargeTextStyle = TextStyle(
   fontSize: 22.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
 );
 
 const kPrimaryLargeBoldTextStyle = TextStyle(
   fontSize: 22.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
   fontWeight: FontWeight.bold,
 );
 
@@ -230,13 +230,13 @@ const kBlackNameHeadingTextStyle = TextStyle(
 
 const kPrimaryDarkLargeHeadingTextStyle = TextStyle(
   fontSize: 30.0,
-  color: ColorPalette.primaryDark,
+  color: ColorPalette.primaryDarkL,
   fontWeight: FontWeight.bold,
 );
 
 const kPrimaryHeadingTextStyle = TextStyle(
   fontSize: 30.0,
-  color: ColorPalette.primary,
+  color: ColorPalette.primaryL,
   fontWeight: FontWeight.bold,
 );
 

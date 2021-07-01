@@ -40,4 +40,7 @@ class TasksStubDataSource implements TasksDataSource {
 
   @override
   Future<void> deleteAllData() => Future.value();
+
+  @override
+  Future<TaskGroup> updateTaskGroup(final String id, final String name, final List<String> orderedTaskList) => Future.value();
 }
