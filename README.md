@@ -1,5 +1,8 @@
 # Flutter Template
-Flutter template project - A simple TODO list app. This template provides simple UI and scalable project setup and structure that goes beyond the simple counter example. 
+
+Flutter template project - A simple TODO list app. This template provides simple UI and scalable project structure that goes beyond the simple counter example. 
+
+The app has basic login and signup screens, task list, task details, and settings screen. It supports multiple languages and in-app language change, and light and dark theme. 
 
 It's configured with [BLoC] for state management, [Chopper] for networking, [Navigation 2.0], [GetIt] as service locator, UserManager, Repository Pattern, Logger, and util and convenience methods. 
 
@@ -14,14 +17,11 @@ It's configured with [BLoC] for state management, [Chopper] for networking, [Nav
 
 [Navigation 2.0]: https://medium.com/flutter/learning-flutters-new-navigation-and-routing-system-7c9068155ade
 
+# First Run
 
-## Getting Started
+The project is configured with mock data if you run the **MOCK** flavor. See the next section for configuring run configurations.
 
-### Documentation
-
-[Head to the Wiki page for project documentation.](https://github.com/webfactorymk/flutter-template/wiki)
-
-### Run Configurations
+## Run Configurations
 
 In addition to the [Flutter's build modes][flutter_build_modes] (debug, profile, release), 
 the project has 4 flavours/schemas for defining environments:
@@ -51,7 +51,16 @@ and [this blog post][blog_flavouring_flutter].
 [flutter_flavours_official]: https://flutter.dev/docs/deployment/flavors
 [blog_flavouring_flutter]: https://medium.com/@salvatoregiordanoo/flavoring-flutter-392aaa875f36
 
-### Resolve TODOs
+# Use as template
+
+You can copy this repository with the Use as template button and go on from there, or download the code and use it in you project.
+Afterwards, you'll need to rename the project and change the app id and configuration. There are ToDos scattered through the project that will help you transition this project to your needs.
+
+
+
+## [Head to the Wiki page for project documentation.](https://github.com/webfactorymk/flutter-template/wiki)
+
+## Resolve TODOs
 
 Go over the TODOs scattered around the project and resolve as much as possible. They will help you configure the project to your needs.
 
@@ -59,15 +68,30 @@ In AndroidStudio you can view all TODOs in the bottom tab as shown in this pictu
 
 ![TODOs bottom tab in AS](http://jubin.tech/assets/pic/20181023-1-todo-in-AS.png)
 
+## App Configuration
 
-# Data Management
+To configure the app for your environment head to the `/config` directory:
+
+- add flavor-specific valus in `FlavorConfig` -> `FlavorValues`
+- configure firebase in `FirebaseConfig`, duh
+- configure API constants in `network_constants`
+- also see `pre_app_config` and `post_app_config` for preloading essential app components
+
+_See the [wiki configuration page] for more info._
+
+[wiki configuration page]: https://github.com/webfactorymk/flutter-template/wiki/Configuration
+
+
+# Under the hood
+
+## Data Management
 
 ![Alt text][high_lvl_diagram]
 
 [high_lvl_diagram]: diagrams/high_lvl_diagram.png "High level diagram"
 
 
-## [TasksDataSource]
+### [TasksDataSource]
 
 This is the main entry point for accessing and manipulating tasks data. The rest of the app should not invoke tasks' endpoints directly or query cached data. All tasks operations should go through this service.
 
@@ -83,7 +107,7 @@ Implementations:
 [tasks_repository]: ./lib/data/tasks_repository.dart
 
 
-## ApiService
+### ApiService
 
 Abstraction over the API communication that defines (all) endpoints. 
 This templates uses [Chopper], an http client generator, to make network requests.
@@ -99,7 +123,7 @@ This templates uses [Chopper], an http client generator, to make network request
 [Chopper]: https://pub.dev/packages/chopper
 
 
-## JSON and Serialization
+### JSON and Serialization
 
 JSON models are serialized using a code generation library.
 
@@ -111,7 +135,7 @@ For more information and generating code continuously see [the documentation][js
 
 [json_serialization]: https://flutter.dev/docs/development/data-and-backend/json
 
-## Declarative UI
+## Declarative UI and state management
 
 [Flutter is declarative framework][declarative_ui]. This means that Flutter builds its user interface to reflect the current state of the app. 
 
@@ -127,24 +151,26 @@ See `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdat
 [updates_mixin]: lib/util/updates_stream.dart
 
 
-# Dependency Management
+## Dependency Management
 
-Dependencies are managed in the [`service_locator.dart`][service_locator] file. This sample uses [GetIt], a lightweight service locator.
+Dependencies are managed in the [`service_locator.dart`][service_locator] file. This sample uses [GetIt], a lightweight service locator. There are 2 scopes defined in this template global and user scope. For more information visit the [wiki service locator page].
 
 [service_locator]: ./lib/service_locator.dart
 [GetIt]: https://pub.dev/packages/get_it
+[wiki service locator page]: https://github.com/webfactorymk/flutter-template/wiki/Service-Locator
 
+## Logger
 
-# Tests
+This project uses a custom Logger configured to:
+1. print to console, except in production
+2. write to a file, except in production - useful for QA reporting
+3. log to firebase or report a non-fatal error to firebase
 
-The test package contains unit tests for the `TasksDataSource` and `TasksRepository`:
+Prefer to use this logger over print statements.
+- `Log.d(message)` for debug messages
+- `Log.w(message)` for warning messages
+- `Log.e(object)` for error messages (this will also report a firebase non-fatal error)
+  
+## Tests
 
-- [tasks_data_source_base_test] - Base tests for every implementation; see [tasks_cache_data_source_test] that calls the base tests;
-- [tasks_repository_test] - Tests the task and task group update streams: `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdatesStream`; 
-- [tasks_stub_data_source] - TasksDataSource stub;
-
-[tasks_data_source_base_test]: ./test/data/tasks_data_source_base_test.dart 
-[tasks_cache_data_source_test]: ./test/data/tasks_cache_data_source_test.dart
-[tasks_repository_test]: ./test/data/tasks_repository_test.dart
-[tasks_stub_data_source]: ./test/data/tasks_stub_data_source.dart
-
+The test package contains unit tests for almost all components. Be sure to give it a look.
