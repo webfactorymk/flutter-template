@@ -47,7 +47,9 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       yield TasksLoadInProgress();
       List<String> reorderedList = List.from(event.key.taskIds);
       String reorderedValue = reorderedList.removeAt(event.oldIndex);
-      reorderedList.insert(event.newIndex, reorderedValue);
+      int newIndex = event.newIndex;
+      if(event.newIndex > event.oldIndex) newIndex--;
+      reorderedList.insert(newIndex, reorderedValue);
 
       await _tasksRepository
           .updateTaskGroup(event.key.copy(newTaskIds: reorderedList));

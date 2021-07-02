@@ -70,4 +70,9 @@ class MockApiService implements TasksApiService {
   Future<void> deleteAllTasks() {
     throw UnimplementedError();
   }
+
+  @override
+  Future<TaskGroup> updateTaskGroup(TaskGroup taskGroup) {
+    throw UnimplementedError();
+  }
 }
