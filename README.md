@@ -56,6 +56,7 @@ and [this blog post][blog_flavouring_flutter].
 You can copy this repository with the Use as template button and go on from there, or download the code and use it in you project.
 Afterwards, you'll need to rename the project and change the app id and configuration. There are ToDos scattered through the project that will help you transition this project to your needs.
 
+<img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/use_as_template.png" alt="Use as template" width="520">
 
 
 ## [Head to the Wiki page for project documentation.](https://github.com/webfactorymk/flutter-template/wiki)
