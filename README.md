@@ -9,7 +9,7 @@ It's configured with [BLoC] for state management, [Chopper] for networking, [Nav
 <br />
 <div>
   &emsp;&emsp;&emsp;
-  <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/light_theme.jpg" alt="Light theme" width="320">
+  <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/light_theme.png" alt="Light theme" width="320">
   &emsp;&emsp;&emsp;&emsp;
   <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/dark_theme.jpg" alt="Dark theme" width="320">  
 </div>
