@@ -53,7 +53,7 @@ and [this blog post][blog_flavouring_flutter].
 
 # Use as template
 
-You can copy this repository with the Use as template button and go on from there, or download the code and use it in you project.
+You can copy this repository with the _Use this template_ button and go on from there, or download the code and use it in you project.
 Afterwards, you'll need to rename the project and change the app id and configuration. There are ToDos scattered through the project that will help you transition this project to your needs.
 
 <img src="https://github.com/webfactorymk/flutter-template/blob/main/diagrams/use_as_template.png" alt="Use as template" width="520">
@@ -100,12 +100,11 @@ Implementations:
 - [**TasksRemoteDataSource**] - Uses the ApiService to contact a remote server;
 - [**TasksCacheDataSource**] - Uses in-memory cache to retrieve tasks;
 - [**TasksRepository**][tasks_repository] - Uses both *TasksRemoteDataSource* and *TasksCacheDataSource* to fetch cached data when available; Provides subscription for updates;
-- [**TasksStubDataSource**][tasks_stub_data_source] - Stub;
 
-[TasksDataSource]: ./lib/data/tasks_data_source.dart
-[**TasksRemoteDataSource**]: ./lib/data/tasks_remote_data_source.dart
-[**TasksCacheDataSource**]: ./lib/data/tasks_cache_data_source.dart
-[tasks_repository]: ./lib/data/tasks_repository.dart
+[TasksDataSource]: ./lib/data/repository/tasks/tasks_data_source.dart
+[**TasksRemoteDataSource**]: ./lib/data/repository/tasks/tasks_remote_data_source.dart
+[**TasksCacheDataSource**]: ./lib/data/repository/tasks/tasks_cache_data_source.dart
+[tasks_repository]: ./lib/data/repository/tasks/tasks_repository.dart
 
 
 ### ApiService
@@ -156,7 +155,7 @@ See `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdat
 
 Dependencies are managed in the [`service_locator.dart`][service_locator] file. This sample uses [GetIt], a lightweight service locator. There are 2 scopes defined in this template global and user scope. For more information visit the [wiki service locator page].
 
-[service_locator]: ./lib/service_locator.dart
+[service_locator]: ./lib/di/service_locator.dart
 [GetIt]: https://pub.dev/packages/get_it
 [wiki service locator page]: https://github.com/webfactorymk/flutter-template/wiki/Service-Locator
 
