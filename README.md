@@ -21,6 +21,18 @@ It's configured with [BLoC] for state management, [Chopper] for networking, [Nav
 
 The project is configured with mock data if you run the **MOCK** flavor. See the next section for configuring run configurations.
 
+After installing the package dependencies with 
+
+```
+flutter pub get
+```
+
+run the code generation tool 
+
+```
+flutter pub run build_runner build
+```
+
 ## Run Configurations
 
 In addition to the [Flutter's build modes][flutter_build_modes] (debug, profile, release), 
