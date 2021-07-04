@@ -14,10 +14,10 @@ import 'package:flutter_template/user/user_manager.dart';
 /// a. created on:
 ///     - app start if there is a logged in user
 ///
-///     - user login
+///     - user explicit login
 ///
 /// b. destroyed on:
-///     - user logout
+///     - user explicit logout
 ///
 /// c. recreated on:
 ///     - new user login after session expiry

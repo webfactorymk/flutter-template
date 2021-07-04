@@ -9,21 +9,19 @@ import 'package:flutter_template/user/user_manager.dart';
 ///
 /// Implement [UserEventHooks], override needed methods
 /// and register your implementation when creating [UserManager].
-///
-/// Register when creating [UserManager].
 abstract class UserEventHook<U> {
   /// Performs an action after the user login event.
   ///
-  /// Note that this action happens only when the user logs in,
+  /// Note that this action happens only when the user explicitly logs in,
   /// not when the app is restarted and the logged in user is loaded.
-  /// For every user update event see [UserManager.updates] or [UserUpdateHook].
+  /// For every user update event see [UserManager.updates] or [onUserLoaded].
   Future<void> postLogin(U user) => Future.value();
 
   /// Performs an action after the user logout event.
   ///
-  /// Note that this action happens only when the user logs out,
+  /// Note that this action happens only when the user explicitly logs out,
   /// not when the session expires or the app is restarted without logged in user.
-  /// For every user update event see [UserManager.updates] or [UserUpdateHook].
+  /// For every user update event see [UserManager.updates] or [onUserLoaded].
   Future<void> postLogout() => Future.value();
 
   /// Convenience hook for providing [UserManager.updates] to registered clients.
