@@ -1,6 +1,8 @@
 {
   "helloWorld": "Здраво!",
-  
+
+  "helloPlaceholders": "Здраво {name}!",
+
   "next": "Следно",
   "submit": "Внеси",
   "remove": "Избриши",
