@@ -4,6 +4,16 @@
     "description": "Newborn programmer greeting"
   },
 
+  "helloPlaceholders": "Hello {name}!",
+  "@helloPlaceholders": {
+    "description": "Greeting with placeholders example",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
   "next": "Next",
   "submit": "Submit",
   "remove": "Remove",
