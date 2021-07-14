@@ -85,19 +85,14 @@ class JsonTypeConverter implements Converter {
         body = typeConverter.fromMap(body) as InnerType;
       } else if (isTypeOf<BodyType, Iterable<InnerType>>()) {
         body = body.map((item) => typeConverter.fromMap(item) as InnerType);
+        body = body.cast<InnerType>();
+        if (isTypeOf<BodyType, List<InnerType>>()) {
+          body = (body as Iterable<InnerType>).toList();
+        }
       } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
-        body = body.map((key, item) =>
-            MapEntry(key, typeConverter.fromMap(item) as InnerType));
+        body = body.map((key, item) => MapEntry(key, typeConverter.fromMap(item) as InnerType));
+        body = body.cast<String, InnerType>();
       }
-    }
-
-    if (isTypeOf<BodyType, Iterable<InnerType>>()) {
-      body = body.cast<InnerType>();
-      if (isTypeOf<BodyType, List<InnerType>>()) {
-        body = (body as Iterable<InnerType>).toList();
-      }
-    } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
-      body = body.cast<String, InnerType>();
     }
 
     return response.copyWith<BodyType>(body: body);
