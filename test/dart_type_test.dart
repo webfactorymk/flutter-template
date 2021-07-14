@@ -98,6 +98,20 @@ void main() {
       expectFalse(_typeOf<ChildClass>() == Interface);
     });
 
+    test('type of equals: nested generics', () {
+      void Function<T>() func = <T>() {
+        // True
+        expectTrue(T == _typeOf<List<String>>());
+
+        // False
+        expectFalse(T == List);
+        expectFalse(T is List);
+        expectFalse(T is List<String>);
+      };
+
+      func<List<String>>();
+    });
+
     test('void type', () {
       void Function<T>() func = <T>() {
         // True

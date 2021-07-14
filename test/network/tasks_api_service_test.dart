@@ -17,6 +17,7 @@ import 'package:mockito/mockito.dart';
 import 'package:single_item_storage/cached_storage.dart';
 import 'package:single_item_storage/memory_storage.dart';
 import 'package:single_item_storage/storage.dart';
+import 'package:flutter_template/network/chopper/converters/response_to_type_converter.dart';
 
 import 'mock_client_handler.dart';
 import 'network_test_helper.dart';
@@ -140,6 +141,17 @@ void main() {
 
       verify(mockUserAuthApiService.refreshToken(NetworkTestHelper.validToken))
           .called(1);
+    });
+
+    test('task list, 200 response, converted', () async {
+      // arrange
+      userCredentialsStorage.save(NetworkTestHelper.validUserCredentials);
+
+      // act
+      List<Task> convertedResponse = await apiService.getTasks('id').toType();
+
+      // assert
+      expect(convertedResponse, equals(taskMap.values.toList()));
     });
   });
 }

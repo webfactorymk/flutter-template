@@ -93,6 +93,9 @@ class JsonTypeConverter implements Converter {
 
     if (isTypeOf<BodyType, Iterable<InnerType>>()) {
       body = body.cast<InnerType>();
+      if (isTypeOf<BodyType, List<InnerType>>()) {
+        body = (body as Iterable<InnerType>).toList();
+      }
     } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
       body = body.cast<String, InnerType>();
     }

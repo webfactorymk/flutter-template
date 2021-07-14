@@ -39,6 +39,9 @@ MockClientHandler withMockClientHandler() {
           return badRequest;
         }
       }
+    } else if (pathSegments[0] == 'task-groups') {
+        //todo make it more sophisticated
+        return success(taskMap.values.toList());
     }
 
     return notFound;
