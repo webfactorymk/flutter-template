@@ -46,7 +46,14 @@ class JsonTypeConverter implements Converter {
     }
 
     final type = request.body.runtimeType;
-    final typeConverter = _converterMap[type];
+    final typeConverterDynamic = _converterMap[type];
+    final typeConverter;
+    if (typeConverterDynamic.runtimeType == typeConverterDynamic.runtimeType) {
+      // gets to know the runtime type instead of using dynamic
+      typeConverter = typeConverterDynamic;
+    } else {
+      typeConverter = null;
+    }
 
     if (typeConverter == null) {
       Log.w('JsonTypeConverter - No converter found for type: $type');

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
+import 'package:flutter_template/model/task/api/create_task.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
@@ -152,6 +153,19 @@ void main() {
 
       // assert
       expect(convertedResponse, equals(taskMap.values.toList()));
+    });
+
+    test('task post request, 200 response, converted', () async {
+      // arrange
+      userCredentialsStorage.save(NetworkTestHelper.validUserCredentials);
+
+      // act
+      Task convertedResponse = await apiService
+          .createTask(CreateTask.fromTask(taskMap[1]!))
+          .toType();
+
+      // assert
+      expect(convertedResponse, equals(taskMap[1]));
     });
   });
 }
