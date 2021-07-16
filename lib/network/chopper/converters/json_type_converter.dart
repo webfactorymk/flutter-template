@@ -50,6 +50,7 @@ class JsonTypeConverter implements Converter {
     final typeConverter;
     if (typeConverterDynamic.runtimeType == typeConverterDynamic.runtimeType) {
       // gets to know the runtime type instead of using dynamic
+      // another solution is to use final Map<Type, dynamic> _converterMap;
       typeConverter = typeConverterDynamic;
     } else {
       typeConverter = null;
