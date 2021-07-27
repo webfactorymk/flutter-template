@@ -188,9 +188,9 @@ class NotificationsManager {
   _onMessage(RemoteMessage message) async {
     if (Platform.isIOS) { return; }
 
-      String notificationTitle = message.notification!.title!;
-      String notificationBody = message.notification!.body!;
-      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    String? notificationTitle = message.notification?.title;
+    String? notificationBody = message.notification?.body;
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails(
         CHANNEL_ID,
         CHANNEL_NAME,
@@ -202,8 +202,7 @@ class NotificationsManager {
       NotificationDetails(android: androidPlatformChannelSpecifics);
       await flNotification.show(
           0, notificationTitle, notificationBody, platformChannelSpecifics);
-    String? notificationTitle = message.notification?.title;
-    String notificationBody = message.notification?.body;
+
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
