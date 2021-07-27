@@ -164,7 +164,9 @@ class NotificationsManager {
     final storedToken = await _apnsTokenStorage.get();
 
     if (storedToken == null || storedToken != token) {
-      await _apnsTokenStorage.save(token!);
+      if (token != null) {
+        await _apnsTokenStorage.save(token);
+      }
     }
   }
 
@@ -174,7 +176,9 @@ class NotificationsManager {
     final storedToken = await _fcmTokenStorage.get();
 
     if (storedToken == null || storedToken != token) {
-      await _fcmTokenStorage.save(token!);
+      if (token != null) {
+        await _fcmTokenStorage.save(token);
+      }
     }
   }
 
@@ -198,6 +202,8 @@ class NotificationsManager {
       NotificationDetails(android: androidPlatformChannelSpecifics);
       await flNotification.show(
           0, notificationTitle, notificationBody, platformChannelSpecifics);
+    String? notificationTitle = message.notification?.title;
+    String notificationBody = message.notification?.body;
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
