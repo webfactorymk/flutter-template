@@ -1,3 +1,4 @@
+import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_template/util/enum_util.dart' as EnumUtil;
@@ -17,6 +18,16 @@ void main() {
       bool isEnum = EnumUtil.isEnum(null);
 
       expect(isEnum, isFalse);
+    });
+  });
+
+  group('enum equals', () {
+    test('enum equals basic pass', () {
+      expect(TaskStatus.notDone == TaskStatus.notDone, isTrue);
+    });
+
+    test('enum equals basic fail', () {
+      expect(TaskStatus.notDone == TaskStatus.done, isFalse);
     });
   });
 
