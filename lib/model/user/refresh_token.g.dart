@@ -6,12 +6,10 @@ part of 'refresh_token.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RefreshToken _$RefreshTokenFromJson(Map<String, dynamic> json) {
-  return RefreshToken(
-    json['token'] as String,
-    json['expiresAt'] as int,
-  );
-}
+RefreshToken _$RefreshTokenFromJson(Map<String, dynamic> json) => RefreshToken(
+      json['token'] as String,
+      json['expiresAt'] as int,
+    );
 
 Map<String, dynamic> _$RefreshTokenToJson(RefreshToken instance) =>
     <String, dynamic>{

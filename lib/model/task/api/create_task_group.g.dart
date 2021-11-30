@@ -6,13 +6,12 @@ part of 'create_task_group.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CreateTaskGroup _$CreateTaskGroupFromJson(Map<String, dynamic> json) {
-  return CreateTaskGroup(
-    name: json['name'] as String,
-    taskIds:
-        (json['taskIds'] as List<dynamic>).map((e) => e as String).toList(),
-  );
-}
+CreateTaskGroup _$CreateTaskGroupFromJson(Map<String, dynamic> json) =>
+    CreateTaskGroup(
+      name: json['name'] as String,
+      taskIds:
+          (json['taskIds'] as List<dynamic>).map((e) => e as String).toList(),
+    );
 
 Map<String, dynamic> _$CreateTaskGroupToJson(CreateTaskGroup instance) =>
     <String, dynamic>{
