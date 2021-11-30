@@ -15,7 +15,7 @@ class TaskListPage extends Page {
       builder: (BuildContext context) => BlocProvider<TaskListBloc>(
         create: (BuildContext context) => TaskListBloc(
             serviceLocator.get<TasksRepository>(),
-            serviceLocator.get<UserManager>()),
+            serviceLocator.get<UserManager>())..add(LoadTasks()),
         child: TaskListView(),
       ),
     );

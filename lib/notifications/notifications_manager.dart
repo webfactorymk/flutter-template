@@ -194,7 +194,7 @@ class NotificationsManager {
       AndroidNotificationDetails(
         CHANNEL_ID,
         CHANNEL_NAME,
-        CHANNEL_DESCRIPTION,
+        channelDescription: CHANNEL_DESCRIPTION,
         importance: Importance.max,
         priority: Priority.high,
       );

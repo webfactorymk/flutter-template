@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/config/pre_app_config.dart';
+import 'package:flutter_template/log/bloc_events_logger.dart';
 
 import 'app.dart';
 import 'config/flavor_config.dart';
@@ -15,5 +17,5 @@ void main() async {
 
   await preAppConfig();
 
-  runApp(App());
+  BlocOverrides.runZoned(() => runApp(App()), blocObserver: BlocEventsLogger());
 }
