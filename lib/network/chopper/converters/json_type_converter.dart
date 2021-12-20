@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_template/log/log.dart';
-import 'package:flutter_template/network/chopper/converters/map_converter.dart';
+import 'package:flutter_template/network/chopper/converters/json_convert_adapter.dart';
 
 /// [Converter] that converts JSON data to concrete types using
 /// [jsonEncode]/[jsonDecode] and a type conversion map.
@@ -18,12 +18,20 @@ import 'package:flutter_template/network/chopper/converters/map_converter.dart';
 ///         .registerConverter<Task>(
 ///           toMap: (task) => task.toJson(),
 ///           fromMap: (map) => Task.fromJson(map),
-///         );
+///         )
+///
+///         //or a custom converter for primitives and arrays
+///         .registerCustomConverter<DateTime>(
+///           toJsonElement: (dateTime) => dateTime.toIso8601String(),
+///           fromJsonElement: (dateTime) => DateTime.parse(dateTime),
+///          )
+///
+///         .build();
 ///
 /// _Based on [JsonConverter].
 @immutable
 class JsonTypeConverter implements Converter {
-  final Map<Type, MapConverter<dynamic>> _converterMap;
+  final Map<Type, JsonConvertAdapter<dynamic>> _converterMap;
 
   const JsonTypeConverter(this._converterMap);
 
@@ -61,7 +69,7 @@ class JsonTypeConverter implements Converter {
       return request;
     }
 
-    final body = jsonEncode(typeConverter.toMap(request.body));
+    final body = jsonEncode(typeConverter.toJsonElement(request.body));
     return request.copyWith(body: body);
   }
 
@@ -90,15 +98,16 @@ class JsonTypeConverter implements Converter {
       Log.w('JsonTypeConverter - No converter found for type: $InnerType');
     } else {
       if (isTypeOf<BodyType, InnerType>()) {
-        body = typeConverter.fromMap(body) as InnerType;
+        body = typeConverter.fromJsonElement(body) as InnerType;
       } else if (isTypeOf<BodyType, Iterable<InnerType>>()) {
-        body = body.map((item) => typeConverter.fromMap(item) as InnerType);
+        body = body.map((item) => typeConverter.fromJsonElement(item) as InnerType);
         body = body.cast<InnerType>();
         if (isTypeOf<BodyType, List<InnerType>>()) {
           body = (body as Iterable<InnerType>).toList();
         }
       } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
-        body = body.map((key, item) => MapEntry(key, typeConverter.fromMap(item) as InnerType));
+        body = body.map((key, item) =>
+            MapEntry(key, typeConverter.fromJsonElement(item) as InnerType));
         body = body.cast<String, InnerType>();
       }
     }

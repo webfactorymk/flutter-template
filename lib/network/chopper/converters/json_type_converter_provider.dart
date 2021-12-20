@@ -37,6 +37,10 @@ abstract class JsonTypeConverterProvider {
         toMap: (createTaskGroup) => createTaskGroup.toJson(),
         fromMap: (map) => CreateTaskGroup.fromJson(map),
       )
+      .registerCustomConverter<DateTime>(
+        toJsonElement: (dateTime) => dateTime.toIso8601String(),
+        fromJsonElement: (dateTime) => DateTime.parse(dateTime),
+      )
       .build();
 
 //todo add more converters
