@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/network/chopper/converters/json_convert_adapter.dart';
 
+Type _typeOf<T>() => T;
+
 /// [Converter] that converts JSON data to concrete types using
 /// [jsonEncode]/[jsonDecode] and a type conversion map.
 ///
@@ -82,6 +84,11 @@ class JsonTypeConverter implements Converter {
 
     if (supportedContentTypes.contains(contentType)) {
       body = utf8.decode(response.bodyBytes);
+    }
+
+    // When void is expected as return type, just return the response.
+    if(BodyType == _typeOf<void>()){
+      return response.copyWith();
     }
 
     try {
