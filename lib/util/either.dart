@@ -13,19 +13,19 @@ abstract class Either<E extends Exception, O> {
     return Success<E, O>(value);
   }
 
-  factory Either.error(Exception e) {
+  factory Either.error(E e) {
     return Error<E, O>(e);
   }
 
   factory Either.build(ValueToPass<O> func) {
     try {
       return Success<E, O>(func());
-    } on Exception catch (e) {
+    } on E catch (e) {
       return Error<E, O>(e);
     }
   }
 
-  void expose(Function(Exception error) onError, Function(O success) onSuccess);
+  void expose(Function(E error) onError, Function(O success) onSuccess);
 }
 
 /// Success contains the value expected
@@ -35,19 +35,19 @@ class Success<E extends Exception, O> extends Either<E, O> {
   Success(this.value) : super(true);
 
   @override
-  expose(Function(Exception error) onError, Function(O success) onSuccess) {
+  expose(Function(E error) onError, Function(O success) onSuccess) {
     onSuccess(value);
   }
 }
 
 /// Error contains the thrown [Exception]
 class Error<E extends Exception, O> extends Either<E, O> {
-  final Exception error;
+  final E error;
 
   Error(this.error) : super(false);
 
   @override
-  expose(Function(Exception error) onError, Function(O success) onSuccess) {
+  expose(Function(E error) onError, Function(O success) onSuccess) {
     onError(error);
   }
 }
