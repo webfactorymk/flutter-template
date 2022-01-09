@@ -1,215 +1,90 @@
-import 'dart:io';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_template/config/firebase_config.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/log.dart';
-import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
-import 'package:single_item_storage/storage.dart';
+import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/message_handler.dart';
+import 'package:flutter_template/notifications/message_parser.dart';
 
-const String apnsDeviceTokenKey = 'apns-device-token';
-const String fcmDeviceTokenKey = 'firebase-device-token';
-
-/// Manages push notifications of logged-in user within the app.
+/// Abstract, implementation free, NotificationsManager.
 ///
-/// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
-class NotificationsManager {
-  late final FirebaseMessaging _fcm;
-  late final FlutterLocalNotificationsPlugin flNotification;
+/// Manages the push notification flow:
+///  - listens for remote messages
+///  - parses the remote messages to [Message] or a subtype
+///  - calls a [MessageHandler] registered for the specific notification type
+///
+/// Usage:
+/// 1. Extend to add concrete implementation that will call [onNotificationMessage]
+/// each time a new push notification arrives.
+///
+/// 2. Create a single instance and register a [MessageParser] and
+/// add [MessageHandler]s for each action that happens after a notification
+/// of specific type arrives - display notification, navigate to screen, etc.
+///
+/// 3. Optionally, add message filter [filterMessage] and
+/// global message handlers that get called before and after a notification
+/// is handled by the specific type [MessageHandler].
+abstract class NotificationsManager {
+  final Map<String, MessageHandler<Message>> _messageHandlerForType = Map();
 
-  final Storage<String> _fcmTokenStorage;
-  final Storage<String> _apnsTokenStorage;
+  /// Parses incoming raw message data into a [Message] or a subtype
+  late MessageParser messageParser;
 
-  bool _setupStarted = false;
-  bool userAuthorized = false;
+  /// Global message handler called before a notification is handled. Optional.
+  MessageHandler<Message>? globalPreMessageHandler;
 
-  //TODO change this values before using them
-  static const String CHANNEL_ID = 'foreground';
-  static const String CHANNEL_NAME = 'channel name';
-  static const String CHANNEL_DESCRIPTION = 'channel description';
+  /// Global message handler called after a notification is handled. Optional.
+  MessageHandler<Message>? globalPostMessageHandler;
 
-  NotificationsManager(
-    InitializationSettings initializationSettings, {
-    Storage<String>? fcmTokenStorage,
-    Storage<String>? apnsTokenStorage,
-  })  : _fcmTokenStorage = fcmTokenStorage ??
-            SharedPrefsStorage<String>.primitive(itemKey: fcmDeviceTokenKey),
-        _apnsTokenStorage = apnsTokenStorage ??
-            SharedPrefsStorage<String>.primitive(itemKey: apnsDeviceTokenKey) {
-    if (shouldConfigureFirebase()) {
-      _fcm = FirebaseMessaging.instance;
-    }
-    flNotification = FlutterLocalNotificationsPlugin();
-    flNotification.initialize(initializationSettings);
-  }
+  /// Global message filter. Optional.
+  bool Function(Message) filterMessage = (_) => true;
 
-  bool get setupStarted => _setupStarted;
-
-  setupPushNotifications() async {
-    if (_setupStarted) {
-      Log.d('NotificationsManager - Setup: Aborting, already completed.');
-    }
-    _setupStarted = true;
-
-    if (Platform.isIOS) {
-      await requestPermissions();
-
-      final apnsToken = await _fcm.getAPNSToken();
-      _onAPNSTokenReceived(apnsToken);
-    }
-
-    final fcmToken = await _fcm.getToken();
-    _onFCMTokenReceived(fcmToken);
-
-    _fcm.onTokenRefresh.listen((token) {
-      Log.d('NotificationsManager - FCM Token refresh');
-      _onFCMTokenReceived(token);
+  /// Registers a [MessageHandler] for a specific [Message.type]
+  void registerMessageHandler({
+    required MessageHandler<Message> handler,
+    required Iterable<String> forMessageTypes,
+  }) {
+    forMessageTypes.forEach((type) {
+      _messageHandlerForType[type] = handler;
     });
-
-    FirebaseMessaging.onMessage.listen((message) {
-      if (userAuthorized) {
-        _onMessage(message);
-      } else {
-        Log.w('NotificationsManager - Message missed. User unauthorized');
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      if (userAuthorized) {
-        _onAppOpenedFromMessage(message);
-      } else {
-        Log.w('NotificationsManager - App not opened. User unauthorized');
-      }
-    });
-
-    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
-
-    //TODO change this behavior depending on your app requirements
-    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true
-    );
   }
 
-  Future<void> disablePushNotifications() async {
-    await _fcm.deleteToken();
-    await _fcmTokenStorage.delete();
-    await _apnsTokenStorage.delete();
-
-    _setupStarted = false;
-  }
-
-  /// Requests permissions for push notifications on iOS
-  /// There is no need to call this method on Android
-  /// if called on Android it will always return authorization status authorized
-  Future<NotificationSettings> requestPermissions({
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  }) async {
-    NotificationSettings settings = await _fcm.requestPermission(
-      alert: alert,
-      announcement: announcement,
-      badge: badge,
-      carPlay: carPlay,
-      criticalAlert: criticalAlert,
-      provisional: provisional,
-      sound: sound,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      Log.d('NotificationsManager - User granted permission');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      Log.d('NotificationsManager - User granted provisional permission');
-    } else {
-      Log.w(
-          'NotificationsManager - User declined or not accepted permission');
+  /// Called when a new push notification arrives.
+  Future<bool> onNotificationMessage(dynamic remoteRawData) async {
+    Message message;
+    try {
+      message = messageParser.parseMessage(remoteRawData);
+      Log.d('NotificationsManager - New message: $message');
+    } catch (exp) {
+      Log.e(
+          'NotificationsManager - Message could not be parsed: $remoteRawData');
+      return false;
     }
 
-    return settings;
-  }
+    if (!_hasHandlerForType(message.type)) {
+      Log.e('NotificationsManager - '
+          'Message type does not have a handler: ${message.type}');
+      return false;
+    }
 
-  /// Returns bool that indicates if push notifications are authorized
-  /// On Android it is always true
-  Future<bool> isPushAuthorized() async {
-    // return true;
+    if (!filterMessage(message)) {
+      Log.w('NotificationsManager - Message did not pass filter: $message');
+      return false;
+    }
 
-    final notificationSettings = await _fcm.getNotificationSettings();
-    return notificationSettings.authorizationStatus ==
-        AuthorizationStatus.authorized;
-  }
-
-  /// Returns the current authorization status for push notifications
-  /// On Android it is always authorized
-  Future<AuthorizationStatus> getAuthorizationStatus() async {
-    final notificationSettings = await _fcm.getNotificationSettings();
-    return notificationSettings.authorizationStatus;
-  }
-
-  /// Returns ANPS token for iOS
-  /// Return null for Android/web
-  Future<String?> getAPNSToken() async {
-    final token = await _fcm.getAPNSToken();
-    return token;
-  }
-
-  Future<void> _onAPNSTokenReceived(String? token) async {
-    Log.d('APNS Token $token');
-
-    final storedToken = await _apnsTokenStorage.get();
-
-    if (storedToken == null || storedToken != token) {
-      if (token != null) {
-        await _apnsTokenStorage.save(token);
-      }
+    try {
+      await globalPreMessageHandler?.handleMessage(message);
+      await _getHandlerForType(message.type).handleMessage(message);
+      await globalPostMessageHandler?.handleMessage(message);
+      return true;
+    } catch (error) {
+      Log.e('NotificationsManager - Error handling '
+          'message: $message, '
+          'error: $error');
+      return false;
     }
   }
 
-  Future<void> _onFCMTokenReceived(String? token) async {
-    Log.d('NotificationsManager - FCM Token $token');
+  bool _hasHandlerForType(String messageType) =>
+      _messageHandlerForType.containsKey(messageType);
 
-    final storedToken = await _fcmTokenStorage.get();
-
-    if (storedToken == null || storedToken != token) {
-      if (token != null) {
-        await _fcmTokenStorage.save(token);
-      }
-    }
-  }
-
-  /// Creates a local notification for Android only
-  /// On iOS the system shows the remote push notification by default
-  /// To change the iOS behavior see setForegroundNotificationPresentationOptions in setupPushNotifications
-  _onMessage(RemoteMessage message) async {
-    if (Platform.isIOS) { return; }
-
-    String? notificationTitle = message.notification?.title;
-    String? notificationBody = message.notification?.body;
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-        CHANNEL_ID,
-        CHANNEL_NAME,
-        channelDescription: CHANNEL_DESCRIPTION,
-        importance: Importance.max,
-        priority: Priority.high,
-      );
-      const NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flNotification.show(
-          0, notificationTitle, notificationBody, platformChannelSpecifics);
-
-  }
-
-  _onAppOpenedFromMessage(RemoteMessage message) {
-    Log.d('NotificationsManager - Opened from remote message');
-  }
-}
-
-Future<void> backgroundMessageHandler(message) async {
-  Log.w('NotificationsManager - Bg message missed. User unauthorized');
+  MessageHandler<Message> _getHandlerForType(String messageType) =>
+      _messageHandlerForType[messageType]!;
 }

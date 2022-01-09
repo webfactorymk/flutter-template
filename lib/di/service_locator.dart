@@ -14,8 +14,8 @@ import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/network/util/network_utils.dart';
-import 'package:flutter_template/notifications/firebase_user_hook.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
+import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
+import 'package:flutter_template/notifications/fcm/fcm_notifications_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -79,8 +79,8 @@ Future<void> setupGlobalDependencies() async {
   final initializeSettings =
       InitializationSettings(android: androidInitialize, iOS: iosInitialize);
 
-  final NotificationsManager notificationsManager =
-      NotificationsManager(initializeSettings);
+  final FcmNotificationsManager notificationsManager =
+      FcmNotificationsManager(initializeSettings);
   final firebaseUserHook = shouldConfigureFirebase()
       ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
       : StubUserEventHook<UserCredentials>();
@@ -112,7 +112,7 @@ Future<void> setupGlobalDependencies() async {
       'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
 
   serviceLocator
-    ..registerSingleton<NotificationsManager>(notificationsManager)
+    ..registerSingleton<FcmNotificationsManager>(notificationsManager)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
     ..registerSingleton<UserApiService>(userApi)
