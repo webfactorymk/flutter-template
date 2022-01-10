@@ -3,6 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 
+const String apnsTokenKey = 'apns-device-token';
+const String fcmTokenKey = 'firebase-device-token';
+
 //todo decide when you need firebase in your project
 bool shouldConfigureFirebase() =>
     FlavorConfig.isInitialized() &&

@@ -15,7 +15,9 @@ import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
-import 'package:flutter_template/notifications/fcm/fcm_notifications_manager.dart';
+import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
+import 'package:flutter_template/notifications/message_filter.dart';
+import 'package:flutter_template/notifications/notifications_manager_factory.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -73,16 +75,24 @@ Future<void> setupGlobalDependencies() async {
   }
 
   // Firebase and Notifications
-  final androidInitialize =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-  final iosInitialize = IOSInitializationSettings();
-  final initializeSettings =
-      InitializationSettings(android: androidInitialize, iOS: iosInitialize);
+  final loggedInMessageFilter = LoggedInUserOnlyFilter();
+  final notificationsManager = NotificationsManagerFactory.create(
+    messageFilter: loggedInMessageFilter,
+    //globalPreMessageHandler: <add here>
+    //globalPostMessageHandler: <add here>
+  );
 
-  final FcmNotificationsManager notificationsManager =
-      FcmNotificationsManager(initializeSettings);
+  final fcmNotificationsListener = FcmNotificationsListener(
+    InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: IOSInitializationSettings(),
+    ),
+    notificationsManager,
+    fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
+    apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
+  );
   final firebaseUserHook = shouldConfigureFirebase()
-      ? FirebaseUserHook(FirebaseCrashlytics.instance, notificationsManager)
+      ? FirebaseUserHook(FirebaseCrashlytics.instance, fcmNotificationsListener)
       : StubUserEventHook<UserCredentials>();
 
   // User Manager
@@ -95,6 +105,8 @@ Future<void> setupGlobalDependencies() async {
       userScopeHook,
     ],
   );
+
+  loggedInMessageFilter.isUserLoggedIn = userManager.isLoggedIn;
 
   // Platform comm
   final PlatformComm platformComm = PlatformComm.generalAppChannel()
@@ -112,7 +124,7 @@ Future<void> setupGlobalDependencies() async {
       'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
 
   serviceLocator
-    ..registerSingleton<FcmNotificationsManager>(notificationsManager)
+    ..registerSingleton<FcmNotificationsListener>(fcmNotificationsListener)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
     ..registerSingleton<UserApiService>(userApi)

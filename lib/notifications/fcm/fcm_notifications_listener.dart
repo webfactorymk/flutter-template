@@ -3,16 +3,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/log.dart';
-import 'package:single_item_shared_prefs/single_item_shared_prefs.dart';
+import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:single_item_storage/storage.dart';
-
-const String apnsDeviceTokenKey = 'apns-device-token';
-const String fcmDeviceTokenKey = 'firebase-device-token';
 
 /// Manages push notifications of logged-in user within the app.
 ///
-/// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
-class FcmNotificationsManager {
+/// To obtain an instance use `serviceLocator.get<FcmNotificationsListener>()`
+class FcmNotificationsListener {
+  final NotificationConsumer _notificationConsumer;
+
   late final FirebaseMessaging _fcm;
   late final FlutterLocalNotificationsPlugin flNotification;
 
@@ -27,14 +26,14 @@ class FcmNotificationsManager {
   static const String CHANNEL_NAME = 'channel name';
   static const String CHANNEL_DESCRIPTION = 'channel description';
 
-  FcmNotificationsManager(
-    InitializationSettings initializationSettings, {
-    Storage<String>? fcmTokenStorage,
-    Storage<String>? apnsTokenStorage,
-  })  : _fcmTokenStorage = fcmTokenStorage ??
-            SharedPrefsStorage<String>.primitive(itemKey: fcmDeviceTokenKey),
-        _apnsTokenStorage = apnsTokenStorage ??
-            SharedPrefsStorage<String>.primitive(itemKey: apnsDeviceTokenKey) {
+  FcmNotificationsListener(
+    InitializationSettings initializationSettings,
+    NotificationConsumer notificationConsumer, {
+    required Storage<String> fcm,
+    required Storage<String> apns,
+  })  : _fcmTokenStorage = fcm,
+        _apnsTokenStorage = apns,
+        _notificationConsumer = notificationConsumer {
     if (shouldConfigureFirebase()) {
       _fcm = FirebaseMessaging.instance;
     }
@@ -85,10 +84,7 @@ class FcmNotificationsManager {
 
     //TODO change this behavior depending on your app requirements
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true
-    );
+        alert: true, badge: true, sound: true);
   }
 
   Future<void> disablePushNotifications() async {
@@ -127,8 +123,7 @@ class FcmNotificationsManager {
         AuthorizationStatus.provisional) {
       Log.d('NotificationsManager - User granted provisional permission');
     } else {
-      Log.w(
-          'NotificationsManager - User declined or not accepted permission');
+      Log.w('NotificationsManager - User declined or not accepted permission');
     }
 
     return settings;
@@ -186,23 +181,24 @@ class FcmNotificationsManager {
   /// On iOS the system shows the remote push notification by default
   /// To change the iOS behavior see setForegroundNotificationPresentationOptions in setupPushNotifications
   _onMessage(RemoteMessage message) async {
-    if (Platform.isIOS) { return; }
+    if (Platform.isIOS) {
+      return;
+    }
 
     String? notificationTitle = message.notification?.title;
     String? notificationBody = message.notification?.body;
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-        CHANNEL_ID,
-        CHANNEL_NAME,
-        channelDescription: CHANNEL_DESCRIPTION,
-        importance: Importance.max,
-        priority: Priority.high,
-      );
-      const NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flNotification.show(
-          0, notificationTitle, notificationBody, platformChannelSpecifics);
-
+        AndroidNotificationDetails(
+      CHANNEL_ID,
+      CHANNEL_NAME,
+      channelDescription: CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flNotification.show(
+        0, notificationTitle, notificationBody, platformChannelSpecifics);
   }
 
   _onAppOpenedFromMessage(RemoteMessage message) {
