@@ -6,8 +6,16 @@ import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
 import 'package:single_item_storage/storage.dart';
 
-/// Manages push notifications of logged-in user within the app.
+/// Listens for remote messages using Firebase Cloud Messaging (FCM)
 ///
+/// <br />
+/// For integration instructions visit:
+/// https://firebase.flutter.dev/docs/messaging/overview
+///
+/// Message types:
+/// https://firebase.flutter.dev/docs/messaging/usage/#message-types
+///
+/// <br />
 /// To obtain an instance use `serviceLocator.get<FcmNotificationsListener>()`
 class FcmNotificationsListener {
   final NotificationConsumer _notificationConsumer;
