@@ -1,5 +1,6 @@
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
 import 'package:flutter_template/notifications/message_parser.dart';
 
@@ -38,13 +39,13 @@ class NotificationsManager implements NotificationConsumer {
   final MessageHandler<Message>? globalPostMessageHandler;
 
   /// Global message filter. Optional.
-  final bool Function(Message)? filterMessage;
+  final MessageFilter? messageFilter;
 
   NotificationsManager({
     required this.messageParser,
     this.globalPreMessageHandler,
     this.globalPostMessageHandler,
-    this.filterMessage,
+    this.messageFilter,
   });
 
   /// Registers a [MessageHandler] for a specific [Message.type]
@@ -77,7 +78,7 @@ class NotificationsManager implements NotificationConsumer {
       return false;
     }
 
-    if (!(filterMessage?.call(message) ?? true)) {
+    if (!(await messageFilter?.filterMessage(message) ?? true)) {
       Log.w('NotificationsManager - Message did not pass filter: $message');
       return false;
     }

@@ -1,6 +1,7 @@
 import 'package:flutter_template/log/console_logger.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
 import 'package:flutter_template/notifications/message_parser.dart';
 import 'package:flutter_template/notifications/notifications_manager.dart';
@@ -124,7 +125,7 @@ void main() {
 
     notificationsManager = NotificationsManager(
       messageParser: StubMessageParser(),
-      filterMessage: (_) => false,
+      messageFilter: DiscardAllFilter(),
     )..registerMessageHandler(
         handler: messageHandler,
         forMessageTypes: ['msg-type'],
