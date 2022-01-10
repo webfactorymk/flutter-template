@@ -12,16 +12,15 @@ import 'notification_manager_test.mocks.dart';
 import 'test_message_handlers.dart';
 import 'test_messages.dart';
 
-class TestNotificationManager extends NotificationsManager {}
-
 @GenerateMocks([MessageHandler])
 void main() {
   late NotificationsManager notificationsManager;
 
   setUp(() {
     Log.logger = ConsoleLogger.create();
-    notificationsManager = TestNotificationManager()
-      ..messageParser = StubMessageParser();
+    notificationsManager = NotificationsManager(
+      messageParser: StubMessageParser(),
+    );
   });
 
   test('Unhandled message', () async {
@@ -122,12 +121,14 @@ void main() {
 
   test('Message filter', () async {
     MockMessageHandler<Message> messageHandler = MockMessageHandler();
-    notificationsManager
-      ..registerMessageHandler(
+
+    notificationsManager = NotificationsManager(
+      messageParser: StubMessageParser(),
+      filterMessage: (_) => false,
+    )..registerMessageHandler(
         handler: messageHandler,
         forMessageTypes: ['msg-type'],
-      )
-      ..filterMessage = (_) => false;
+      );
 
     Message message = Message('msg-type');
 
@@ -141,10 +142,11 @@ void main() {
     MockMessageHandler<Message> preMessageHandler = MockMessageHandler();
     MockMessageHandler<Message> messageHandler = MockMessageHandler();
     MockMessageHandler<Message> postMessageHandler = MockMessageHandler();
-    notificationsManager
-      ..globalPreMessageHandler = preMessageHandler
-      ..globalPostMessageHandler = postMessageHandler
-      ..registerMessageHandler(
+    notificationsManager = NotificationsManager(
+      messageParser: StubMessageParser(),
+      globalPreMessageHandler: preMessageHandler,
+      globalPostMessageHandler: postMessageHandler,
+    )..registerMessageHandler(
         handler: messageHandler,
         forMessageTypes: ['type1', 'type2'],
       );
