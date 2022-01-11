@@ -15,6 +15,9 @@ import 'package:single_item_storage/storage.dart';
 /// Message types:
 /// https://firebase.flutter.dev/docs/messaging/usage/#message-types
 ///
+/// Advanced usage:
+/// https://firebase.flutter.dev/docs/messaging/notifications/
+///
 /// <br />
 /// To obtain an instance use `serviceLocator.get<FcmNotificationsListener>()`
 class FcmNotificationsListener {

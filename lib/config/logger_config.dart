@@ -5,7 +5,6 @@ import 'package:flutter_template/log/filtered_logger.dart';
 import 'package:flutter_template/log/firebase_logger.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/log/multi_logger.dart';
-import 'package:flutter_template/log/stub_logger.dart';
 
 /// App specific logging setup.
 ///
@@ -23,4 +22,8 @@ void initLogger() {
     if (shouldConfigureFirebase())
       FirebaseLogger.instance().makeFiltered(noLogsInTests()),
   ]);
+
+  if (shouldConfigureFirebase()) {
+    logFirebaseToken();
+  }
 }
