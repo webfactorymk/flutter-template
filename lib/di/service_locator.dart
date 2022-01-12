@@ -80,7 +80,8 @@ Future<void> setupGlobalDependencies() async {
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: IOSInitializationSettings(),
     ),
-    dataNotificationsManager,
+    dataPayloadConsumer: dataNotificationsManager,
+    showInForeground: true,
     fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
     apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
   );

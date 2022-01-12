@@ -21,7 +21,13 @@ import 'package:single_item_storage/storage.dart';
 /// <br />
 /// To obtain an instance use `serviceLocator.get<FcmNotificationsListener>()`
 class FcmNotificationsListener {
-  final NotificationConsumer _notificationConsumer;
+  final NotificationConsumer dataPayloadConsumer;
+
+  /// If true creates a local notification for Android only
+  /// On iOS the system shows the remote push notification by default
+  /// To change the iOS behavior see
+  /// setForegroundNotificationPresentationOptions in setupPushNotifications
+  final bool showInForeground;
 
   late final FirebaseMessaging _fcm;
   late final FlutterLocalNotificationsPlugin flNotification;
@@ -38,13 +44,13 @@ class FcmNotificationsListener {
   static const String CHANNEL_DESCRIPTION = 'channel description';
 
   FcmNotificationsListener(
-    InitializationSettings initializationSettings,
-    NotificationConsumer notificationConsumer, {
+    InitializationSettings initializationSettings, {
+    this.showInForeground = true,
     required Storage<String> fcm,
     required Storage<String> apns,
+    required this.dataPayloadConsumer,
   })  : _fcmTokenStorage = fcm,
-        _apnsTokenStorage = apns,
-        _notificationConsumer = notificationConsumer {
+        _apnsTokenStorage = apns {
     if (shouldConfigureFirebase()) {
       _fcm = FirebaseMessaging.instance;
     }
@@ -56,7 +62,7 @@ class FcmNotificationsListener {
 
   setupPushNotifications() async {
     if (_setupStarted) {
-      Log.d('NotificationsManager - Setup: Aborting, already completed.');
+      Log.d('FCM - Setup: Aborting, already completed.');
     }
     _setupStarted = true;
 
@@ -71,31 +77,37 @@ class FcmNotificationsListener {
     _onFCMTokenReceived(fcmToken);
 
     _fcm.onTokenRefresh.listen((token) {
-      Log.d('NotificationsManager - FCM Token refresh');
+      Log.d('FCM - Token refresh');
       _onFCMTokenReceived(token);
     });
 
+    // Foreground message
     FirebaseMessaging.onMessage.listen((message) {
-      if (userAuthorized) {
-        _onMessage(message);
-      } else {
-        Log.w('NotificationsManager - Message missed. User unauthorized');
-      }
+      ifUserAuthorized(() {
+        Log.d('FCM - Foreground message: $message');
+        if (showInForeground) {
+          _showNotificationOnAndroid(message);
+        }
+        dataPayloadConsumer.onNotificationMessage(message);
+      });
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      if (userAuthorized) {
-        _onAppOpenedFromMessage(message);
-      } else {
-        Log.w('NotificationsManager - User unauthorized');
-      }
-    });
-
+    // Background message
     FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-    //TODO change this behavior depending on your app requirements
+    // App opened from message
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      ifUserAuthorized(() {
+        Log.d('FCM - App opened from remote message: $message');
+        dataPayloadConsumer.onAppOpenedFromMessage(message);
+      });
+    });
+
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-        alert: true, badge: true, sound: true);
+      alert: showInForeground,
+      badge: showInForeground,
+      sound: showInForeground,
+    );
   }
 
   Future<void> disablePushNotifications() async {
@@ -106,35 +118,64 @@ class FcmNotificationsListener {
     _setupStarted = false;
   }
 
+  void _showNotificationOnAndroid(RemoteMessage message) async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    String? notificationTitle = message.notification?.title;
+    String? notificationBody = message.notification?.body;
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      CHANNEL_ID,
+      CHANNEL_NAME,
+      channelDescription: CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flNotification.show(
+        0, notificationTitle, notificationBody, platformChannelSpecifics);
+  }
+
+  R? ifUserAuthorized<R>(R Function() action) {
+    if (userAuthorized) {
+      return action();
+    } else {
+      Log.w('FCM - Message missed. User unauthorized.');
+    }
+  }
+
   /// Requests permissions for push notifications on iOS
   /// There is no need to call this method on Android
   /// if called on Android it will always return authorization status authorized
   Future<NotificationSettings> requestPermissions({
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
+    bool? alert,
+    bool? badge,
+    bool? sound,
+    bool announcement = false,
+    bool carPlay = false,
+    bool criticalAlert = false,
+    bool provisional = false,
   }) async {
     NotificationSettings settings = await _fcm.requestPermission(
-      alert: alert,
+      alert: alert ?? showInForeground,
+      badge: badge ?? showInForeground,
+      sound: sound ?? showInForeground,
       announcement: announcement,
-      badge: badge,
       carPlay: carPlay,
       criticalAlert: criticalAlert,
       provisional: provisional,
-      sound: sound,
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      Log.d('NotificationsManager - User granted permission');
+      Log.d('FCM - User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      Log.d('NotificationsManager - User granted provisional permission');
+      Log.d('FCM - User granted provisional permission');
     } else {
-      Log.w('NotificationsManager - User declined or not accepted permission');
+      Log.w('FCM - User declined or not accepted permission');
     }
 
     return settings;
@@ -143,8 +184,6 @@ class FcmNotificationsListener {
   /// Returns bool that indicates if push notifications are authorized
   /// On Android it is always true
   Future<bool> isPushAuthorized() async {
-    // return true;
-
     final notificationSettings = await _fcm.getNotificationSettings();
     return notificationSettings.authorizationStatus ==
         AuthorizationStatus.authorized;
@@ -177,7 +216,7 @@ class FcmNotificationsListener {
   }
 
   Future<void> _onFCMTokenReceived(String? token) async {
-    Log.d('NotificationsManager - FCM Token $token');
+    Log.d('FCM - Token: $token');
 
     final storedToken = await _fcmTokenStorage.get();
 
@@ -187,36 +226,12 @@ class FcmNotificationsListener {
       }
     }
   }
-
-  /// Creates a local notification for Android only
-  /// On iOS the system shows the remote push notification by default
-  /// To change the iOS behavior see setForegroundNotificationPresentationOptions in setupPushNotifications
-  _onMessage(RemoteMessage message) async {
-    if (Platform.isIOS) {
-      return;
-    }
-
-    String? notificationTitle = message.notification?.title;
-    String? notificationBody = message.notification?.body;
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      CHANNEL_ID,
-      CHANNEL_NAME,
-      channelDescription: CHANNEL_DESCRIPTION,
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flNotification.show(
-        0, notificationTitle, notificationBody, platformChannelSpecifics);
-  }
-
-  _onAppOpenedFromMessage(RemoteMessage message) {
-    Log.d('NotificationsManager - Opened from remote message');
-  }
 }
 
 Future<void> backgroundMessageHandler(message) async {
-  Log.w('NotificationsManager - Bg message missed. User unauthorized');
+  Log.w('FCM - Background message: $message. '
+      'Waiting for user to tap and open app before handling.');
+
+  //todo change this behavior if you wish but read this first
+  //https://firebase.flutter.dev/docs/messaging/usage/#background-messages
 }
