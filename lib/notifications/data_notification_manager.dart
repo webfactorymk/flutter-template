@@ -75,7 +75,21 @@ class DataNotificationManager implements NotificationConsumer {
   /// Called when a new push notification arrives.
   ///
   /// Returns `true` if the message was handled successfully, `false` otherwise.
-  Future<bool> onNotificationMessage(dynamic remoteRawData) async {
+  @override
+  Future<bool> onNotificationMessage(dynamic remoteRawData) =>
+      _handleNotificationMessage(remoteRawData, false);
+
+  /// Called when the app is opened from a push notification.
+  ///
+  /// Returns `true` if the event was handled successfully, `false` otherwise.
+  @override
+  Future<bool> onAppOpenedFromMessage(dynamic remoteRawData) =>
+      _handleNotificationMessage(remoteRawData, true);
+
+  Future<bool> _handleNotificationMessage(
+    dynamic remoteRawData,
+    bool appOpenedFromMessage,
+  ) async {
     Message message;
     try {
       message = messageParser.parseMessage(remoteRawData);
@@ -98,9 +112,17 @@ class DataNotificationManager implements NotificationConsumer {
     }
 
     try {
-      await globalPreMessageHandler?.handleMessage(message);
-      await _getHandlerForType(message.type).handleMessage(message);
-      await globalPostMessageHandler?.handleMessage(message);
+      await Future.forEach<MessageHandler?>([
+        globalPreMessageHandler,
+        _getHandlerForType(message.type),
+        globalPostMessageHandler,
+      ], (messageHandler) {
+        if (appOpenedFromMessage) {
+          return messageHandler?.handleAppOpenedFromMessage(message);
+        } else {
+          return messageHandler?.handleMessage(message);
+        }
+      });
       return true;
     } catch (error) {
       Log.e('NotificationsManager - Error handling '
@@ -121,4 +143,7 @@ class DataNotificationManager implements NotificationConsumer {
 abstract class NotificationConsumer {
   /// Returns `true` if the message was handled successfully, `false` otherwise.
   Future<bool> onNotificationMessage(dynamic remoteRawData);
+
+  /// Returns `true` if the event was handled successfully, `false` otherwise.
+  Future<bool> onAppOpenedFromMessage(dynamic remoteRawData);
 }
