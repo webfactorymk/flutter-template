@@ -23,15 +23,20 @@ abstract class MultiMessageParser implements MessageParser {
   }
 
   /// Determines the [Message.type] from raw remote notification data.
-  String getTypeFromRawMessage(dynamic remoteData);
+  String? getTypeFromRawMessage(dynamic remoteData);
+
+  /// Override this method to provide handling for unknown types.
+  Message onUnknownType(String? type, dynamic remoteData) {
+    throw Exception('NotificationsManager - '
+        'Message type does not have a parser: $type');
+  }
 
   @override
-  Message parseMessage(remoteData) {
+  Message parseMessage(dynamic remoteData) {
     final type = getTypeFromRawMessage(remoteData);
     final parser = _messageParserForType[type];
     if (parser == null) {
-      throw Exception('NotificationsManager - '
-          'Message type does not have a parser: $type');
+      return onUnknownType(type, remoteData);
     }
     return parser.parseMessage(remoteData);
   }

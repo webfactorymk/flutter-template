@@ -11,7 +11,12 @@ class DataNotificationsManagerFactory {
     MessageHandler<Message>? globalPostMessageHandler,
   }) {
     return DataNotificationManager(
-      messageParser: FcmRemoteMessageParser(), //todo add a message parser
+      messageParser: FcmRemoteMessageParser() //todo add a message parsers
+      // ..registerMessageParser(
+      //   parser: parser,
+      //   forMessageTypes: forMessageTypes,
+      // ),
+      ,
       messageFilter: messageFilter,
       globalPreMessageHandler: globalPreMessageHandler,
       globalPostMessageHandler: globalPostMessageHandler,
