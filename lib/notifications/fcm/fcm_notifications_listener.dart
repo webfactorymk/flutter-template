@@ -4,6 +4,7 @@ import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/data_notification_manager.dart';
+import 'package:flutter_template/notifications/fcm/fcm_remote_message_parser.dart';
 import 'package:single_item_storage/storage.dart';
 
 /// Listens for remote messages using Firebase Cloud Messaging (FCM)
@@ -84,7 +85,7 @@ class FcmNotificationsListener {
     // Foreground message
     FirebaseMessaging.onMessage.listen((message) {
       ifUserAuthorized(() {
-        Log.d('FCM - Foreground message: $message');
+        Log.d('FCM - Foreground message: ${message.print()}');
         if (showInForeground) {
           _showNotificationOnAndroid(message);
         }
@@ -98,7 +99,7 @@ class FcmNotificationsListener {
     // App opened from message
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       ifUserAuthorized(() {
-        Log.d('FCM - App opened from remote message: $message');
+        Log.d('FCM - App opened from remote message: ${message.print()}');
         dataPayloadConsumer.onAppOpenedFromMessage(message);
       });
     });
@@ -229,7 +230,7 @@ class FcmNotificationsListener {
 }
 
 Future<void> backgroundMessageHandler(message) async {
-  Log.w('FCM - Background message: $message. '
+  Log.w('FCM - Background message: ${message.print()}. '
       'Waiting for user to tap and open app before handling.');
 
   //todo change this behavior if you wish but read this first
