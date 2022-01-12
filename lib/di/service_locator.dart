@@ -16,7 +16,6 @@ import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
-import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/data_notification_manager_factory.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
@@ -75,19 +74,13 @@ Future<void> setupGlobalDependencies() async {
   }
 
   // Firebase and Notifications
-  final loggedInMessageFilter = LoggedInUserOnlyFilter();
-  final notificationsManager = NotificationsManagerFactory.create(
-    messageFilter: loggedInMessageFilter,
-    //globalPreMessageHandler: <add here>
-    //globalPostMessageHandler: <add here>
-  );
-
+  final dataNotificationsManager = DataNotificationsManagerFactory.create();
   final fcmNotificationsListener = FcmNotificationsListener(
     InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: IOSInitializationSettings(),
     ),
-    notificationsManager,
+    dataNotificationsManager,
     fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
     apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
   );
@@ -105,8 +98,6 @@ Future<void> setupGlobalDependencies() async {
       userScopeHook,
     ],
   );
-
-  loggedInMessageFilter.isUserLoggedIn = userManager.isLoggedIn;
 
   // Platform comm
   final PlatformComm platformComm = PlatformComm.generalAppChannel()

@@ -87,7 +87,7 @@ class FcmNotificationsListener {
       if (userAuthorized) {
         _onAppOpenedFromMessage(message);
       } else {
-        Log.w('NotificationsManager - App not opened. User unauthorized');
+        Log.w('NotificationsManager - User unauthorized');
       }
     });
 
