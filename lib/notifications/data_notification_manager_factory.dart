@@ -2,15 +2,15 @@ import 'package:flutter_template/notifications/message.dart';
 import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
 import 'package:flutter_template/notifications/message_parser.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
+import 'package:flutter_template/notifications/data_notification_manager.dart';
 
 class NotificationsManagerFactory {
-  static NotificationsManager create({
+  static DataNotificationManager create({
     MessageFilter? messageFilter,
     MessageHandler<Message>? globalPreMessageHandler,
     MessageHandler<Message>? globalPostMessageHandler,
   }) {
-    return NotificationsManager(
+    return DataNotificationManager(
       messageParser: StubMessageParser(), //todo add a message parser
       messageFilter: messageFilter,
       globalPreMessageHandler: globalPreMessageHandler,

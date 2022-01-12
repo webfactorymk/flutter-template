@@ -1,10 +1,9 @@
 import 'package:flutter_template/notifications/message.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
 
 /// Filters a remote [Message] to not be handled by [MessageHandler].
 ///
-/// Register a global message filter in [NotificationsManager].
+/// Register a global message filter in [DataNotificationManager].
 abstract class MessageFilter {
   /// Return false to discard the message, true otherwise.
   Future<bool> filterMessage(Message message);

@@ -4,17 +4,21 @@ import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
 import 'package:flutter_template/notifications/message_parser.dart';
 
-/// Abstract, implementation free, NotificationsManager.
+/// Data Notifications Manager
 ///
-/// Manages the push notification flow:
-///  - listens for remote messages
-///  - parses the remote messages to [Message] or a subtype
-///  - calls a [MessageHandler] registered for the specific notification type
+/// Data remote messages, besides the UI information, hold data payload
+/// with additional information. Usually a key value map.
+///
+/// This component will:
+///  - await remote message on [NotificationConsumer.onNotificationMessage]
+///  - parse the remote messages to [Message] or a subtype using a [MessageParser]
+///  - call a [MessageHandler] registered for the specific notification type
+///    to perform an action
 ///
 /// Usage:
 /// 1. Create a single instance and register a [MessageParser] and
 /// add [MessageHandler]s for each action that happens after a notification
-/// of specific type arrives - display notification, navigate to screen, etc.
+/// of specific type arrives - make network call, call a service, etc.
 ///
 /// 2. This component implements [NotificationConsumer]. Pass this instance
 /// to a concrete implementation that listens for push notifications that will
@@ -25,8 +29,18 @@ import 'package:flutter_template/notifications/message_parser.dart';
 /// global message handlers that get called before and after a notification
 /// is handled by the specific type [MessageHandler].
 ///
+/// <i>
+/// When handling remote messages mind that the app could be terminated or
+/// in the background where OS restrictions might not allow some actions.
+/// Limit tasks to 30 seconds and (on Android) avoid UI modifications since
+/// the process will run in a separate isolate.
+///
+/// See https://firebase.flutter.dev/docs/messaging/usage/#background-messages
+/// </i>
+///
+/// <br>
 /// To obtain an instance use `serviceLocator.get<NotificationsManager>()`
-class NotificationsManager implements NotificationConsumer {
+class DataNotificationManager implements NotificationConsumer {
   final Map<String, MessageHandler<Message>> _messageHandlerForType = Map();
 
   /// Parses incoming raw message data into a [Message] or a subtype
@@ -41,7 +55,7 @@ class NotificationsManager implements NotificationConsumer {
   /// Global message filter. Optional.
   final MessageFilter? messageFilter;
 
-  NotificationsManager({
+  DataNotificationManager({
     required this.messageParser,
     this.globalPreMessageHandler,
     this.globalPostMessageHandler,

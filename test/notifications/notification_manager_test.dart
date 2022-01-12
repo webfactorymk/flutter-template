@@ -4,7 +4,7 @@ import 'package:flutter_template/notifications/message.dart';
 import 'package:flutter_template/notifications/message_filter.dart';
 import 'package:flutter_template/notifications/message_handler.dart';
 import 'package:flutter_template/notifications/message_parser.dart';
-import 'package:flutter_template/notifications/notifications_manager.dart';
+import 'package:flutter_template/notifications/data_notification_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -15,11 +15,11 @@ import 'test_messages.dart';
 
 @GenerateMocks([MessageHandler])
 void main() {
-  late NotificationsManager notificationsManager;
+  late DataNotificationManager notificationsManager;
 
   setUp(() {
     Log.logger = ConsoleLogger.create();
-    notificationsManager = NotificationsManager(
+    notificationsManager = DataNotificationManager(
       messageParser: StubMessageParser(),
     );
   });
@@ -123,7 +123,7 @@ void main() {
   test('Message filter', () async {
     MockMessageHandler<Message> messageHandler = MockMessageHandler();
 
-    notificationsManager = NotificationsManager(
+    notificationsManager = DataNotificationManager(
       messageParser: StubMessageParser(),
       messageFilter: DiscardAllFilter(),
     )..registerMessageHandler(
@@ -143,7 +143,7 @@ void main() {
     MockMessageHandler<Message> preMessageHandler = MockMessageHandler();
     MockMessageHandler<Message> messageHandler = MockMessageHandler();
     MockMessageHandler<Message> postMessageHandler = MockMessageHandler();
-    notificationsManager = NotificationsManager(
+    notificationsManager = DataNotificationManager(
       messageParser: StubMessageParser(),
       globalPreMessageHandler: preMessageHandler,
       globalPostMessageHandler: postMessageHandler,

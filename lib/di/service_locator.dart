@@ -17,7 +17,7 @@ import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
 import 'package:flutter_template/notifications/message_filter.dart';
-import 'package:flutter_template/notifications/notifications_manager_factory.dart';
+import 'package:flutter_template/notifications/data_notification_manager_factory.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
