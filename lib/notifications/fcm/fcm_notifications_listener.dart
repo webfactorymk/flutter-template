@@ -89,7 +89,9 @@ class FcmNotificationsListener {
         if (showInForeground) {
           _showNotificationOnAndroid(message);
         }
-        dataPayloadConsumer.onNotificationMessage(message);
+        if (message.messageType != null) {
+          dataPayloadConsumer.onNotificationMessage(message);
+        }
       });
     });
 
@@ -100,7 +102,9 @@ class FcmNotificationsListener {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       ifUserAuthorized(() {
         Log.d('FCM - App opened from remote message: ${message.print()}');
-        dataPayloadConsumer.onAppOpenedFromMessage(message);
+        if (message.messageType != null) {
+          dataPayloadConsumer.onAppOpenedFromMessage(message);
+        }
       });
     });
 
@@ -140,7 +144,7 @@ class FcmNotificationsListener {
         0, notificationTitle, notificationBody, platformChannelSpecifics);
   }
 
-  R? ifUserAuthorized<R>(R Function() action) {
+  R? ifUserAuthorized<R>(R? Function() action) {
     if (userAuthorized) {
       return action();
     } else {
