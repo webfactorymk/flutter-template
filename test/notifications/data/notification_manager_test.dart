@@ -1,10 +1,10 @@
 import 'package:flutter_template/log/console_logger.dart';
 import 'package:flutter_template/log/log.dart';
-import 'package:flutter_template/notifications/message.dart';
-import 'package:flutter_template/notifications/message_filter.dart';
-import 'package:flutter_template/notifications/message_handler.dart';
-import 'package:flutter_template/notifications/message_parser.dart';
-import 'package:flutter_template/notifications/data_notification_manager.dart';
+import 'package:flutter_template/notifications/data/message.dart';
+import 'package:flutter_template/notifications/data/message_filter.dart';
+import 'package:flutter_template/notifications/data/message_handler.dart';
+import 'package:flutter_template/notifications/data/message_parser.dart';
+import 'package:flutter_template/notifications/data/data_notification_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter_template/log/log.dart';
-import 'package:flutter_template/notifications/message.dart';
-import 'package:flutter_template/notifications/message_filter.dart';
-import 'package:flutter_template/notifications/message_handler.dart';
-import 'package:flutter_template/notifications/message_parser.dart';
+import 'package:flutter_template/notifications/data/message.dart';
+import 'package:flutter_template/notifications/data/message_filter.dart';
+import 'package:flutter_template/notifications/data/message_handler.dart';
+import 'package:flutter_template/notifications/data/message_parser.dart';
 
 /// Data Notifications Manager
 ///

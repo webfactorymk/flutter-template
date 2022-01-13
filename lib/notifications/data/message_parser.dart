@@ -1,4 +1,4 @@
-import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/data/message.dart';
 
 /// Parses remote notification data to a [Message] or a subtype.
 ///

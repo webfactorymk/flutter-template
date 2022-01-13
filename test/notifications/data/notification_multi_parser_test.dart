@@ -1,5 +1,5 @@
-import 'package:flutter_template/notifications/message.dart';
-import 'package:flutter_template/notifications/message_parser.dart';
+import 'package:flutter_template/notifications/data/message.dart';
+import 'package:flutter_template/notifications/data/message_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

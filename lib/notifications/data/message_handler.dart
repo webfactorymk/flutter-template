@@ -1,4 +1,4 @@
-import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/data/message.dart';
 
 /// Handler for a single push notification [Message].
 ///

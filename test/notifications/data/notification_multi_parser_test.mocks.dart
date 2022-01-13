@@ -2,8 +2,8 @@
 // in flutter_template/test/notifications/notification_multi_parser_test.dart.
 // Do not manually edit this file.
 
-import 'package:flutter_template/notifications/message.dart' as _i2;
-import 'package:flutter_template/notifications/message_parser.dart' as _i3;
+import 'package:flutter_template/notifications/data/message.dart' as _i2;
+import 'package:flutter_template/notifications/data/message_parser.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: avoid_redundant_argument_values

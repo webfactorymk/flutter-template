@@ -1,8 +1,8 @@
 import 'package:flutter_template/notifications/fcm/fcm_remote_message_parser.dart';
-import 'package:flutter_template/notifications/message.dart';
-import 'package:flutter_template/notifications/message_filter.dart';
-import 'package:flutter_template/notifications/message_handler.dart';
-import 'package:flutter_template/notifications/data_notification_manager.dart';
+import 'package:flutter_template/notifications/data/message.dart';
+import 'package:flutter_template/notifications/data/message_filter.dart';
+import 'package:flutter_template/notifications/data/message_handler.dart';
+import 'package:flutter_template/notifications/data/data_notification_manager.dart';
 
 class DataNotificationsManagerFactory {
   static DataNotificationManager create({

@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_template/notifications/message.dart';
+import 'package:flutter_template/notifications/data/message.dart';
 
 class FcmBaseMessage extends Message {
   final RemoteMessage remoteMessage;
