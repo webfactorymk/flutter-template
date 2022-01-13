@@ -233,7 +233,7 @@ class FcmNotificationsListener {
   }
 }
 
-Future<void> backgroundMessageHandler(message) async {
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
   Log.w('FCM - Background message: ${message.print()}. '
       'Waiting for user to tap and open app before handling.');
 
