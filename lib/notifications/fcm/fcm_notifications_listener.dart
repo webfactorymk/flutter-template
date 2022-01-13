@@ -4,7 +4,7 @@ import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/data_notification_manager.dart';
-import 'package:flutter_template/notifications/fcm/fcm_remote_message_parser.dart';
+import 'package:flutter_template/notifications/fcm/fcm_remote_message.dart';
 import 'package:single_item_storage/storage.dart';
 
 /// Listens for remote messages using Firebase Cloud Messaging (FCM)
