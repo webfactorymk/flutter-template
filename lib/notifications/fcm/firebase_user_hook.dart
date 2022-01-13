@@ -21,9 +21,9 @@ class FirebaseUserHook extends UserEventHook<UserCredentials> {
   @override
   void onUserUpdatesProvided(Stream<UserCredentials?> userUpdates) {
     _streamSubscription = userUpdates
-        .distinct((prev, next) => prev.isLoggedIn() == next.isLoggedIn())
+        .distinct((prev, next) => prev?.isLoggedIn() == next?.isLoggedIn())
         .listen((userCredentials) async {
-      if (userCredentials.isLoggedIn()) {
+      if (userCredentials?.isLoggedIn() ?? false) {
         await _onUserAuthorized(userCredentials!);
       } else {
         await _onUserUnauthorized();
