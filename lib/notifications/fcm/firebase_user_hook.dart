@@ -24,6 +24,7 @@ class FirebaseUserHook extends UserEventHook<UserCredentials> {
         .distinct((prev, next) => prev.isLoggedIn() == next.isLoggedIn())
         .listen((userCredentials) async {
       if (userCredentials.isLoggedIn()) {
+        print('FCM - onUserUpdatesProvided');
         await _onUserAuthorized(userCredentials!);
       } else {
         await _onUserUnauthorized();
@@ -32,7 +33,7 @@ class FirebaseUserHook extends UserEventHook<UserCredentials> {
   }
 
   Future<void> _onUserAuthorized(UserCredentials userCredentials) async {
-    _crashlytics.setUserIdentifier(userCredentials.user.id);
+    await _crashlytics.setUserIdentifier(userCredentials.user.id);
 
     if (!_notificationListener.setupStarted) {
       await _notificationListener.setupPushNotifications();
