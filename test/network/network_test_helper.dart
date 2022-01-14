@@ -14,6 +14,10 @@ class NetworkTestHelper {
       validToken,
       DateTime.now().millisecondsSinceEpoch * 5);
 
+  static final RefreshToken expiredRefreshToken = RefreshToken(
+      validToken,
+      DateTime.now().subtract(Duration(days: 1)).millisecondsSinceEpoch);
+
   static final Credentials validCredentials =
       Credentials(validToken, validRefreshToken);
   static final Credentials expiredCredentials =
