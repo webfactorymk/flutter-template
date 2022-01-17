@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/data/data_notification_manager.dart';
 import 'package:flutter_template/notifications/fcm/fcm_remote_message.dart';
+import 'package:flutter_template/notifications/local/local_notification_manager.dart';
 import 'package:single_item_storage/storage.dart';
 
 /// Listens for remote messages using Firebase Cloud Messaging (FCM)
@@ -31,22 +32,14 @@ class FcmNotificationsListener {
   final bool showInForeground;
 
   late final FirebaseMessaging _fcm;
-  late final FlutterLocalNotificationsPlugin flNotification;
 
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
-  final InitializationSettings initializationSettings;
 
   bool _setupStarted = false;
   bool userAuthorized = false;
 
-  //TODO change this values before using them
-  static const String CHANNEL_ID = 'foreground';
-  static const String CHANNEL_NAME = 'channel name';
-  static const String CHANNEL_DESCRIPTION = 'channel description';
-
-  FcmNotificationsListener(
-    this.initializationSettings, {
+  FcmNotificationsListener({
     this.showInForeground = true,
     required Storage<String> fcm,
     required Storage<String> apns,
@@ -56,17 +49,16 @@ class FcmNotificationsListener {
     if (shouldConfigureFirebase()) {
       _fcm = FirebaseMessaging.instance;
     }
-    flNotification = FlutterLocalNotificationsPlugin();
   }
 
   bool get setupStarted => _setupStarted;
 
   Future<void> setupPushNotifications() async {
-    Log.d('FCM - Setup: start');
     if (_setupStarted) {
       Log.d('FCM - Setup: Aborting, already completed.');
+      return;
     }
-    await flNotification.initialize(initializationSettings);
+
     _setupStarted = true;
     await requestPermissions();
 
@@ -83,37 +75,26 @@ class FcmNotificationsListener {
       await _onFCMTokenReceived(token);
     });
 
-    // Foreground message
-    FirebaseMessaging.onMessage.listen((message) {
-      ifUserAuthorized(() async {
-        Log.d('FCM - Foreground message: ${message.print()}');
-        if (showInForeground) {
-          _showNotificationOnAndroid(message);
-        }
-        if (message.messageType != null) {
-          await dataPayloadConsumer.onNotificationMessage(message);
-        }
-      });
-    });
-
-    // Background message
-    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
-
-    // App opened from message
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      ifUserAuthorized(() async {
-        print('FCM - App opened from remote message: ${message.print()}');
-        if (message.messageType != null) {
-          await dataPayloadConsumer.onAppOpenedFromMessage(message);
-        }
-      });
-    });
-
     FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: showInForeground,
       badge: showInForeground,
       sound: showInForeground,
     );
+
+    // Register click on notification handler when app is terminated.
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then(_onBackgroundMessageOpenedHandler);
+
+    // Register background notification handler.
+    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+
+    // Register foreground message handler
+    FirebaseMessaging.onMessage.listen(_onForegroundMessageHandler);
+
+    // Register click on notification handler when app is in background and not terminated.
+    FirebaseMessaging.onMessageOpenedApp
+        .listen(_onForegroundMessageOpenedHandler);
   }
 
   Future<void> disablePushNotifications() async {
@@ -128,21 +109,9 @@ class FcmNotificationsListener {
     if (!Platform.isAndroid) {
       return;
     }
-
-    String? notificationTitle = message.notification?.title;
-    String? notificationBody = message.notification?.body;
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-      CHANNEL_ID,
-      CHANNEL_NAME,
-      channelDescription: CHANNEL_DESCRIPTION,
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flNotification.show(
-        0, notificationTitle, notificationBody, platformChannelSpecifics);
+    serviceLocator
+        .get<LocalNotificationsManager>()
+        .displayAndroidNotification(message);
   }
 
   R? ifUserAuthorized<R>(R? Function() action) {
@@ -153,9 +122,7 @@ class FcmNotificationsListener {
     }
   }
 
-  /// Requests permissions for push notifications on iOS
-  /// There is no need to call this method on Android
-  /// if called on Android it will always return authorization status authorized
+  /// Requests permissions for push notifications.
   Future<NotificationSettings> requestPermissions({
     bool? alert,
     bool? badge,
@@ -188,7 +155,6 @@ class FcmNotificationsListener {
   }
 
   /// Returns bool that indicates if push notifications are authorized
-  /// On Android it is always true
   Future<bool> isPushAuthorized() async {
     final notificationSettings = await _fcm.getNotificationSettings();
     return notificationSettings.authorizationStatus ==
@@ -196,7 +162,6 @@ class FcmNotificationsListener {
   }
 
   /// Returns the current authorization status for push notifications
-  /// On Android it is always authorized
   Future<AuthorizationStatus> getAuthorizationStatus() async {
     final notificationSettings = await _fcm.getNotificationSettings();
     return notificationSettings.authorizationStatus;
@@ -232,8 +197,42 @@ class FcmNotificationsListener {
       }
     }
   }
+
+  /// Handle the click event on notification when app is in background and terminated.
+  Future<void> _onBackgroundMessageOpenedHandler(RemoteMessage? message) async {
+    if (message != null) {
+      print('FCM - Terminated app, notification tap handler with message: ' +
+          message.print());
+    }
+  }
+
+  /// Handle the click event on notification when app is in background and not terminated.
+  Future<void> _onForegroundMessageOpenedHandler(RemoteMessage message) async {
+    Log.d('FCM - Notification tap while app in background and not terminated');
+    ifUserAuthorized(() async {
+      if (message.messageType != null) {
+        await dataPayloadConsumer.onAppOpenedFromMessage(message);
+      }
+    });
+  }
+
+  /// Handle receiving message when app is in foreground.
+  Future<void> _onForegroundMessageHandler(RemoteMessage message) async {
+    ifUserAuthorized(() async {
+      Log.d('FCM - Foreground message: ${message.print()}');
+      if (showInForeground) {
+        _showNotificationOnAndroid(message);
+      }
+      if (message.messageType != null) {
+        await dataPayloadConsumer.onNotificationMessage(message);
+      }
+    });
+  }
 }
 
+/// Receives message when the app is in background and terminated.
+///
+/// This code will run on separate isolate.
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   print('FCM - Background message: ${message.print()}. '
       'Waiting for user to tap and open app before handling.');
