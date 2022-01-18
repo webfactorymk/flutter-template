@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/data/data_notification_manager.dart';
 
 /// Manages local notifications and their details.
 ///
-/// When used handle the click on the notifications here.
+/// When used it should handle the click on the notifications too.
 /// To obtain an instance use `serviceLocator.get<LocalNotificationsManager>()`
 class LocalNotificationsManager {
   //TODO change this values before using them
@@ -35,25 +34,25 @@ class LocalNotificationsManager {
     }
     await flNotification.initialize(initializationSettings,
         onSelectNotification: (String? payload) async {
-      //TODO use the data notification manager.
-      Log.d('LocalNotificationsManager - foreground notification clicked');
+      //TODO use the dataPayloadConsumer or implement custom handler here for the notification click.
+      Log.d('LocalNotificationsManager - foreground notification clicked:' +
+          payload.toString());
     });
-    isInitialized = true;
   }
 
   /// Displays push notification for android platform.
-  void displayAndroidNotification(RemoteMessage message) async {
+  void displayAndroidNotification(String title, String body,
+      {String? payload}) async {
     if (!Platform.isAndroid) {
       return;
     }
-
-    if (message.notification != null) {
-      flNotification.show(0, message.notification!.title,
-          message.notification!.body, _buildAndroidNotificationDetails());
-    } else {
-      Log.d('LocalNotificationService - Android notification missed,'
-          ' message.notification == nul');
-    }
+    flNotification.show(
+      0,
+      title,
+      body,
+      _buildAndroidNotificationDetails(),
+      payload: payload,
+    );
   }
 
   /// Builds notification details for android platform.

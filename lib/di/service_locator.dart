@@ -78,8 +78,9 @@ Future<void> setupGlobalDependencies() async {
   final dataNotificationsManager = DataNotificationsManagerFactory.create();
 
   // Local Notifications
-  final localNotificationsService = LocalNotificationsManager(
+  final localNotificationsManager = LocalNotificationsManager(
     InitializationSettings(
+      //TODO change the small icon of the notification in AndroidInitializationSettings.
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: IOSInitializationSettings(),
     ),
@@ -89,6 +90,7 @@ Future<void> setupGlobalDependencies() async {
   // FCM
   final fcmNotificationsListener = FcmNotificationsListener(
     dataPayloadConsumer: dataNotificationsManager,
+    localNotificationsManager: localNotificationsManager,
     showInForeground: true,
     fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
     apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
@@ -124,7 +126,7 @@ Future<void> setupGlobalDependencies() async {
       'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
 
   serviceLocator
-    ..registerSingleton<LocalNotificationsManager>(localNotificationsService)
+    ..registerSingleton<LocalNotificationsManager>(localNotificationsManager)
     ..registerSingleton<FcmNotificationsListener>(fcmNotificationsListener)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)

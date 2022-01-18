@@ -24,6 +24,7 @@ import 'package:single_item_storage/storage.dart';
 /// To obtain an instance use `serviceLocator.get<FcmNotificationsListener>()`
 class FcmNotificationsListener {
   final NotificationConsumer dataPayloadConsumer;
+  final LocalNotificationsManager localNotificationsManager;
 
   /// If true creates a local notification for Android only
   /// On iOS the system shows the remote push notification by default
@@ -44,6 +45,7 @@ class FcmNotificationsListener {
     required Storage<String> fcm,
     required Storage<String> apns,
     required this.dataPayloadConsumer,
+    required this.localNotificationsManager,
   })  : _fcmTokenStorage = fcm,
         _apnsTokenStorage = apns {
     if (shouldConfigureFirebase()) {
@@ -109,9 +111,19 @@ class FcmNotificationsListener {
     if (!Platform.isAndroid) {
       return;
     }
-    serviceLocator
-        .get<LocalNotificationsManager>()
-        .displayAndroidNotification(message);
+    if (message.notification != null &&
+        message.notification!.title != null &&
+        message.notification!.body != null) {
+
+      //TODO change the payload as needed..
+      localNotificationsManager.displayAndroidNotification(
+        message.notification!.title!,
+        message.notification!.body!,
+        payload: message.notification!.body,
+      );
+    } else {
+      Log.d('FcmNotificationsListener - Android notification missed');
+    }
   }
 
   R? ifUserAuthorized<R>(R? Function() action) {
@@ -203,6 +215,9 @@ class FcmNotificationsListener {
     if (message != null) {
       print('FCM - Terminated app, notification tap handler with message: ' +
           message.print());
+      if (message.messageType != null) {
+        await dataPayloadConsumer.onAppOpenedFromMessage(message);
+      }
     }
   }
 
@@ -232,11 +247,16 @@ class FcmNotificationsListener {
 
 /// Receives message when the app is in background and terminated.
 ///
-/// This code will run on separate isolate.
+/// On Android this code will run on separate isolate.
+///
+/// Please note: Before using any method here, make sure that you have all dependencies initialized,
+/// because you can encounter a case on android where this code will run on separate isolate.
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   print('FCM - Background message: ${message.print()}. '
       'Waiting for user to tap and open app before handling.');
 
   //todo change this behavior if you wish but read this first
   //https://firebase.flutter.dev/docs/messaging/usage/#background-messages
+
+  //TODO before using dataPayloadConsumer make sure all components are initialized..
 }

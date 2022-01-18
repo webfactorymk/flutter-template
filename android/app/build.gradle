@@ -41,7 +41,6 @@ android {
         applicationId "mk.webfactory.flutter_template"
         minSdkVersion 24
         targetSdkVersion 31
-        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
