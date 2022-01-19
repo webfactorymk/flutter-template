@@ -17,6 +17,7 @@ import 'package:flutter_template/network/util/network_utils.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
 import 'package:flutter_template/notifications/data/data_notification_manager_factory.dart';
+import 'package:flutter_template/notifications/local/local_notification_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
 import 'package:flutter_template/user/user_manager.dart';
@@ -73,14 +74,23 @@ Future<void> setupGlobalDependencies() async {
     tasksApi = MockTasksApiService();
   }
 
-  // Firebase and Notifications
+  // DataNotificationManager
   final dataNotificationsManager = DataNotificationsManagerFactory.create();
-  final fcmNotificationsListener = FcmNotificationsListener(
+
+  // Local Notifications
+  final localNotificationsManager = LocalNotificationsManager(
     InitializationSettings(
+      //TODO change the small icon of the notification in AndroidInitializationSettings.
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: IOSInitializationSettings(),
     ),
+    dataNotificationsManager,
+  );
+
+  // FCM
+  final fcmNotificationsListener = FcmNotificationsListener(
     dataPayloadConsumer: dataNotificationsManager,
+    localNotificationsManager: localNotificationsManager,
     showInForeground: true,
     fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
     apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
@@ -116,6 +126,7 @@ Future<void> setupGlobalDependencies() async {
       'Build version ${packageInfo.version} (${packageInfo.buildNumber})';
 
   serviceLocator
+    ..registerSingleton<LocalNotificationsManager>(localNotificationsManager)
     ..registerSingleton<FcmNotificationsListener>(fcmNotificationsListener)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
