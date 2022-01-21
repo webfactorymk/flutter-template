@@ -82,7 +82,11 @@ Future<void> setupGlobalDependencies() async {
     InitializationSettings(
       //TODO change the small icon of the notification in AndroidInitializationSettings.
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: IOSInitializationSettings(),
+      iOS: IOSInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      ),
     ),
     dataNotificationsManager,
   );

@@ -15,9 +15,7 @@ import FirebaseMessaging
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
         }
-        
-        application.registerForRemoteNotifications()
-        
+                
         _ = PlatformCommunication.shared
         
         GeneratedPluginRegistrant.register(with: self)
