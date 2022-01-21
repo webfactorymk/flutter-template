@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/notifications/data/data_notification_manager.dart';
 import 'package:flutter_template/notifications/fcm/fcm_remote_message.dart';
@@ -33,6 +33,9 @@ class FcmNotificationsListener {
   final bool showInForeground;
 
   late final FirebaseMessaging _fcm;
+  late final StreamSubscription _tokenSubscription;
+  late final StreamSubscription _foregroundSubscription;
+  late final StreamSubscription _foregroundClickSubscription;
 
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
@@ -72,7 +75,7 @@ class FcmNotificationsListener {
     final fcmToken = await _fcm.getToken();
     await _onFCMTokenReceived(fcmToken);
 
-    _fcm.onTokenRefresh.listen((token) async {
+    _tokenSubscription = _fcm.onTokenRefresh.listen((token) async {
       Log.d('FCM - Token refresh');
       await _onFCMTokenReceived(token);
     });
@@ -89,17 +92,21 @@ class FcmNotificationsListener {
         .then(_onBackgroundMessageOpenedHandler);
 
     // Register background notification handler.
+    // This will be called when the app is terminated and in background(not terminated)
     FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-    // Register foreground message handler
-    FirebaseMessaging.onMessage.listen(_onForegroundMessageHandler);
+    // Register foreground message listener
+    _foregroundSubscription = FirebaseMessaging.onMessage.listen(_onForegroundMessageHandler);
 
-    // Register click on notification handler when app is in background and not terminated.
-    FirebaseMessaging.onMessageOpenedApp
+    // Register click on notification listener when app is in background and not terminated.
+    _foregroundClickSubscription = FirebaseMessaging.onMessageOpenedApp
         .listen(_onForegroundMessageOpenedHandler);
   }
 
   Future<void> disablePushNotifications() async {
+    await _tokenSubscription.cancel();
+    await _foregroundSubscription.cancel();
+    await _foregroundClickSubscription.cancel();
     await _fcm.deleteToken();
     await _fcmTokenStorage.delete();
     await _apnsTokenStorage.delete();
