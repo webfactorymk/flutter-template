@@ -33,15 +33,16 @@ class FcmNotificationsListener {
   final bool showInForeground;
 
   late final FirebaseMessaging _fcm;
-  late final StreamSubscription _tokenSubscription;
-  late final StreamSubscription _foregroundSubscription;
-  late final StreamSubscription _foregroundClickSubscription;
 
   final Storage<String> _fcmTokenStorage;
   final Storage<String> _apnsTokenStorage;
 
   bool _setupStarted = false;
   bool userAuthorized = false;
+
+  late StreamSubscription _tokenSubscription;
+  late StreamSubscription _foregroundSubscription;
+  late StreamSubscription _foregroundClickSubscription;
 
   FcmNotificationsListener({
     this.showInForeground = true,
