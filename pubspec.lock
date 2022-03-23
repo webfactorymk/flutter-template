@@ -435,7 +435,42 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.1"
+    version: "5.0.2"
+  flutter_secure_storage_linux:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  flutter_secure_storage_macos:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  flutter_secure_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  flutter_secure_storage_web:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  flutter_secure_storage_windows:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -870,21 +905,21 @@ packages:
       name: single_item_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3+1"
+    version: "0.1.0"
   single_item_shared_prefs:
     dependency: "direct main"
     description:
       name: single_item_shared_prefs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3+1"
+    version: "0.0.4"
   single_item_storage:
     dependency: "direct main"
     description:
       name: single_item_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4+3"
+    version: "1.0.5"
   sky_engine:
     dependency: transitive
     description: flutter
