@@ -5,7 +5,6 @@ import 'package:flutter_template/di/user_scope.dart';
 import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
-import 'package:flutter_template/user/user_manager.dart';
 
 /// Creates and destroys the user scope on login/logout events.
 ///
@@ -25,12 +24,15 @@ import 'package:flutter_template/user/user_manager.dart';
 /// d. kept intact on:
 ///     - same user login after session expiry
 class UserScopeHook extends UserEventHook<UserCredentials> {
+  String? _lastUserScopeUserId;
+
   @override
   Future<void> postLogin(UserCredentials userCredentials) async {
     final userId = userCredentials.user.id;
-    if (await _pushUserScope(userId)) {
+    if (await _pushUserScope(userId, _lastUserScopeUserId)) {
       await setupUserScope(userId);
     }
+    _lastUserScopeUserId = userId;
   }
 
   @override
@@ -40,36 +42,35 @@ class UserScopeHook extends UserEventHook<UserCredentials> {
     }
     await teardownUserScope().catchError(onErrorLog);
     await _popUserScope();
+    _lastUserScopeUserId = null;
   }
 
   @override
   Future<void> onUserLoaded(UserCredentials? userCred) async {
-    if (userCred != null && await _pushUserScope(userCred.user.id)) {
+    if (userCred != null && await _pushUserScope(userCred.user.id, null)) {
       await setupUserScope(userCred.user.id);
     }
+    _lastUserScopeUserId = userCred?.user.id;
   }
 }
 
 /// Ensures the user scope is the top-most scope in the stack.
 /// Returns true if setup needs to proceed, or false if already setup.
-Future<bool> _pushUserScope(String userId) async {
+Future<bool> _pushUserScope(String userId, String? prevUserId) async {
   if (serviceLocator.currentScopeName == 'baseScope') {
     Log.d('Push userScope on top of baseScope');
     serviceLocator.pushNewScope(scopeName: userScopeName);
   } else if (serviceLocator.currentScopeName == userScopeName) {
-    final prevUserId =
-        (await serviceLocator.get<UserManager>().getLoggedInUser())?.user.id;
     if (prevUserId == userId) {
       Log.d('Push userScope - The same user logins after session expired');
       return false;
     } else {
       Log.d('Push userScope - NEW user logins after session expired');
-      await serviceLocator.reset();
+      await serviceLocator.popScopesTill(userScopeName);
     }
   } else {
     Log.w('Push userScope - Un-popped scopes. Popping till $userScopeName]');
     await serviceLocator.popScopesTill(userScopeName);
-    await serviceLocator.reset();
   }
   return true;
 }
