@@ -78,7 +78,8 @@ mixin UpdatesStream<T> {
   /// [null] is a valid emitted item.
   Stream<T?> get updatesSticky => (StreamGroup<T?>.broadcast()
         ..add(_lastEmittedItemStream())
-        ..add(_streamController.stream))
+        ..add(_streamController.stream)
+        ..close())
       .stream;
 
   // Single item stream that emits the last item, or last error, if any.

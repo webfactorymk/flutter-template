@@ -12,13 +12,19 @@ void main() {
   test('updates no value set', () {
     expect(numberComponent.updates, emitsInOrder([1, 2, 3]));
 
-    numberComponent..increment()..increment()..increment();
+    numberComponent
+      ..increment()
+      ..increment()
+      ..increment();
   });
 
   test('updatesSticky no value set', () {
     expect(numberComponent.updatesSticky, emitsInOrder([1, 2, 3]));
 
-    numberComponent..increment()..increment()..increment();
+    numberComponent
+      ..increment()
+      ..increment()
+      ..increment();
   });
 
   test('updates after value set', () {
@@ -54,6 +60,26 @@ void main() {
 
     numberComponent.updatesSticky.listen((_) {});
   });
+
+  test('updates closed when done', () async {
+    expect(numberComponent.updates, emitsInOrder([1, 2, 3, emitsDone]));
+
+    numberComponent
+      ..increment()
+      ..increment()
+      ..increment();
+    await numberComponent.close();
+  });
+
+  test('updatesSticky closed when done', () async {
+    expect(numberComponent.updatesSticky, emitsInOrder([1, 2, 3, emitsDone]));
+
+    numberComponent
+      ..increment()
+      ..increment()
+      ..increment();
+    await numberComponent.close();
+  });
 }
 
 class NumberComponent with UpdatesStream<int> {
@@ -81,4 +107,6 @@ class NumberComponent with UpdatesStream<int> {
       number = 0;
     }
   }
+
+  Future<void> close() => closeUpdatesStream();
 }
