@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/data/item_converter.dart';
+import 'package:flutter_template/log/log.dart';
 import 'package:flutter_template/platform_comm/platform_callback.dart';
 import 'package:flutter_template/util/subscription.dart';
 
@@ -13,8 +13,7 @@ export 'app_platform_methods.dart';
 /// To obtain an instance use `serviceLocator.get<PlatformComm>()`
 class PlatformComm {
   final MethodChannel _methodChannel;
-  final Map<String, PlatformCallbackRaw> _platformCallbackMap =
-      Map(); //todo add support for more listeners
+  final Map<String, PlatformCallbackRaw> _platformCallbackMap = Map();
 
   factory PlatformComm.generalAppChannel() => PlatformComm(MethodChannel(
       'com.my-app.package-name.general')); //todo change channel name here and on native side

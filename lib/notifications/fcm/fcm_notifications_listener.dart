@@ -259,6 +259,7 @@ class FcmNotificationsListener {
 ///
 /// Please note: Before using any method here, make sure that you have all dependencies initialized,
 /// because you can encounter a case on android where this code will run on separate isolate.
+@pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   print('FCM - Background message: ${message.print()}. '
       'Waiting for user to tap and open app before handling.');

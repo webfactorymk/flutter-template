@@ -8,9 +8,22 @@ abstract class MessageParser {
   Message parseMessage(dynamic remoteData);
 }
 
+/// Message parser that expects a [Message] as param and just forwards it.
+class StubMessageParser implements MessageParser {
+  @override
+  Message parseMessage(remoteData) => remoteData as Message;
+}
+
+/// Determines the [Message.type] from raw remote notification data.
+typedef String TypeFromRawMessage(dynamic remoteData);
+
 /// Message parser that will use a separate parser for each message type.
-abstract class MultiMessageParser implements MessageParser {
+class MultiMessageParser implements MessageParser {
   final Map<String, MessageParser> _messageParserForType = Map();
+  final TypeFromRawMessage _typeFromRawMessage;
+  MessageParser? _defaultMessageParser;
+
+  MultiMessageParser(this._typeFromRawMessage);
 
   /// Registers a [MessageParser] for a specific [Message.type]
   void registerMessageParser({
@@ -22,28 +35,28 @@ abstract class MultiMessageParser implements MessageParser {
     });
   }
 
-  /// Determines the [Message.type] from raw remote notification data.
-  String? getTypeFromRawMessage(dynamic remoteData);
+  /// Registers default [MessageParser] for any unregistered [Message.type]s
+  void registerDefaultMessageParser(MessageParser defaultParser) {
+    _defaultMessageParser = defaultParser;
+  }
 
   /// Override this method to provide handling for unknown types.
   Message onUnknownType(String? type, dynamic remoteData) {
-    throw Exception('NotificationsManager - '
-        'Message type does not have a parser: $type');
+    if (_defaultMessageParser != null) {
+      return _defaultMessageParser!.parseMessage(remoteData);
+    } else {
+      throw Exception('NotificationsManager - '
+          'Message type does not have a parser: $type; Default parser is null');
+    }
   }
 
   @override
   Message parseMessage(dynamic remoteData) {
-    final type = getTypeFromRawMessage(remoteData);
+    final type = _typeFromRawMessage(remoteData);
     final parser = _messageParserForType[type];
     if (parser == null) {
       return onUnknownType(type, remoteData);
     }
     return parser.parseMessage(remoteData);
   }
-}
-
-/// Message parser that expects a [Message] as param and just forwards it.
-class StubMessageParser implements MessageParser {
-  @override
-  Message parseMessage(remoteData) => remoteData as Message;
 }

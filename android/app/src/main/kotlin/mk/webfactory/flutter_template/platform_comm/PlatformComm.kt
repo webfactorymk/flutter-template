@@ -61,7 +61,11 @@ class PlatformComm(private val methodChannel: MethodChannel) {
                     result.error(call.method, "Error executing method call ${call.method}", exp)
                     return@setMethodCallHandler
                 }
-                result.success(response)
+                if (response is Unit) {
+                    result.success("")
+                } else {
+                    result.success(response)
+                }
             } else {
                 result.notImplemented()
             }
@@ -81,43 +85,46 @@ class PlatformComm(private val methodChannel: MethodChannel) {
      * See [MethodChannel.invokeMethod].
      */
     fun <R, P> invokeMethod(
-            method: String,
-            param: P? = null,
-            serializeParam: Serialize<P>? = null,
-            deserializeResult: Deserialize<R>? = null,
-            resultCallback: ResultCallback<R>,
+        method: String,
+        param: P? = null,
+        serializeParam: Serialize<P>? = null,
+        deserializeResult: Deserialize<R>? = null,
+        resultCallback: ResultCallback<R>,
     ) {
         methodChannel.invokeMethod(
-                method,
-                if (param != null) (serializeParam?.invoke(param) ?: param) else null,
-                object : MethodChannel.Result {
-                    override fun success(result: Any?) {
-                        try {
-                            @Suppress("UNCHECKED_CAST")
-                            resultCallback.success(deserializeResult?.invoke(result)
-                                    ?: result as R)
-                        } catch (exp: Exception) {
-                            resultCallback.error("Could not deserialize result of method $method", exp)
-                        }
+            method,
+            if (param != null) (serializeParam?.invoke(param) ?: param) else null,
+            object : MethodChannel.Result {
+                override fun success(result: Any?) {
+                    try {
+                        @Suppress("UNCHECKED_CAST")
+                        resultCallback.success(
+                            deserializeResult?.invoke(result)
+                                ?: result as R
+                        )
+                    } catch (exp: Exception) {
+                        resultCallback.error("Could not deserialize result of method $method", exp)
                     }
-
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) =
-                            resultCallback.error(errorMessage, errorDetails)
-
-                    override fun notImplemented() = resultCallback.notImplemented()
                 }
+
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) =
+                    resultCallback.error(errorMessage, errorDetails)
+
+                override fun notImplemented() = resultCallback.notImplemented()
+            }
         )
     }
 
     /** Like invoke method, but it doesn't expect a result. */
     fun <P> invokeProcedure(
-            method: String,
-            param: P? = null,
-            serializeParam: Serialize<P>? = null,
+        method: String,
+        param: P? = null,
+        serializeParam: Serialize<P>? = null,
     ) {
         methodChannel.invokeMethod(
-                method,
-                if (param != null) (serializeParam?.invoke(param) ?: param) else null)
+            method,
+            if (param != null) (serializeParam?.invoke(param) ?: param) else null
+        )
     }
 
     /**
@@ -133,21 +140,21 @@ class PlatformComm(private val methodChannel: MethodChannel) {
      * component on the platform side.
      */
     fun <P> listenMethod(
-            method: String,
-            callback: Callback<P>,
-            deserializeParams: Deserialize<P>? = null,
+        method: String,
+        callback: Callback<P>,
+        deserializeParams: Deserialize<P>? = null,
     ): Subscription {
         flutterCallbackMap[method] =
-                @Suppress("UNCHECKED_CAST")
-                fun(paramsRaw) = callback(deserializeParams?.invoke(paramsRaw) ?: paramsRaw as P)
+            @Suppress("UNCHECKED_CAST")
+            fun(paramsRaw) = callback(deserializeParams?.invoke(paramsRaw) ?: paramsRaw as P)
 
         return Subscription(cancel = fun() { flutterCallbackMap.remove(method) })
     }
 
     /** Like [listenMethod] but without params. */
     fun listenMethodNoParams(
-            method: String,
-            callback: CallbackNoParams,
+        method: String,
+        callback: CallbackNoParams,
     ): Subscription {
         flutterCallbackMap[method] = fun(_) = callback()
         return Subscription(cancel = fun() { flutterCallbackMap.remove(method) })
