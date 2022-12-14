@@ -151,7 +151,7 @@ For more information and generating code continuously see [the documentation][js
 
 [Flutter is declarative framework][declarative_ui]. This means that Flutter builds its user interface to reflect the current state of the app. 
 
-<img src="https://flutter.dev/assets/development/data-and-backend/state-mgmt/ui-equals-function-of-state-54b01b000694caf9da439bd3f774ef22b00e92a62d3b2ade4f2e95c8555b8ca7.png" alt="High level diagram" width="350">
+<img src="https://docs.flutter.dev/assets/images/docs/development/data-and-backend/state-mgmt/ui-equals-function-of-state.png" alt="High level diagram" width="350">
 
 ~~This template attempts to be unopinionated and does not yet use a [state management tool][state_management_options].~~ ...we use [BLoC] now. But, each app service has an updates [Stream][dart_streams] that clients can subscribe to and receive state updates. See the [UpdatesStream<T> mixin][updates_mixin]. It's up to you to use a tool of your choice, or don't use one at all. 
 See `TasksRepository#taskEventUpdatesStream` and `TasksRepository#taskGroupUpdatesStream` in [TasksRepository][tasks_repository]
