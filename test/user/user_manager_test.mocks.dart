@@ -85,24 +85,21 @@ class MockUserEventHook<U> extends _i1.Mock implements _i6.UserEventHook<U> {
   }
 
   @override
-  _i5.Future<void> postLogin(U? user) =>
-      (super.noSuchMethod(Invocation.method(#postLogin, [user]),
+  _i5.Future<void> onUserAuthorized(U? user, bool? isExplicitUserLogin) =>
+      (super.noSuchMethod(
+          Invocation.method(#onUserAuthorized, [user, isExplicitUserLogin]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i5.Future<void> postLogout() =>
-      (super.noSuchMethod(Invocation.method(#postLogout, []),
+  _i5.Future<void> onUserUnauthorized(bool? isExplicitUserLogout) =>
+      (super.noSuchMethod(
+          Invocation.method(#onUserUnauthorized, [isExplicitUserLogout]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
   void onUserUpdatesProvided(_i5.Stream<U?>? userUpdates) => super.noSuchMethod(
       Invocation.method(#onUserUpdatesProvided, [userUpdates]),
       returnValueForMissingStub: null);
-  @override
-  _i5.Future<void> onUserLoaded(U? user) =>
-      (super.noSuchMethod(Invocation.method(#onUserLoaded, [user]),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
   String toString() => super.toString();
 }

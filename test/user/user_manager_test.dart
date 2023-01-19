@@ -80,7 +80,7 @@ void main() {
     expect(await userManager.isLoggedIn(), isTrue);
     expect(await userManager.getLoggedInUser(), equals(validUserCredentials));
 
-    verify(userEventHook.postLogin(validUserCredentials)).called(1);
+    verify(userEventHook.onUserAuthorized(validUserCredentials, true)).called(1);
     verify(userEventHook.onUserUpdatesProvided(any)).called(1);
   });
 
@@ -100,7 +100,7 @@ void main() {
     expect(await userManager.getLoggedInUser(), equals(validUserCredentials));
 
     verify(apiService.login("username", "pass")).called(1);
-    verify(userEventHook.postLogin(validUserCredentials)).called(1);
+    verify(userEventHook.onUserAuthorized(validUserCredentials, true)).called(1);
   });
 
   test('Login Failure', () async {

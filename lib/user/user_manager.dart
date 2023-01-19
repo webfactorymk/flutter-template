@@ -32,6 +32,7 @@ class UserManager with UpdatesStream<UserCredentials> {
   final Storage<UserCredentials> _userStore;
   final Set<UserEventHook<UserCredentials>> userEventHooks;
   late final StreamSubscription _userStoreExternalUpdatesSubscription;
+  UserCredentials? _currentUser;
 
   UserManager(
     this._apiService,
@@ -40,10 +41,20 @@ class UserManager with UpdatesStream<UserCredentials> {
   })  : this._userStore = observedStorage.silent,
         this.userEventHooks = Set.unmodifiable(userEventHooks) {
     userEventHooks.forEach((hook) => hook.onUserUpdatesProvided(updatesSticky));
-    _userStoreExternalUpdatesSubscription =
-        observedStorage.updatesSticky.distinct().listen((userCredentials) {
-      Log.d('UserManager - Info: User storage modified outside UserManager');
+
+    _userStoreExternalUpdatesSubscription = observedStorage.updatesSticky
+        .distinct((_, next) => next == _currentUser)
+        .listen((userCredentials) async {
+      Log.d('UserManager - User storage modified outside UserManager');
       addUpdate(userCredentials);
+
+      if (userCredentials == null) {
+        for (var userEventHook in userEventHooks) {
+          await userEventHook
+              .onUserUnauthorized(false)
+              .catchError((e) => Log.e('UserManager - LogoutHook error: $e'));
+        }
+      }
     });
   }
 
@@ -52,7 +63,11 @@ class UserManager with UpdatesStream<UserCredentials> {
   Future<void> init() async {
     final UserCredentials? loggedInUser = await _userStore.get();
     for (var userEventHook in userEventHooks) {
-      await userEventHook.onUserLoaded(loggedInUser);
+      if (loggedInUser != null) {
+        await userEventHook.onUserAuthorized(loggedInUser, false);
+      } else {
+        await userEventHook.onUserUnauthorized(false);
+      }
     }
     addUpdate(loggedInUser);
   }
@@ -62,8 +77,12 @@ class UserManager with UpdatesStream<UserCredentials> {
   @override
   void addUpdate(UserCredentials? event) {
     Log.d('UserManager - User update event: $event');
+    _currentUser = event;
     super.addUpdate(event);
   }
+
+  /// Gets the user or null if there is no logged in user.
+  UserCredentials? getLoggedInUserSync() => _currentUser;
 
   /// Gets the user or null if there is no logged in user.
   Future<UserCredentials?> getLoggedInUser() => _userStore.get();
@@ -94,7 +113,7 @@ class UserManager with UpdatesStream<UserCredentials> {
 
     for (var userEventHook in userEventHooks) {
       await userEventHook
-          .postLogin(userCredentials)
+          .onUserAuthorized(userCredentials, true)
           .catchError((err) => Log.e('UserManager - LoginHook error: $err'));
     }
 
@@ -121,7 +140,7 @@ class UserManager with UpdatesStream<UserCredentials> {
 
     for (var userEventHook in userEventHooks) {
       await userEventHook
-          .postLogout()
+          .onUserUnauthorized(true)
           .catchError((e) => Log.e('UserManager - LogoutHook error: $e'));
     }
 

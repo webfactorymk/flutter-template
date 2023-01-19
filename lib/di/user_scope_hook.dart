@@ -27,7 +27,10 @@ class UserScopeHook extends UserEventHook<UserCredentials> {
   String? _lastUserScopeUserId;
 
   @override
-  Future<void> postLogin(UserCredentials userCredentials) async {
+  Future<void> onUserAuthorized(
+      UserCredentials userCredentials,
+      bool isExplicitUserLogin,
+      ) async {
     final userId = userCredentials.user.id;
     if (await _pushUserScope(userId, _lastUserScopeUserId)) {
       await setupUserScope(userId);
@@ -36,21 +39,14 @@ class UserScopeHook extends UserEventHook<UserCredentials> {
   }
 
   @override
-  Future<void> postLogout() async {
-    if (serviceLocator.currentScopeName == 'baseScope') {
+  Future<void> onUserUnauthorized(bool isExplicitUserLogout) async {
+    if (serviceLocator.currentScopeName == 'baseScope' ||
+        isExplicitUserLogout == false) {
       return;
     }
     await teardownUserScope().catchError(onErrorLog);
     await _popUserScope();
     _lastUserScopeUserId = null;
-  }
-
-  @override
-  Future<void> onUserLoaded(UserCredentials? userCred) async {
-    if (userCred != null && await _pushUserScope(userCred.user.id, null)) {
-      await setupUserScope(userCred.user.id);
-    }
-    _lastUserScopeUserId = userCred?.user.id;
   }
 }
 
@@ -62,7 +58,8 @@ Future<bool> _pushUserScope(String userId, String? prevUserId) async {
     serviceLocator.pushNewScope(scopeName: userScopeName);
   } else if (serviceLocator.currentScopeName == userScopeName) {
     if (prevUserId == userId) {
-      Log.d('Push userScope - The same user logins after session expired');
+      Log.d('Push userScope - The same user logins after '
+          'session expired or duplicate event. Do nothing.');
       return false;
     } else {
       Log.d('Push userScope - NEW user logins after session expired');
