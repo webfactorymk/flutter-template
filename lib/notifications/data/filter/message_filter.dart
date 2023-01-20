@@ -1,5 +1,4 @@
-import 'package:flutter_template/notifications/data/message.dart';
-import 'package:flutter_template/notifications/data/message_handler.dart';
+import 'package:flutter_template/notifications/data/model/message.dart';
 
 /// Filters a remote [Message] to not be handled by [MessageHandler].
 ///
@@ -9,7 +8,7 @@ abstract class MessageFilter {
   Future<bool> filterMessage(Message message);
 }
 
-/// Handles the notification only if there is a logged in user.
+/// Filters all notifications if there is logged in user only.
 class LoggedInUserOnlyFilter implements MessageFilter {
   late final Future<bool> Function() isUserLoggedIn;
 

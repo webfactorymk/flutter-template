@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/flavor_config.dart';
 import 'package:flutter_template/data/mock/mock_tasks_api_service.dart';
@@ -14,9 +13,9 @@ import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/network/util/network_utils.dart';
+import 'package:flutter_template/notifications/data/data_notification_consumer_factory.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
-import 'package:flutter_template/notifications/data/data_notification_manager_factory.dart';
 import 'package:flutter_template/notifications/local/local_notification_manager.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
 import 'package:flutter_template/user/user_event_hook.dart';
@@ -74,31 +73,30 @@ Future<void> setupGlobalDependencies() async {
     tasksApi = MockTasksApiService();
   }
 
-  // DataNotificationManager
-  final dataNotificationsManager = DataNotificationsManagerFactory.create();
+  // Notifications
 
-  // Local Notifications
-  final localNotificationsManager = LocalNotificationsManager(
-    InitializationSettings(
-      //TODO change the small icon of the notification in AndroidInitializationSettings.
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: IOSInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
-      ),
-    ),
-    dataNotificationsManager,
+  //// DataNotificationManager
+  final dataNotificationConsumer = DataNotificationConsumerFactory.create();
+
+  //// Local
+  final localNotificationsManager = LocalNotificationsManager.create();
+
+  //// Data Notification Handlers
+  DataNotificationConsumerFactory.registerNewMessageHandlers(
+    dataNotificationConsumer,
+    localNotificationsManager,
+    PlatformComm.generalAppChannel(), //maybe not use general
   );
 
-  // FCM
+  //// FCM
   final fcmNotificationsListener = FcmNotificationsListener(
-    dataPayloadConsumer: dataNotificationsManager,
+    dataNotificationConsumer: dataNotificationConsumer,
     localNotificationsManager: localNotificationsManager,
     showInForeground: true,
     fcm: SharedPrefsStorage<String>.primitive(itemKey: fcmTokenKey),
-    apns: SharedPrefsStorage<String>.primitive(itemKey: apnsTokenKey),
+    userApiService: userApi,
   );
+
   final firebaseUserHook = shouldConfigureFirebase()
       ? FirebaseUserHook(FirebaseCrashlytics.instance, fcmNotificationsListener)
       : StubUserEventHook<UserCredentials>();

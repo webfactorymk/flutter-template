@@ -56,10 +56,10 @@ dependencies:
   provider: ^6.0.1
 
   # firebase
-  firebase_core: ^1.11.0
-  firebase_analytics: ^9.0.5
-  firebase_crashlytics: ^2.4.5
-  firebase_messaging: ^11.2.5
+  firebase_core: ^1.24.0
+  firebase_analytics: ^9.3.8
+  firebase_crashlytics: ^2.9.0
+  firebase_messaging: ^13.1.0
 
   # platform
   url_launcher: ^6.0.3
@@ -75,7 +75,7 @@ dependencies:
   pull_to_refresh: 2.0.0
 
   # notifications
-  flutter_local_notifications: ^9.1.4
+  awesome_notifications: ^0.7.2
 
 dev_dependencies:
   flutter_test:
