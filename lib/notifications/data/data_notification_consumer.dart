@@ -41,7 +41,7 @@ import 'notification_consumer.dart';
 /// </i>
 ///
 /// <br>
-/// To obtain an instance use `serviceLocator.get<NotificationConsumer>()`
+/// To obtain an instance use `serviceLocator.get<DataNotificationConsumer>()`
 class DataNotificationConsumer implements NotificationConsumer {
   /// Message handlers for specific message types
   final Map<MessageType, MessageHandler<dynamic>> _messageHandlerForType =

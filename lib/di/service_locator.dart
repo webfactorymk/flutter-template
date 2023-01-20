@@ -13,6 +13,7 @@ import 'package:flutter_template/network/tasks_api_service.dart';
 import 'package:flutter_template/network/user_api_service.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
 import 'package:flutter_template/network/util/network_utils.dart';
+import 'package:flutter_template/notifications/data/data_notification_consumer.dart';
 import 'package:flutter_template/notifications/data/data_notification_consumer_factory.dart';
 import 'package:flutter_template/notifications/fcm/firebase_user_hook.dart';
 import 'package:flutter_template/notifications/fcm/fcm_notifications_listener.dart';
@@ -129,6 +130,7 @@ Future<void> setupGlobalDependencies() async {
 
   serviceLocator
     ..registerSingleton<LocalNotificationsManager>(localNotificationsManager)
+    ..registerSingleton<DataNotificationConsumer>(dataNotificationConsumer)
     ..registerSingleton<FcmNotificationsListener>(fcmNotificationsListener)
     ..registerSingleton<Storage<UserCredentials>>(userStorage)
     ..registerSingleton<AuthenticatorHelperJwt>(authHelperJwt)
