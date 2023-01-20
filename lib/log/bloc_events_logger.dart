@@ -30,3 +30,6 @@ class BlocEventsLogger extends BlocObserver {
     super.onError(bloc, error, stackTrace);
   }
 }
+
+R runZonedWithBlocEventsLogger<R>(R Function() body) =>
+    BlocOverrides.runZoned(body, blocObserver: BlocEventsLogger());

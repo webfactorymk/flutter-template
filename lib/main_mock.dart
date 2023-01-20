@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/config/pre_app_config.dart';
 import 'package:flutter_template/log/bloc_events_logger.dart';
 
@@ -17,5 +17,9 @@ Future<void> main() async {
 
   await preAppConfig();
 
-  BlocOverrides.runZoned(() => runApp(App()), blocObserver: BlocEventsLogger());
+  runZonedGuardedWithErrorHandler(
+    () => runZonedWithBlocEventsLogger(
+      () => runApp(App()),
+    ),
+  );
 }

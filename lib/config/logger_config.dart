@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_template/config/firebase_config.dart';
 import 'package:flutter_template/log/console_logger.dart';
 import 'package:flutter_template/log/file_logger.dart';
@@ -23,7 +24,7 @@ void initLogger() {
       FirebaseLogger.instance().makeFiltered(noLogsInTests()),
   ]);
 
-  if (shouldConfigureFirebase()) {
+  if (kDebugMode && shouldConfigureFirebase()) {
     logFirebaseToken();
   }
 }
