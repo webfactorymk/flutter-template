@@ -30,7 +30,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 //apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -40,7 +40,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "mk.webfactory.flutter_template"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
@@ -115,9 +115,9 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.9.1'
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
-    testImplementation 'org.mockito:mockito-core:3.11.1'
+    testImplementation 'org.mockito:mockito-core:4.8.0'
 }
