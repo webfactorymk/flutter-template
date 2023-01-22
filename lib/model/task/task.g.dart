@@ -17,7 +17,7 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
       'description': instance.description,
-      'status': _$TaskStatusEnumMap[instance.status],
+      'status': _$TaskStatusEnumMap[instance.status]!,
     };
 
 const _$TaskStatusEnumMap = {
