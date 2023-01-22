@@ -39,7 +39,7 @@ dependencies:
 
   # network
   http: ^0.13.1
-  chopper: ^4.0.0
+  chopper: ^4.0.0 #todo update go 6+
   jwt_decoder: 2.0.1 # todo delete if JWT is not used
   connectivity: ^3.0.3
 
@@ -56,21 +56,21 @@ dependencies:
   provider: ^6.0.1
 
   # firebase
-  firebase_core: ^1.24.0
-  firebase_analytics: ^9.3.8
-  firebase_crashlytics: ^2.9.0
-  firebase_messaging: ^13.1.0
+  firebase_core: ^2.4.1
+  firebase_analytics: ^10.1.0
+  firebase_crashlytics: ^3.0.11
+  firebase_messaging: ^14.2.1
 
   # platform
   url_launcher: ^6.1.6
   uni_links: ^0.5.1
-  permission_handler: ^8.3.0
+  permission_handler: ^10.2.0
   package_info: ^2.0.0
   device_info: ^2.0.0
   path_provider: ^2.0.1
 
   # views
-  webview_flutter: ^2.0.4
+  webview_flutter: ^4.0.1
   modal_bottom_sheet: ^2.0.0
   pull_to_refresh: 2.0.0
 

@@ -9,7 +9,8 @@ class RefreshTokenAuthenticator implements Authenticator {
   RefreshTokenAuthenticator(this._authenticator);
 
   @override
-  FutureOr<Request?> authenticate(Request request, Response<dynamic> response) {
+  FutureOr<Request?> authenticate(Request request, Response<dynamic> response,
+      [Request? originalRequest]) {
     return _authenticator
         .interceptResponse(request, response)
         .catchError((_) => null);

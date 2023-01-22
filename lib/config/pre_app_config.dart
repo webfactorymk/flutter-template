@@ -15,7 +15,7 @@ Future<void> preAppConfig() async {
   await configureFirebase();
   initLogger();
   await serviceLocatorConf.setupGlobalDependencies();
-  await serviceLocator.get<LocalNotificationsManager>().init();
+  // await serviceLocator.get<LocalNotificationsManager>().init(); //todo uncomment for local notifications
   await serviceLocator.get<UserManager>().init();
   await serviceLocator.get<PreferencesHelper>().init();
 }
