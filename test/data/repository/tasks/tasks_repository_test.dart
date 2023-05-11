@@ -4,8 +4,6 @@ import 'package:flutter_template/data/repository/tasks/tasks_cache_data_source.d
 import 'package:flutter_template/data/repository/tasks/tasks_data_source.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/model/task/task_event.dart';
-import 'package:flutter_template/model/task/task_group.dart';
-import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'tasks_data_source_base_test.dart';

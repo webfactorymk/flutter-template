@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_data_source.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_state.dart';
 import 'package:flutter_template/log/log.dart';

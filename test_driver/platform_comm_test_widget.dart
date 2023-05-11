@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';

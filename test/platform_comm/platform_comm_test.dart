@@ -163,7 +163,7 @@ void main() {
             .thenAnswer((realInvocation) => Future.value('result'));
 
         // act
-        void voidUnusableResult = await platformComm.invokeMethod<void, String>(
+        await platformComm.invokeMethod<void, String>(
           method: method,
           param: 'param',
           deserializeResult: (resultRaw) => 23,

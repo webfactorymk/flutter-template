@@ -1,7 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_template/model/task/task.dart';
 import 'package:flutter_template/model/task/task_status.dart';
-import 'package:flutter_template/model/user/credentials.dart';
 import 'package:flutter_template/model/user/user_credentials.dart';
 import 'package:flutter_template/network/chopper/authenticator/authenticator_helper_jwt.dart';
 import 'package:flutter_template/network/user_auth_api_service.dart';
