@@ -16,12 +16,10 @@ class ErrorInterceptor implements ResponseInterceptor {
 
   @override
   FutureOr<Response> onResponse(Response<dynamic> response) {
-
-    // todo modify when implementing force update
-    // if (response.statusCode == 412) {
-    //   _forceUpdateHandler.onForceUpdateEvent();
-    //   throw ForceUpdateException(response.base.reasonPhrase);
-    // }
+    if (response.statusCode == 412) {
+      _forceUpdateHandler.onForceUpdateEvent();
+      throw ForceUpdateException(response.base.reasonPhrase);
+    }
 
     // Unauthorized user after failed refresh token attempt
     if (response.statusCode == 401) {

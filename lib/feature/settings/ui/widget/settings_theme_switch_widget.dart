@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -39,7 +38,7 @@ class _SettingsThemeSwitchState extends State<SettingsThemeSwitch> {
               ),
             ),
             Switch.adaptive(
-              activeColor: Theme.of(context).accentColor,
+              activeColor: Theme.of(context).colorScheme.secondary,
               value: isDarkTheme,
               onChanged: (val) => toggleBrightness(context, val),
             ),

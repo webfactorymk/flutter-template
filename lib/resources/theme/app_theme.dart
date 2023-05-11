@@ -8,49 +8,55 @@ extension on ThemeData {
 }
 
 ThemeData themeLight() => ThemeData(
-    brightness: Brightness.light,
-    primaryColor: ColorPalette.primaryL,
-    accentColor: ColorPalette.accentL,
-    scaffoldBackgroundColor: ColorPalette.backgroundGray,
-    cardColor: ColorPalette.white,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: ColorPalette.black,
-        backgroundColor: ColorPalette.accentL,
+      brightness: Brightness.light,
+      primaryColor: ColorPalette.primaryL,
+      scaffoldBackgroundColor: ColorPalette.backgroundGray,
+      cardColor: ColorPalette.white,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: ColorPalette.black,
+          backgroundColor: ColorPalette.accentL,
+        ),
       ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: ColorPalette.accentL,
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: ColorPalette.accentL,
+        ),
       ),
-    ),
-    textTheme: TextTheme(
-      subtitle1: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: ColorPalette.textGray,
+      textTheme: TextTheme(
+        subtitle1: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: ColorPalette.textGray,
+        ),
       ),
-    )).setCommonThemeElements();
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: ColorPalette.accentL,
+      ),
+    ).setCommonThemeElements();
 
 ThemeData themeDark() => ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: ColorPalette.primaryD,
-    accentColor: ColorPalette.accentD,
-    scaffoldBackgroundColor: ColorPalette.primaryLightD,
-    cardColor: ColorPalette.primaryDisabledD,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: ColorPalette.black,
-        backgroundColor: ColorPalette.accentD,
+      brightness: Brightness.dark,
+      primaryColor: ColorPalette.primaryD,
+      scaffoldBackgroundColor: ColorPalette.primaryLightD,
+      cardColor: ColorPalette.primaryDisabledD,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: ColorPalette.black,
+          backgroundColor: ColorPalette.accentD,
+        ),
       ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: ColorPalette.accentD,
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: ColorPalette.accentD,
+        ),
       ),
-    ),
-    textTheme: TextTheme(
-      subtitle1: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: ColorPalette.white,
+      textTheme: TextTheme(
+        subtitle1: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: ColorPalette.white,
+        ),
       ),
-    )).setCommonThemeElements();
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: ColorPalette.accentD,
+      ),
+    ).setCommonThemeElements();

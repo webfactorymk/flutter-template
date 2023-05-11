@@ -21,7 +21,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addObserver(this); // Subscribe to changes
+    WidgetsBinding.instance.addObserver(this); // Subscribe to changes
     super.initState();
     selectedLanguage = widget.selectedLanguage;
   }
@@ -29,12 +29,12 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
   @override
   void didChangeLocales(List<Locale>? locales) {
     setUpSelectedLanguage(
-        context, WidgetsBinding.instance!.window.locales.first.languageCode);
+        context, WidgetsBinding.instance.window.locales.first.languageCode);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -58,7 +58,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
                   ),
                   Radio<String>(
                     activeColor: Theme.of(context).brightness == Brightness.dark
-                        ? Theme.of(context).accentColor
+                        ? Theme.of(context).colorScheme.secondary
                         : Theme.of(context).primaryColorDark,
                     value: EN.languageCode,
                     groupValue: selectedLanguage,
@@ -86,7 +86,7 @@ class _SettingsLanguageWidgetState extends State<SettingsLanguageWidget>
                   ),
                   Radio<String>(
                     activeColor: Theme.of(context).brightness == Brightness.dark
-                        ? Theme.of(context).accentColor
+                        ? Theme.of(context).colorScheme.secondary
                         : Theme.of(context).primaryColorDark,
                     value: MK.languageCode,
                     groupValue: selectedLanguage,

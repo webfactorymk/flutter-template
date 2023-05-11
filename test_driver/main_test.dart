@@ -8,7 +8,7 @@ import 'platform_comm_test_widget.dart';
 
 Future<void> main() async {
   FlavorConfig.set(
-    Flavor.MOCK,
+    Flavor.DEV,
     FlavorValues(
       baseUrlApi: baseUrlDev + apiPrefix,
     ),

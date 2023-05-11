@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';

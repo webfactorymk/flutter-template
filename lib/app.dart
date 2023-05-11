@@ -50,7 +50,7 @@ class _AppState extends State<App> {
     super.didChangeDependencies();
     postAppConfig();
     if (!FlavorConfig.isProduction()) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         debugOverlay(context);
       });
     }

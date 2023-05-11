@@ -9,13 +9,9 @@ import 'package:flutter_template/feature/home/create_task/ui/create_task_view.da
 import 'package:flutter_template/feature/home/router/home_router_delegate.dart';
 import 'package:flutter_template/feature/home/task_list/bloc/task_list_bloc.dart';
 import 'package:flutter_template/log/log.dart';
-import 'package:flutter_template/model/task/task.dart';
-import 'package:flutter_template/model/task/task_group.dart';
-import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_template/resources/colors/color_palette.dart';
 import 'package:flutter_template/resources/styles/text_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:provider/provider.dart';
 
 class TaskListView extends StatelessWidget {
   @override
@@ -219,7 +215,7 @@ class _TaskListItem extends StatelessWidget {
       child: ListTile(
         leading: Checkbox(
             checkColor: ColorPalette.black,
-            activeColor: Theme.of(context).accentColor,
+            activeColor: Theme.of(context).colorScheme.secondary,
             value: task.status == TaskStatus.done,
             onChanged: (newState) => onStatusChange(task, newState!)),
         trailing: Icon(Icons.reorder),

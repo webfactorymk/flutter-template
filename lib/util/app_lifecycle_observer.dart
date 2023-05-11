@@ -26,7 +26,7 @@ class AppLifecycleObserver
       return;
     }
     _activated = true;
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   /// Global method to stop monitoring application state.
@@ -36,7 +36,7 @@ class AppLifecycleObserver
       return;
     }
     _activated = false;
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

@@ -14,8 +14,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:single_item_storage/storage.dart';
 import 'package:synchronized/synchronized.dart';
 
-import '../converters/response_to_type_converter.dart';
-
 /// Detects 401 response code and attempts to re-authenticate the user.
 ///
 /// If the user is unauthorized this component will only throw
@@ -129,7 +127,7 @@ class AuthenticatorHelperJwt {
           Log.e('Authenticator (response) - User logged out!');
           throw UnauthorizedUserException('User logged out!');
         }
-        if (tokenCurrent != null && tokenCurrent != tokenUsed) {
+        if (tokenCurrent != tokenUsed) {
           Log.d('Authenticator (response) - Refreshed token exists'
               '\nnewToken: $tokenCurrent'
               '\nusedToken: $tokenUsed');

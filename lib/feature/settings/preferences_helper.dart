@@ -31,7 +31,7 @@ class PreferencesHelper {
   }
 
   Future<String> _getPreferredLanguage() async {
-    final systemLocale = WidgetsBinding.instance!.window.locales.first;
+    final systemLocale = WidgetsBinding.instance.window.locales.first;
     final storedLanguageCode = await serviceLocator
         .get<Storage<String>>(instanceName: preferredLocalizationKey)
         .get();

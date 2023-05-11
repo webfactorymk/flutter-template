@@ -212,9 +212,6 @@ class FcmNotificationsListener {
 
     if (storedToken == null || storedToken != token) {
       if (token != null) {
-        final deviceType = Platform.isIOS ? 'iOS' : 'ANDROID';
-        //DeviceType.ios.name : DeviceType.android.name;
-
         try {
           await userApiService.addNotificationsToken(token);
           await _fcmTokenStorage.save(token);

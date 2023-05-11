@@ -4,7 +4,6 @@ import 'package:flutter_template/config/logger_config.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/di/service_locator.dart' as serviceLocatorConf;
 import 'package:flutter_template/feature/settings/preferences_helper.dart';
-import 'package:flutter_template/notifications/local/local_notification_manager.dart';
 import 'package:flutter_template/user/user_manager.dart';
 
 /// Configuration that needs to be done before the Flutter app starts goes here.
