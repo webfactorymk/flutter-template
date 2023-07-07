@@ -71,7 +71,7 @@ dependencies:
 
   # views
   webview_flutter: ^4.0.2
-  modal_bottom_sheet: ^2.0.0
+  modal_bottom_sheet: ^3.0.0-pre
   pull_to_refresh: 2.0.0
 
   # notifications
