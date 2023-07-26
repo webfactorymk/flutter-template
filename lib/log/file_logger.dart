@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 import 'dart:io';
 
@@ -29,8 +28,7 @@ class FileLogger implements AbstractLogger {
 
   /// Creates a new file logger with file in the application's
   /// documents directory named flutter_logs_{platform}_{flavor}.txt
-  factory FileLogger.withDefaultFile() =>
-      FileLogger(globalLogFileLock, () async {
+  factory FileLogger.withDefaultFile() => FileLogger(globalLogFileLock, () async {
         final flavor = FlavorConfig.isDev() ? "dev" : "stg";
         final platform = Platform.isIOS ? "iOS" : "Android";
 

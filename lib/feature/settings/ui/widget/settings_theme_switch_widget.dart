@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_template/resources/theme/theme_change_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,8 +49,7 @@ class _SettingsThemeSwitchState extends State<SettingsThemeSwitch> {
   }
 
   void updateTheme(BuildContext context) {
-    final bool currentBrightness =
-        Theme.of(context).brightness == Brightness.dark;
+    final bool currentBrightness = Theme.of(context).brightness == Brightness.dark;
     if (currentBrightness != isDarkTheme) {
       setState(() {
         isDarkTheme = currentBrightness;
@@ -63,8 +61,7 @@ class _SettingsThemeSwitchState extends State<SettingsThemeSwitch> {
     setState(() {
       isDarkTheme = val;
     });
-    final themeNotifier =
-        Provider.of<ThemeChangeNotifier>(context, listen: false);
+    final themeNotifier = Provider.of<ThemeChangeNotifier>(context, listen: false);
     await themeNotifier.toggleTheme();
   }
 }

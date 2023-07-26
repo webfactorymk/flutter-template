@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_template/di/service_locator.dart';
 import 'package:flutter_template/model/task/task_group.dart';
 import 'package:flutter_template/platform_comm/platform_comm.dart';
@@ -24,8 +23,8 @@ class _PlatformCommTestWidgetState extends State<PlatformCommTestWidget> {
   Future<void> callPlatformMethods() async {
     final platformComm = serviceLocator.get<PlatformComm>();
     final message = await platformComm.echoMessage('echo');
-    final taskGroup = await platformComm
-        .echoObject(TaskGroup('TG-id', 'Test group', List.of(['1', '2'])));
+    final taskGroup =
+        await platformComm.echoObject(TaskGroup('TG-id', 'Test group', List.of(['1', '2'])));
 
     setState(() {
       echoMessage = message;

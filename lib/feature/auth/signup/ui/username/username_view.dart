@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/feature/auth/router/auth_router_delegate.dart';
 import 'package:flutter_template/feature/auth/signup/bloc/signup_cubit.dart';
@@ -54,7 +53,6 @@ class UsernameView extends StatelessWidget {
   }
 
   void _onNextPressed(BuildContext context) {
-    BlocProvider.of<SignupCubit>(context)
-        .onUsernameEntered(_usernameController.text);
+    BlocProvider.of<SignupCubit>(context).onUsernameEntered(_usernameController.text);
   }
 }

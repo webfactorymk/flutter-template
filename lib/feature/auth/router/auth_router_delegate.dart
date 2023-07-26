@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/auth/login/ui/login_page.dart';
 import 'package:flutter_template/feature/auth/router/auth_nav_state.dart';
@@ -11,8 +10,7 @@ class AuthRouterDelegate extends RouterDelegate
 
   AuthNavState _authNavState;
 
-  AuthRouterDelegate(this.navigatorKey,
-      [this._authNavState = const AuthNavState.login()]);
+  AuthRouterDelegate(this.navigatorKey, [this._authNavState = const AuthNavState.login()]);
 
   void setLoginNavState() {
     _authNavState = AuthNavState.login();
@@ -36,10 +34,7 @@ class AuthRouterDelegate extends RouterDelegate
         pages: [
           LoginPage(),
           if (_authNavState is SignupUsernameNavState) UsernamePage(),
-          if (_authNavState is SignupPasswordNavState) ...[
-            UsernamePage(),
-            PasswordPage()
-          ],
+          if (_authNavState is SignupPasswordNavState) ...[UsernamePage(), PasswordPage()],
         ],
         onPopPage: (route, result) {
           _authNavState = _authNavState.prevState ?? AuthNavState.login();

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/feature/home/router/home_nav_state.dart';
 import 'package:flutter_template/feature/home/task_detail/ui/task_detail_page.dart';
@@ -10,8 +9,7 @@ class HomeRouterDelegate extends RouterDelegate
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  HomeRouterDelegate(this.navigatorKey,
-      [this.homeNavState = const HomeNavState.taskList()]);
+  HomeRouterDelegate(this.navigatorKey, [this.homeNavState = const HomeNavState.taskList()]);
 
   HomeNavState homeNavState = HomeNavState.taskList();
   bool isSettingsShownState = false;
@@ -21,7 +19,7 @@ class HomeRouterDelegate extends RouterDelegate
     notifyListeners();
   }
 
-  void setIsSettingsShownState(bool isShown){
+  void setIsSettingsShownState(bool isShown) {
     isSettingsShownState = isShown;
     notifyListeners();
   }
@@ -37,7 +35,7 @@ class HomeRouterDelegate extends RouterDelegate
           if (isSettingsShownState) SettingsPage()
         ],
         onPopPage: (route, result) {
-          if(isSettingsShownState) isSettingsShownState = false;
+          if (isSettingsShownState) isSettingsShownState = false;
           homeNavState = HomeNavState.taskList();
           return route.didPop(result);
         });
