@@ -14,16 +14,6 @@ class TestMethodChannel implements MethodChannel {
   BinaryMessenger get binaryMessenger => throw UnimplementedError();
 
   @override
-  bool checkMethodCallHandler(Future Function(MethodCall call)? handler) {
-    throw UnimplementedError();
-  }
-
-  @override
-  bool checkMockMethodCallHandler(Future Function(MethodCall call)? handler) {
-    throw UnimplementedError();
-  }
-
-  @override
   MethodCodec get codec => throw UnimplementedError();
 
   @override
@@ -43,7 +33,4 @@ class TestMethodChannel implements MethodChannel {
 
   @override
   String get name => throw UnimplementedError();
-
-  @override
-  void setMockMethodCallHandler(Future? Function(MethodCall call)? handler) {}
 }
