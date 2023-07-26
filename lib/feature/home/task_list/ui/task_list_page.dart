@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/di/service_locator.dart';
@@ -13,9 +12,9 @@ class TaskListPage extends Page {
     return CupertinoPageRoute(
       settings: this,
       builder: (BuildContext context) => BlocProvider<TaskListBloc>(
-        create: (BuildContext context) => TaskListBloc(
-            serviceLocator.get<TasksRepository>(),
-            serviceLocator.get<UserManager>())..add(LoadTasks()),
+        create: (BuildContext context) =>
+            TaskListBloc(serviceLocator.get<TasksRepository>(), serviceLocator.get<UserManager>())
+              ..add(LoadTasks()),
         child: TaskListView(),
       ),
     );

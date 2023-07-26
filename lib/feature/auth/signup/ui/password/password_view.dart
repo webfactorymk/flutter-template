@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_template/feature/auth/signup/bloc/signup_cubit.dart';
@@ -6,11 +5,9 @@ import 'package:flutter_template/feature/auth/signup/bloc/signup_cubit.dart';
 class PasswordView extends StatelessWidget {
   final bool sessionExpiredRedirect;
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
-  PasswordView({Key? key, this.sessionExpiredRedirect = false})
-      : super(key: key);
+  PasswordView({Key? key, this.sessionExpiredRedirect = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +51,7 @@ class PasswordView extends StatelessWidget {
   }
 
   _onSignUpPressed(BuildContext context) {
-    BlocProvider.of<SignupCubit>(context)
-        .onPasswordEntered(_passwordController.text);
+    BlocProvider.of<SignupCubit>(context).onPasswordEntered(_passwordController.text);
     BlocProvider.of<SignupCubit>(context).onUserSignup();
   }
 }

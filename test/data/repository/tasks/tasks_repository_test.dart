@@ -4,8 +4,6 @@ import 'package:flutter_template/data/repository/tasks/tasks_cache_data_source.d
 import 'package:flutter_template/data/repository/tasks/tasks_data_source.dart';
 import 'package:flutter_template/data/repository/tasks/tasks_repository.dart';
 import 'package:flutter_template/model/task/task_event.dart';
-import 'package:flutter_template/model/task/task_group.dart';
-import 'package:flutter_template/model/task/task_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'tasks_data_source_base_test.dart';
@@ -29,15 +27,13 @@ void main() {
     await tasksRepository.teardown();
   });
 
-  executeTasksDataSourceBaseTests(() =>
-      TasksRepository(cache: tasksCacheDataSource, remote: stubDataSource));
+  executeTasksDataSourceBaseTests(
+      () => TasksRepository(cache: tasksCacheDataSource, remote: stubDataSource));
 
   group("UpdatesStreamTests", () {
     test("IsStreamBroadcast", () {
-      Stream<List<TaskGroup>> taskGroupUpdatesStream =
-          tasksRepository.taskGroupUpdatesStream;
-      Stream<TaskEvent> taskEventUpdatesStream =
-          tasksRepository.taskEventUpdatesStream;
+      Stream<List<TaskGroup>> taskGroupUpdatesStream = tasksRepository.taskGroupUpdatesStream;
+      Stream<TaskEvent> taskEventUpdatesStream = tasksRepository.taskEventUpdatesStream;
 
       expect(taskGroupUpdatesStream.isBroadcast, isTrue);
       expect(taskEventUpdatesStream.isBroadcast, isTrue);
@@ -55,10 +51,8 @@ void main() {
     test("TaskStatusChangeEvent-UpdatesStream", () async {
       expect(
           tasksRepository.taskEventUpdatesStream,
-          emitsInOrder([
-            TaskCreatedEvent(task2),
-            TaskStatusChangedEvent('task-2', TaskStatus.done)
-          ]));
+          emitsInOrder(
+              [TaskCreatedEvent(task2), TaskStatusChangedEvent('task-2', TaskStatus.done)]));
 
       await tasksRepository.createTask(task2);
       await tasksRepository.completeTask('task-2');
@@ -113,8 +107,7 @@ void main() {
     }, timeout: Timeout(Duration(seconds: 1)));
 
     test("UpdatesStream-OpenCloseOpen", () async {
-      Stream<List<TaskGroup>> updatesStream =
-          tasksRepository.taskGroupUpdatesStream;
+      Stream<List<TaskGroup>> updatesStream = tasksRepository.taskGroupUpdatesStream;
       StreamSubscription<List<TaskGroup>>? subscription;
       subscription = updatesStream.listen(expectAsync1((taskGroups) {
         print(taskGroups);
@@ -134,8 +127,7 @@ void main() {
         print(taskGroups);
         expect(taskGroups, List.of([taskGroup1]));
       }));
-      var subscription = tasksRepository.taskGroupUpdatesStream
-          .listen(expectAsync1((taskGroups) {
+      var subscription = tasksRepository.taskGroupUpdatesStream.listen(expectAsync1((taskGroups) {
         print(taskGroups);
         fail("Must not be called.");
       }, count: 0));
@@ -148,10 +140,8 @@ void main() {
     test("Distinct results-UpdatesStream", () async {
       expect(
           tasksRepository.taskEventUpdatesStream,
-          emitsInOrder([
-            TaskCreatedEvent(task2),
-            TaskStatusChangedEvent('task-2', TaskStatus.done)
-          ]));
+          emitsInOrder(
+              [TaskCreatedEvent(task2), TaskStatusChangedEvent('task-2', TaskStatus.done)]));
 
       await tasksRepository.createTask(task2);
       await tasksRepository.createTask(task2);
